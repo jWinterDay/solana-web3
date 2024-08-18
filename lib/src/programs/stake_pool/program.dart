@@ -13,22 +13,13 @@ import '../../crypto/pubkey.dart';
 import '../../rpc/models/program_address.dart';
 import '../../transactions/account_meta.dart';
 import '../../transactions/transaction_instruction.dart';
-import '../stake/program.dart';
-import '../system/program.dart';
-import '../token/program.dart';
-import '../program.dart';
-import 'instruction.dart';
-import 'state.dart';
-
 
 /// Stake Pool Program
 /// ------------------------------------------------------------------------------------------------
 
 class StakePoolProgram extends Program {
-
   /// Stake pool program.
-  StakePoolProgram._()
-    : super(Pubkey.fromBase58('SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy'));
+  StakePoolProgram._() : super(Pubkey.fromBase58('SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy'));
 
   /// Internal singleton instance.
   static final StakePoolProgram _instance = StakePoolProgram._();
@@ -39,7 +30,7 @@ class StakePoolProgram extends Program {
   /// Maximum number of validators to update during UpdateValidatorListBalance.
   static const int maxValidatorsToUpdate = 5;
 
-  /// Minimum amount of staked SOL required in a validator stake account to allow for merges without 
+  /// Minimum amount of staked SOL required in a validator stake account to allow for merges without
   /// a mismatch on credits observed.
   static const int minimumActiveStake = lamportsPerSol;
 
@@ -61,7 +52,7 @@ class StakePoolProgram extends Program {
   ) {
     return Pubkey.findProgramAddress(
       [
-        stakePoolAddress.toBytes(), 
+        stakePoolAddress.toBytes(),
         utf8.encode(depositAuthoritySeed),
       ],
       StakePoolProgram.programId,
@@ -74,14 +65,14 @@ class StakePoolProgram extends Program {
   ) {
     return Pubkey.findProgramAddress(
       [
-        stakePoolAddress.toBytes(), 
+        stakePoolAddress.toBytes(),
         utf8.encode(withdrawAuthoritySeed),
       ],
       StakePoolProgram.programId,
     );
   }
 
-  /// Find the stake account address of the given validator [voteAccountAddress] and 
+  /// Find the stake account address of the given validator [voteAccountAddress] and
   /// [stakePoolAddress].
   static ProgramAddress findStakeProgramAddress(
     final Pubkey voteAccountAddress,
@@ -90,16 +81,15 @@ class StakePoolProgram extends Program {
   ]) {
     return Pubkey.findProgramAddress(
       [
-        voteAccountAddress.toBytes(), 
+        voteAccountAddress.toBytes(),
         stakePoolAddress.toBytes(),
-        if (seed != null)
-          seed.toUint8List(8),
+        if (seed != null) seed.toUint8List(8),
       ],
       StakePoolProgram.programId,
     );
   }
 
-  /// Find the transient stake account address of the given validator [voteAccountAddress], 
+  /// Find the transient stake account address of the given validator [voteAccountAddress],
   /// [stakePoolAddress] and [seed] (u64).
   static ProgramAddress findTransientStakeProgramAddress(
     final Pubkey voteAccountAddress,
@@ -140,14 +130,14 @@ class StakePoolProgram extends Program {
   /// - `[]` [staker] - Staker.
   /// - `[]` [withdrawAuthority] - Stake pool withdraw authority.
   /// - `[w]` [validatorList] - Uninitialized validator stake list storage account.
-  /// - `[]` [reserveStake] - Reserve stake account must be initialized, have zero balance, and staker / 
+  /// - `[]` [reserveStake] - Reserve stake account must be initialized, have zero balance, and staker /
   ///   withdrawer authority set to pool withdraw authority.
   /// - `[]` [poolMint] - Pool token mint. Must have zero supply, owned by withdraw authority.
   /// - `[]` [managerFeeAccount] - Pool account to deposit the generated fee for manager.
-  /// - `[]` [depositAuthority] - (Optional) Deposit authority that must sign all deposits. Defaults 
-  ///   to the program address generated using `findDepositAuthorityProgramAddress`, making deposits 
+  /// - `[]` [depositAuthority] - (Optional) Deposit authority that must sign all deposits. Defaults
+  ///   to the program address generated using `findDepositAuthorityProgramAddress`, making deposits
   ///   permissionless.
-  /// 
+  ///
   /// Data:
   /// - [fee] - Fee assessed as percentage of perceived rewards.
   /// - [withdrawalFee] - Fee charged per withdrawal as percentage of withdrawal.
@@ -182,8 +172,8 @@ class StakePoolProgram extends Program {
     // 6. `[]` Pool token mint. Must have zero supply, owned by withdraw authority.
     // 7. `[]` Pool account to deposit the generated fee for manager.
     // 8. `[]` Token program id
-    // 9. `[]` (Optional) Deposit authority that must sign all deposits. Defaults to the program 
-    //    address generated using `findDepositAuthorityProgramAddress`, making deposits 
+    // 9. `[]` (Optional) Deposit authority that must sign all deposits. Defaults to the program
+    //    address generated using `findDepositAuthorityProgramAddress`, making deposits
     //    permissionless.
     final List<AccountMeta> keys = [
       AccountMeta.writable(stakePoolAddress),
@@ -195,8 +185,7 @@ class StakePoolProgram extends Program {
       AccountMeta(poolMint),
       AccountMeta(managerFeeAccount),
       AccountMeta(TokenProgram.programId),
-      if (depositAuthority != null)
-        AccountMeta(depositAuthority),
+      if (depositAuthority != null) AccountMeta(depositAuthority),
     ];
 
     final BorshStructCodec feeCodec = borsh.struct(Fee.codec.schema);
@@ -209,17 +198,17 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.initialize, 
-      keys: keys, 
+      StakePoolInstruction.initialize,
+      keys: keys,
       data: data,
     );
   }
 
-  /// (Staker only) Adds a stake account delegated to validator, to the pool's list of managed 
+  /// (Staker only) Adds a stake account delegated to validator, to the pool's list of managed
   /// validators.
-  /// 
-  /// The stake account will have the rent-exempt amount plus 
-  /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())`. It 
+  ///
+  /// The stake account will have the rent-exempt amount plus
+  /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())`. It
   /// is funded from the stake pool reserve.
   ///
   /// Keys:
@@ -279,16 +268,16 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.addValidatorToPool, 
-      keys: keys, 
+      StakePoolInstruction.addValidatorToPool,
+      keys: keys,
       data: data,
     );
   }
 
   /// (Staker only) Removes a validator from the pool, deactivating its stake.
   ///
-  /// Only succeeds if the validator stake account has the minimum of 
-  /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())` 
+  /// Only succeeds if the validator stake account has the minimum of
+  /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())`
   /// plus the rent-exempt amount.
   ///
   /// Keys:
@@ -297,7 +286,7 @@ class StakePoolProgram extends Program {
   /// - [withdrawAuthority] `[]` Stake pool withdraw authority.
   /// - [validatorList] `[w]` Validator stake list storage account.
   /// - [stakeAccount] `[w]` Stake account to remove from the pool.
-  /// - [transientStakeAccount] `[]` Transient stake account, to check that that we're not trying 
+  /// - [transientStakeAccount] `[]` Transient stake account, to check that that we're not trying
   ///   to activate.
   static TransactionInstruction removeValidatorFromPool({
     required final Pubkey stakePoolAddress,
@@ -327,23 +316,23 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.removeValidatorFromPool, 
-      keys: keys, 
+      StakePoolInstruction.removeValidatorFromPool,
+      keys: keys,
     );
-  } 
+  }
 
   /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
   ///
-  /// Internally, this instruction splits a validator stake account into its corresponding transient 
+  /// Internally, this instruction splits a validator stake account into its corresponding transient
   /// stake account and deactivates it.
   ///
-  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the 
-  /// stake on a stake account. This instruction splits some amount of stake, up to the total 
-  /// activated stake, from the canonical validator stake account, into its "transient" stake 
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the
+  /// stake on a stake account. This instruction splits some amount of stake, up to the total
+  /// activated stake, from the canonical validator stake account, into its "transient" stake
   /// account.
   ///
-  /// The instruction only succeeds if the transient stake account does not exist. The amount of 
-  /// lamports to move must be at least rent-exemption plus 
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of
+  /// lamports to move must be at least rent-exemption plus
   /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())`.
   ///
   /// Keys:
@@ -353,7 +342,7 @@ class StakePoolProgram extends Program {
   /// - `[w]` [validatorList] - Validator list.
   /// - `[w]` [stakeAccount] - Canonical stake account to split from.
   /// - `[w]` [transientStakeAccount] - Transient stake account to receive split.
-  /// 
+  ///
   /// Data:
   /// - [lamports] - Amount of lamports to split into the transient stake account.
   /// - [transientStakeSeed] - Seed used to create transient stake account.
@@ -398,20 +387,20 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.decreaseValidatorStake, 
-      keys: keys, 
+      StakePoolInstruction.decreaseValidatorStake,
+      keys: keys,
       data: data,
     );
   }
 
   /// (Staker only) Increase stake on a validator from the reserve account.
   ///
-  /// Internally, this instruction splits reserve stake into a transient stake account and delegate 
-  /// to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once 
+  /// Internally, this instruction splits reserve stake into a transient stake account and delegate
+  /// to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once
   /// it's ready.
   ///
-  /// This instruction only succeeds if the transient stake account does not exist. The minimum 
-  /// amount to move is rent-exemption plus 
+  /// This instruction only succeeds if the transient stake account does not exist. The minimum
+  /// amount to move is rent-exemption plus
   /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())`.
   ///
   /// Keys:
@@ -423,10 +412,10 @@ class StakePoolProgram extends Program {
   /// - `[w]` [transientStakeAccount] - Transient stake account.
   /// - `[]` [validatorStakeAccount] - Validator stake account.
   /// - `[]` [validatorVoteAccount] - Validator vote account to delegate to.
-  /// 
+  ///
   /// Data:
-  /// - [lamports] - Amount of lamports to increase on the given validator. The actual amount split 
-  ///   into the transient stake account is: `lamports + stake rent exemption`. The rent-exemption 
+  /// - [lamports] - Amount of lamports to increase on the given validator. The actual amount split
+  ///   into the transient stake account is: `lamports + stake rent exemption`. The rent-exemption
   ///   of the stake account is withdrawn back to the reserve after it is merged.
   /// - [transientStakeSeed] - Seed used to create transient stake account.
   static TransactionInstruction increaseValidatorStake({
@@ -480,28 +469,28 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.increaseValidatorStake, 
-      keys: keys, 
+      StakePoolInstruction.increaseValidatorStake,
+      keys: keys,
       data: data,
     );
   }
 
   /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool.
   ///
-  /// In order to avoid users abusing the stake pool as a free conversion between SOL staked on 
-  /// different validators, the staker can force all deposits and/or withdraws to go to one chosen 
+  /// In order to avoid users abusing the stake pool as a free conversion between SOL staked on
+  /// different validators, the staker can force all deposits and/or withdraws to go to one chosen
   /// account, or unset that account.
-  /// 
+  ///
   /// Fails if the validator is not part of the stake pool.
-  /// 
+  ///
   /// Keys:
   /// - [stakePoolAddress] `[w]` - Stake pool.
   /// - [staker] `[s]` Stake pool staker.
   /// - [validatorList] `[]` Validator list.
-  /// 
+  ///
   /// Data:
   /// - [validatorType] - Affected operation (deposit or withdraw).
-  /// - [validatorVoteAddress] - Validator vote account that deposits or withdraws must go through, 
+  /// - [validatorVoteAddress] - Validator vote account that deposits or withdraws must go through,
   ///   unset with `null`
   static TransactionInstruction setPreferredValidator({
     // Keys
@@ -527,18 +516,18 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.setPreferredValidator, 
-      keys: keys, 
+      StakePoolInstruction.setPreferredValidator,
+      keys: keys,
       data: data,
     );
   }
 
   /// Updates balances of validator and transient stake accounts in the pool.
   ///
-  /// While going through the pairs of validator and transient stake accounts, if the transient 
-  /// stake is inactive, it is merged into the reserve stake account. If the transient stake is 
-  /// active and has matching credits observed, it is merged into the canonical validator stake 
-  /// account. In all other states, nothing is done, and the balance is simply added to the 
+  /// While going through the pairs of validator and transient stake accounts, if the transient
+  /// stake is inactive, it is merged into the reserve stake account. If the transient stake is
+  /// active and has matching credits observed, it is merged into the canonical validator stake
+  /// account. In all other states, nothing is done, and the balance is simply added to the
   /// canonical stake account balance.
   ///
   /// Keys:
@@ -547,11 +536,11 @@ class StakePoolProgram extends Program {
   /// - `[w]` [validatorList] - Validator stake list storage account.
   /// - `[w]` [reserveStake] - Reserve stake account.
   /// - `[]` [validatorAndTransientStakeAccounts] - N pairs of validator and transient stake accounts.
-  /// 
+  ///
   /// Data:
   /// - [startIndex] -  Index to start updating on the validator list.
-  /// - [noMerge] - If true, don't try merging transient stake accounts into the reserve or 
-  ///   validator stake account.  Useful for testing or if a particular stake account is in a bad 
+  /// - [noMerge] - If true, don't try merging transient stake accounts into the reserve or
+  ///   validator stake account.  Useful for testing or if a particular stake account is in a bad
   ///   state, but we still want to update.
   static TransactionInstruction updateValidatorListBalance({
     // Keys
@@ -581,8 +570,7 @@ class StakePoolProgram extends Program {
       AccountMeta(sysvarClockPubkey),
       AccountMeta(sysvarStakeHistoryPubkey),
       AccountMeta(StakeProgram.programId),
-      for (final Pubkey account in validatorAndTransientStakeAccounts)
-        AccountMeta.writable(account),
+      for (final Pubkey account in validatorAndTransientStakeAccounts) AccountMeta.writable(account),
     ];
 
     final List<Iterable<int>> data = [
@@ -591,8 +579,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.updateValidatorListBalance, 
-      keys: keys, 
+      StakePoolInstruction.updateValidatorListBalance,
+      keys: keys,
       data: data,
     );
   }
@@ -632,8 +620,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.updateStakePoolBalance, 
-      keys: keys, 
+      StakePoolInstruction.updateStakePoolBalance,
+      keys: keys,
     );
   }
 
@@ -654,12 +642,12 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.cleanupRemovedValidatorEntries, 
-      keys: keys, 
+      StakePoolInstruction.cleanupRemovedValidatorEntries,
+      keys: keys,
     );
   }
 
-  /// Deposit some stake into the pool.  The output is a "pool" token representing ownership into 
+  /// Deposit some stake into the pool.  The output is a "pool" token representing ownership into
   /// the pool. Inputs are converted to the current ratio.
   ///
   /// Keys:
@@ -667,7 +655,7 @@ class StakePoolProgram extends Program {
   /// - `[w]` [validatorList] - Validator stake list storage account.
   /// - `[s]/[]` [depositAuthority] - Stake pool deposit authority.
   /// - `[]` [withdrawAuthority] - Stake pool withdraw authority.
-  /// - `[w]` [stakeAccount] - Stake account to join the pool (withdraw authority for the stake 
+  /// - `[w]` [stakeAccount] - Stake account to join the pool (withdraw authority for the stake
   ///     account should be first set to the stake pool deposit authority).
   /// - `[w]` [validatorStakeAccount] - Validator stake account for the stake account to be merged with.
   /// - `[w]` [reserveStake] - Reserve stake account, to withdraw rent exempt reserve.
@@ -693,7 +681,7 @@ class StakePoolProgram extends Program {
     // 1. `[w]` Validator stake list storage account
     // 2. `[s]/[]` Stake pool deposit authority
     // 3. `[]` Stake pool withdraw authority
-    // 4. `[w]` Stake account to join the pool (withdraw authority for the stake account should be 
+    // 4. `[w]` Stake account to join the pool (withdraw authority for the stake account should be
     //          first set to the stake pool deposit authority)
     // 5. `[w]` Validator stake account for the stake account to be merged with
     // 6. `[w]` Reserve stake account, to withdraw rent exempt reserve
@@ -724,14 +712,14 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.depositStake, 
-      keys: keys, 
+      StakePoolInstruction.depositStake,
+      keys: keys,
     );
   }
 
   /// Withdraw the token from the pool at the current ratio.
   ///
-  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and 
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and
   /// if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount +
   /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())`.
   ///
@@ -742,8 +730,8 @@ class StakePoolProgram extends Program {
   ///   * transient stake accounts
   ///   * reserve stake account OR totally remove validator stake accounts
   ///
-  /// A user can freely withdraw from a validator stake account, and if they are all at the minimum, 
-  /// then they can withdraw from transient stake accounts, and if they are all at minimum, then 
+  /// A user can freely withdraw from a validator stake account, and if they are all at the minimum,
+  /// then they can withdraw from transient stake accounts, and if they are all at minimum, then
   /// they can withdraw from the reserve or remove any validator from the pool.
   ///
   /// Keys:
@@ -757,7 +745,7 @@ class StakePoolProgram extends Program {
   /// - `[w]` [userTokenAccount] - User account with pool tokens to burn from.
   /// - `[w]` [managerFeeAccount] - Account to receive pool fee tokens.
   /// - `[w]` [poolMint] - Pool token mint account.
-  /// 
+  ///
   /// Data:
   /// - [lamports] - Amount of pool tokens to withdraw.
   static TransactionInstruction withdrawStake({
@@ -809,8 +797,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.withdrawStake, 
-      keys: keys, 
+      StakePoolInstruction.withdrawStake,
+      keys: keys,
       data: data,
     );
   }
@@ -840,8 +828,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.setManager, 
-      keys: keys, 
+      StakePoolInstruction.setManager,
+      keys: keys,
     );
   }
 
@@ -850,7 +838,7 @@ class StakePoolProgram extends Program {
   /// Keys:
   /// - `[w]` [stakePoolAddress] - StakePool.
   /// - `[s]` [manager] - Manager.
-  /// 
+  ///
   /// Data:
   /// - [fee] - Type of fee to update and value to update it to.
   static TransactionInstruction setFee({
@@ -868,7 +856,7 @@ class StakePoolProgram extends Program {
     ];
 
     final BorshRustEnumCodec feeTypeCode = borsh.rustEnumeration(
-      FeeType.codecs, 
+      FeeType.codecs,
     );
 
     final List<Iterable<int>> data = [
@@ -876,8 +864,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.setFee, 
-      keys: keys, 
+      StakePoolInstruction.setFee,
+      keys: keys,
       data: data,
     );
   }
@@ -903,12 +891,12 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.setStaker, 
-      keys: keys, 
+      StakePoolInstruction.setStaker,
+      keys: keys,
     );
   }
 
-  /// Deposit SOL directly into the pool's reserve account. The output is a "pool" token 
+  /// Deposit SOL directly into the pool's reserve account. The output is a "pool" token
   /// representing ownership into the pool. Inputs are converted to the current ratio.
   ///
   /// Keys:
@@ -921,7 +909,7 @@ class StakePoolProgram extends Program {
   /// - `[w]` [referralFeeAccount] - Account to receive a portion of fee as referral fees
   /// - `[w]` [poolMint] - Pool token mint account
   /// - `[s]` [depositAuthority] - (Optional) Stake pool sol deposit authority.
-  /// 
+  ///
   /// Data:
   /// - [lamports] - Amount of solana to deposit in exchange for pool tokens.
   static TransactionInstruction depositSol({
@@ -960,8 +948,7 @@ class StakePoolProgram extends Program {
       AccountMeta.writable(poolMint),
       AccountMeta(SystemProgram.programId),
       AccountMeta(TokenProgram.programId),
-      if (depositAuthority != null)
-        AccountMeta.signer(depositAuthority),
+      if (depositAuthority != null) AccountMeta.signer(depositAuthority),
     ];
 
     final List<Iterable<int>> data = [
@@ -969,8 +956,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.depositSol, 
-      keys: keys, 
+      StakePoolInstruction.depositSol,
+      keys: keys,
       data: data,
     );
   }
@@ -981,7 +968,7 @@ class StakePoolProgram extends Program {
   /// - `[w]` [stakePoolAddress] - StakePool.
   /// - `[s]` [manager] - Manager.
   /// - '[]` [newAuthority] - New authority pubkey or none.
-  /// 
+  ///
   /// Data:
   /// - [fundingType] - The authority to update.
   static TransactionInstruction setFundingAuthority({
@@ -998,8 +985,7 @@ class StakePoolProgram extends Program {
     final List<AccountMeta> keys = [
       AccountMeta.writable(stakePoolAddress),
       AccountMeta.signer(manager),
-      if (newAuthority != null)
-        AccountMeta(newAuthority),
+      if (newAuthority != null) AccountMeta(newAuthority),
     ];
 
     final List<Iterable<int>> data = [
@@ -1007,13 +993,13 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.setFundingAuthority, 
-      keys: keys, 
+      StakePoolInstruction.setFundingAuthority,
+      keys: keys,
       data: data,
     );
   }
 
-  /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have 
+  /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have
   /// enough SOL.
   ///
   /// - `[w]` [stakePoolAddress] - Stake pool.
@@ -1065,8 +1051,7 @@ class StakePoolProgram extends Program {
       AccountMeta(sysvarStakeHistoryPubkey),
       AccountMeta(StakeProgram.programId),
       AccountMeta(TokenProgram.programId),
-      if (solWithdrawAuthority != null)
-        AccountMeta.signer(solWithdrawAuthority)
+      if (solWithdrawAuthority != null) AccountMeta.signer(solWithdrawAuthority)
     ];
 
     final List<Iterable<int>> data = [
@@ -1074,14 +1059,14 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.withdrawSol, 
-      keys: keys, 
+      StakePoolInstruction.withdrawSol,
+      keys: keys,
       data: data,
     );
   }
 
   /// Create token metadata for the stake-pool token in the metaplex-token program.
-  /// 
+  ///
   /// ### Keys:
   /// - `[]` [stakePoolAddress] - Stake pool.
   /// - `[s]` [manager] - Manager.
@@ -1089,7 +1074,7 @@ class StakePoolProgram extends Program {
   /// - `[]` [poolMint] - Pool token mint account.
   /// - `[s, w]` [payer] - Payer for creation of token metadata account.
   /// - `[w]` [tokenMetadataAccount] - Token metadata account.
-  /// 
+  ///
   /// ### Data:
   /// - [name] - Token name.
   /// - [symbol] - Token symbol e.g. `stkSOL`.
@@ -1136,8 +1121,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.createTokenMetadata, 
-      keys: keys, 
+      StakePoolInstruction.createTokenMetadata,
+      keys: keys,
       data: data,
     );
   }
@@ -1148,7 +1133,7 @@ class StakePoolProgram extends Program {
   /// 1. `[s]` [manager] - Manager.
   /// 2. `[]` [withdrawAuthority] - Stake pool withdraw authority.
   /// 3. `[w]` [tokenMetadataAccount] - Token metadata account.
-  /// 
+  ///
   static TransactionInstruction updateTokenMetadata({
     // Keys
     required final Pubkey stakePoolAddress,
@@ -1181,8 +1166,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.updateTokenMetadata, 
-      keys: keys, 
+      StakePoolInstruction.updateTokenMetadata,
+      keys: keys,
       data: data,
     );
   }
@@ -1191,15 +1176,15 @@ class StakePoolProgram extends Program {
   ///
   /// Works regardless if the transient stake account exists.
   ///
-  /// Internally, this instruction splits reserve stake into an ephemeral stake account, activates 
-  /// it, then merges or splits it into the transient stake account delegated to the appropriate 
+  /// Internally, this instruction splits reserve stake into an ephemeral stake account, activates
+  /// it, then merges or splits it into the transient stake account delegated to the appropriate
   /// validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
   ///
   /// The minimum amount to move is rent-exemption plus
   /// `max(crate::MINIMUM_ACTIVE_STAKE, solana_program::stake::tools::get_minimum_delegation())`.
   ///
   ///  The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
-  /// 
+  ///
   /// Keys:
   /// - `[]` [stakePoolAddress] - Stake pool.
   /// - `[s]` [staker] -  Stake pool staker.
@@ -1210,13 +1195,13 @@ class StakePoolProgram extends Program {
   /// - `[w]` [transientStakeAccount] - Transient stake account.
   /// - `[]` [validatorStakeAccount] - Validator stake account.
   /// - `[]` [voteAccount] - Validator vote account to delegate to.
-  /// 
+  ///
   /// Data:
-  /// - [lamports] - Amount of lamports to increase on the given validator. The actual amount split 
+  /// - [lamports] - Amount of lamports to increase on the given validator. The actual amount split
   ///   into the transient stake account is: `lamports + stake_rent_exemption`.
   /// - [transientStakeSeed] - Seed used to create transient stake account.
   /// - [ephemeralStakeSeed] - Seed used to create ephemeral account.
-  ///  userdata: 
+  ///  userdata:
   static TransactionInstruction increaseAdditionalValidatorStake({
     // Keys
     required final Pubkey stakePoolAddress,
@@ -1271,19 +1256,19 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.increaseAdditionalValidatorStake, 
-      keys: keys, 
+      StakePoolInstruction.increaseAdditionalValidatorStake,
+      keys: keys,
       data: data,
     );
   }
 
-  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the 
+  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the
   /// reserve.
   ///
   /// Works regardless if the transient stake account already exists.
   ///
-  /// Internally, this instruction splits a validator stake account into an ephemeral stake account, 
-  /// deactivates it, then merges or splits it into the transient stake account delegated to the 
+  /// Internally, this instruction splits a validator stake account into an ephemeral stake account,
+  /// deactivates it, then merges or splits it into the transient stake account delegated to the
   /// appropriate validator.
   ///
   ///  The amount of lamports to move must be at least rent-exemption plus
@@ -1297,7 +1282,7 @@ class StakePoolProgram extends Program {
   /// - `[w]` [stakeAccount] - Canonical stake account to split from.
   /// - `[w]` [uninitializedStakeAccount] - Uninitialized ephemeral stake account to receive stake.
   /// - `[w]` [transientStakeAccount] - Transient stake account.
-  /// 
+  ///
   /// Data:
   /// - [lamports] - Amount of lamports to split into the transient stake account.
   /// - [transientStakeSeed] - Seed used to create transient stake account.
@@ -1348,29 +1333,29 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.decreaseAdditionalValidatorStake, 
-      keys: keys, 
+      StakePoolInstruction.decreaseAdditionalValidatorStake,
+      keys: keys,
       data: data,
     );
   }
 
   /// (Staker only) Redelegate active stake on a validator, eventually moving it to another.
   ///
-  /// Internally, this instruction splits a validator stake account into its corresponding transient 
-  /// stake account, redelegates it to an ephemeral stake account, then merges that stake into the 
+  /// Internally, this instruction splits a validator stake account into its corresponding transient
+  /// stake account, redelegates it to an ephemeral stake account, then merges that stake into the
   /// destination transient stake account.
   ///
-  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the 
-  /// stake on a stake account. This instruction splits some amount of stake, up to the total 
-  /// activated stake, from the canonical validator stake account, into its "transient" stake 
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the
+  /// stake on a stake account. This instruction splits some amount of stake, up to the total
+  /// activated stake, from the canonical validator stake account, into its "transient" stake
   /// account.
   ///
-  /// The instruction only succeeds if the source transient stake account and ephemeral stake 
+  /// The instruction only succeeds if the source transient stake account and ephemeral stake
   /// account do not exist.
   ///
-  /// The amount of lamports to move must be at least twice rent-exemption plus the minimum 
-  /// delegation amount. Rent-exemption is required for the source transient stake account, and 
-  /// rent-exemption plus minimum delegation is required for the destination ephemeral stake 
+  /// The amount of lamports to move must be at least twice rent-exemption plus the minimum
+  /// delegation amount. Rent-exemption is required for the source transient stake account, and
+  /// rent-exemption plus minimum delegation is required for the destination ephemeral stake
   /// account.
   ///
   ///  0. `[]` Stake pool
@@ -1388,13 +1373,13 @@ class StakePoolProgram extends Program {
   /// 12. `[]` Stake Config sysvar
   /// 13. `[]` System program
   /// 14. `[]` Stake program
-  /// 
+  ///
   /// ### Data:
   /// - [lamports] - Amount of lamports to redelegate.
   /// - [sourceTransientStakeSeed] - Seed used to create source transient stake account.
   /// - [ephemeralStakeSeed] - Seed used to create destination ephemeral account.
-  /// - [destinationTransientStakeSeed] - Seed used to create destination transient stake account. 
-  ///   If there is already transient stake, this must match the current seed, otherwise it can be 
+  /// - [destinationTransientStakeSeed] - Seed used to create destination transient stake account.
+  ///   If there is already transient stake, this must match the current seed, otherwise it can be
   ///   anything.
   static TransactionInstruction redelegate({
     // Keys
@@ -1455,8 +1440,8 @@ class StakePoolProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakePoolInstruction.redelegate, 
-      keys: keys, 
+      StakePoolInstruction.redelegate,
+      keys: keys,
       data: data,
     );
   }

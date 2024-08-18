@@ -3,12 +3,10 @@
 
 import 'package:solana_jsonrpc/jsonrpc.dart' show CommitmentConfig;
 
-
 /// Get Supply Config
 /// ------------------------------------------------------------------------------------------------
 
 class GetSupplyConfig extends CommitmentConfig {
-
   /// JSON RPC configurations for `getSupply` methods.
   const GetSupplyConfig({
     super.commitment,
@@ -17,10 +15,10 @@ class GetSupplyConfig extends CommitmentConfig {
 
   /// If true, exclude the list of non circulating accounts from the response.
   final bool excludeNonCirculatingAccountsList;
-  
+
   @override
   Map<String, dynamic> toJson() => {
-    'commitment': commitment?.name,
-    'excludeNonCirculatingAccountsList': excludeNonCirculatingAccountsList,
-  };
+        'commitment': commitment?.name,
+        'excludeNonCirculatingAccountsList': excludeNonCirculatingAccountsList,
+      };
 }

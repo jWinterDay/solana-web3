@@ -9,12 +9,10 @@ import 'package:solana_borsh/types.dart';
 import 'account_info.dart';
 import 'account_state.dart';
 
-
 /// Token Account Info
 /// ------------------------------------------------------------------------------------------------
 
 class TokenAccountInfo extends BorshObject {
-  
   /// Token Account Information.
   const TokenAccountInfo({
     required this.mint,
@@ -32,11 +30,11 @@ class TokenAccountInfo extends BorshObject {
 
   /// The owner address (base-58) of this account.
   final String owner;
-  
+
   /// The amount of tokens this account holds.
   final BigInt amount;
-  
-  /// If `delegate` is not-null then `delegatedAmount` represents the amount authorized by the 
+
+  /// If `delegate` is not-null then `delegatedAmount` represents the amount authorized by the
   /// delegate (base-58 address).
   final String? delegate;
 
@@ -50,7 +48,7 @@ class TokenAccountInfo extends BorshObject {
 
   /// The amount delegated.
   final BigInt delegatedAmount;
-  
+
   /// The authority address (base-58) to close the account.
   final String? closeAuthority;
 
@@ -75,63 +73,60 @@ class TokenAccountInfo extends BorshObject {
   }
 
   /// {@macro solana_borsh.BorshObject.tryFromBorsh}
-  static TokenAccountInfo? tryFromBorsh(final Iterable<int>? buffer)
-    => buffer != null ? TokenAccountInfo.fromBorsh(buffer) : null;
+  static TokenAccountInfo? tryFromBorsh(final Iterable<int>? buffer) =>
+      buffer != null ? TokenAccountInfo.fromBorsh(buffer) : null;
 
   /// {@macro solana_borsh.BorshObject.fromBorshBase64}
-  factory TokenAccountInfo.fromBorshBase64(final String encoded) 
-    => TokenAccountInfo.fromBorsh(base64.decode(encoded));
+  factory TokenAccountInfo.fromBorshBase64(final String encoded) => TokenAccountInfo.fromBorsh(base64.decode(encoded));
 
   /// {@macro solana_borsh.BorshObject.tryFromBorshBase64}
-  static TokenAccountInfo? tryFromBorshBase64(final String? encoded)
-    => encoded != null && encoded.isNotEmpty ? TokenAccountInfo.fromBorshBase64(encoded) : null;
+  static TokenAccountInfo? tryFromBorshBase64(final String? encoded) =>
+      encoded != null && encoded.isNotEmpty ? TokenAccountInfo.fromBorshBase64(encoded) : null;
 
   /// Creates an instance of `this` class from an account [info].
-  /// 
+  ///
   /// ```
   /// TokenAccountInfo.fromAccountInfo('AA==');
   /// ```
   factory TokenAccountInfo.fromAccountInfo(final AccountInfo info) {
-    return info.isJson 
-      ? TokenAccountInfo.fromJson(info.jsonData)
-      : TokenAccountInfo.fromBorshBase64(info.binaryData);
+    return info.isJson ? TokenAccountInfo.fromJson(info.jsonData) : TokenAccountInfo.fromBorshBase64(info.binaryData);
   }
 
   /// Creates an instance of `this` class from an account [info].
-  /// 
+  ///
   /// Returns `null` if [info] is omitted.
-  /// 
+  ///
   /// ```
   /// TokenAccountInfo.tryFromAccountInfo('AA==');
   /// ```
-  static TokenAccountInfo? tryFromAccountInfo(final AccountInfo? info)
-    => info != null ? TokenAccountInfo.fromAccountInfo(info) : null;
+  static TokenAccountInfo? tryFromAccountInfo(final AccountInfo? info) =>
+      info != null ? TokenAccountInfo.fromAccountInfo(info) : null;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory TokenAccountInfo.fromJson(final Map<String, dynamic> json) => TokenAccountInfo(
-    mint: json['mint'],
-    owner: json['owner'],
-    amount: json['amount'],
-    delegate: json['delegate'],
-    state: json['state'],
-    isNative: json['isNative'],
-    delegatedAmount: json['delegatedAmount'],
-    closeAuthority: json['closeAuthority'],
-  );
+        mint: json['mint'],
+        owner: json['owner'],
+        amount: json['amount'],
+        delegate: json['delegate'],
+        state: json['state'],
+        isNative: json['isNative'],
+        delegatedAmount: json['delegatedAmount'],
+        closeAuthority: json['closeAuthority'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static TokenAccountInfo? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? TokenAccountInfo.fromJson(json) : null;
+  static TokenAccountInfo? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? TokenAccountInfo.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'mint': mint,
-    'owner': owner,
-    'amount': amount,
-    'delegate': delegate,
-    'state': state,
-    'isNative': isNative,
-    'delegatedAmount': delegatedAmount,
-    'closeAuthority': closeAuthority,
-  };
+        'mint': mint,
+        'owner': owner,
+        'amount': amount,
+        'delegate': delegate,
+        'state': state,
+        'isNative': isNative,
+        'delegatedAmount': delegatedAmount,
+        'closeAuthority': closeAuthority,
+      };
 }

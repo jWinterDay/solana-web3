@@ -1,32 +1,121 @@
 /// Imports
 /// ------------------------------------------------------------------------------------------------
 
+// ignore_for_file: avoid_print
+
 import 'dart:convert' show utf8;
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:solana_common/convert.dart';
 import 'package:solana_web3/src/crypto/keypair.dart';
 import 'package:solana_web3/src/rpc/models/program_address.dart';
 import 'package:solana_web3/src/crypto/pubkey.dart';
-
 
 /// Keypair Tests
 /// ------------------------------------------------------------------------------------------------
 
 void main() {
-
   const String pubkeyBase58 = 'E5bw5oWGNG7Z3V5e5kyFVUJRP32LoWvj5TVMtmNKFqYS';
 
   final Uint8List pubkey = Uint8List.fromList([
-    194, 85, 192, 100, 227, 236, 153, 196, 197, 68, 62, 250, 237, 102, 200, 33, 
-    191, 39, 117, 191, 37, 156, 129, 14, 63, 181, 81, 212, 63, 125, 123, 207,
+    194,
+    85,
+    192,
+    100,
+    227,
+    236,
+    153,
+    196,
+    197,
+    68,
+    62,
+    250,
+    237,
+    102,
+    200,
+    33,
+    191,
+    39,
+    117,
+    191,
+    37,
+    156,
+    129,
+    14,
+    63,
+    181,
+    81,
+    212,
+    63,
+    125,
+    123,
+    207,
   ]);
 
   final Uint8List seckey = Uint8List.fromList([
-    165, 3, 223, 246, 18, 234, 25, 99, 180, 106, 197, 162, 68, 209, 16, 31,
-    95, 71, 64, 84, 148, 95, 220, 50, 80, 28, 220, 192, 36, 200, 192, 62,
-    194, 85, 192, 100, 227, 236, 153, 196, 197, 68, 62, 250, 237, 102, 200, 33,
-    191, 39, 117, 191, 37, 156, 129, 14, 63, 181, 81, 212, 63, 125, 123, 207,
+    165,
+    3,
+    223,
+    246,
+    18,
+    234,
+    25,
+    99,
+    180,
+    106,
+    197,
+    162,
+    68,
+    209,
+    16,
+    31,
+    95,
+    71,
+    64,
+    84,
+    148,
+    95,
+    220,
+    50,
+    80,
+    28,
+    220,
+    192,
+    36,
+    200,
+    192,
+    62,
+    194,
+    85,
+    192,
+    100,
+    227,
+    236,
+    153,
+    196,
+    197,
+    68,
+    62,
+    250,
+    237,
+    102,
+    200,
+    33,
+    191,
+    39,
+    117,
+    191,
+    37,
+    156,
+    129,
+    14,
+    63,
+    181,
+    81,
+    212,
+    63,
+    125,
+    123,
+    207,
   ]);
 
   compareLists<T>(List<T> a, List<T> b) {
@@ -57,7 +146,7 @@ void main() {
   }
 
   /// KEYPAIR TESTS
-  
+
   test('playground', () {
     // const String source = '9818446744073709551615';
     // final BigInt bigInt = BigInt.parse(source);
@@ -83,14 +172,13 @@ void main() {
     assertSeckey(keypair.seckey);
   });
 
-  test('keypair from seed', () { 
+  test('keypair from seed', () {
     final Uint8List seed = Keypair.fromSeckeySync(seckey).seckey.sublist(0, 32);
     final Keypair keypair = Keypair.fromSeedSync(seed);
     print('KEYPAIR FROM SEED ${keypair.pubkey}');
     assertPubkey(keypair.pubkey);
     assertSeckey(keypair.seckey);
   });
-
 
   /// PUBLIC KEY TESTS
   test('public key zero', () {
@@ -111,19 +199,12 @@ void main() {
 
   test('public key create with seed', () {
     final Keypair keypair = Keypair.fromSeckeySync(seckey);
-    final Pubkey pubkey = Pubkey.createWithSeed(
-      keypair.pubkey,
-      'legoseedphrase12345',
-      Pubkey.zero()
-    );
+    final Pubkey pubkey = Pubkey.createWithSeed(keypair.pubkey, 'legoseedphrase12345', Pubkey.zero());
     print('PUBKEY CREATE WITH SEED B58 ${pubkey.toBase58()}');
     print('PUBKEY CREATE WITH SEED BYT ${pubkey.toBytes()}');
   });
   test('public key create program address', () {
-    final Pubkey pubkey = Pubkey.createProgramAddress(
-      [utf8.encode('seedPhrase12345')],
-      Pubkey.zero()
-    );
+    final Pubkey pubkey = Pubkey.createProgramAddress([utf8.encode('seedPhrase12345')], Pubkey.zero());
     print('PUBKEY CREATE PROG ADDR B58 ${pubkey.toBase58()}');
     print('PUBKEY CREATE PROG ADDR BYT ${pubkey.toBytes()}');
   });

@@ -9,12 +9,10 @@ import 'reward.dart';
 import 'transaction_data.dart';
 import 'transaction_detail.dart';
 
-
 /// Block
 /// ------------------------------------------------------------------------------------------------
 
 class Block extends Serializable {
-  
   /// A confirmed transaction block.
   const Block({
     required this.blockhash,
@@ -34,7 +32,7 @@ class Block extends Serializable {
   /// if the parent block is not available due to ledger cleanup.
   final String previousBlockhash;
 
-   /// The parent block's slot index.
+  /// The parent block's slot index.
   final u64 parentSlot;
 
   /// Transaction details (provided if [TransactionDetail.full] is requested).
@@ -57,30 +55,30 @@ class Block extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Block.fromJson(final Map<String, dynamic> json) => Block(
-    blockhash: json['blockhash'],
-    previousBlockhash: json['previousBlockhash'],
-    parentSlot: json['parentSlot'],
-    transactions: IterableSerializable.tryFromJson(json['transactions'], TransactionData.parse),
-    signatures: json['signatures']?.cast<String>(),
-    rewards: IterableSerializable.fromJson(json['rewards'], Reward.fromJson),
-    blockTime: json['blockTime'],
-    blockHeight: json['blockHeight'],
-  );
+        blockhash: json['blockhash'],
+        previousBlockhash: json['previousBlockhash'],
+        parentSlot: json['parentSlot'],
+        transactions: IterableSerializable.tryFromJson(json['transactions'], TransactionData.parse),
+        signatures: json['signatures']?.cast<String>(),
+        rewards: IterableSerializable.fromJson(json['rewards'], Reward.fromJson),
+        blockTime: json['blockTime'],
+        blockHeight: json['blockHeight'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Block? tryFromJson(final Map<String, dynamic>? json) {
     return json != null ? Block.fromJson(json) : null;
   }
-  
+
   @override
   Map<String, dynamic> toJson() => {
-    'blockhash': blockhash,
-    'previousBlockhash': previousBlockhash,
-    'parentSlot': parentSlot,
-    'transactions': transactions?.toJson(),
-    'signatures': signatures,
-    'rewards': rewards.toJson(),
-    'blockTime': blockTime,
-    'blockHeight': blockHeight,
-  };
+        'blockhash': blockhash,
+        'previousBlockhash': previousBlockhash,
+        'parentSlot': parentSlot,
+        'transactions': transactions?.toJson(),
+        'signatures': signatures,
+        'rewards': rewards.toJson(),
+        'blockTime': blockTime,
+        'blockHeight': blockHeight,
+      };
 }

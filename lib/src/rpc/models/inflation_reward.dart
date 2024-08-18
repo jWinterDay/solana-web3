@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u8, u64;
 
-
 /// Inflation Reward
 /// ------------------------------------------------------------------------------------------------
 
 class InflationReward extends Serializable {
-  
   /// Inflation / staking reward.
   const InflationReward({
     required this.epoch,
@@ -27,32 +25,32 @@ class InflationReward extends Serializable {
 
   /// The reward amount in lamports.
   final u64 amount;
-  
+
   /// The balance of the account in lamports, post the reward.
   final u64 postBalance;
-  
+
   /// The vote account commission when the reward was credited.
   final u8? commission;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory InflationReward.fromJson(final Map<String, dynamic> json) => InflationReward(
-    epoch: json['epoch'],
-    effectiveSlot: json['effectiveSlot'],
-    amount: json['amount'],
-    postBalance: json['postBalance'],
-    commission: json['commission'],
-  );
+        epoch: json['epoch'],
+        effectiveSlot: json['effectiveSlot'],
+        amount: json['amount'],
+        postBalance: json['postBalance'],
+        commission: json['commission'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static InflationReward? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? InflationReward.fromJson(json) : null;
+  static InflationReward? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? InflationReward.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'epoch': epoch,
-    'effectiveSlot': effectiveSlot,
-    'amount': amount,
-    'postBalance': postBalance,
-    'commission': commission,
-  };
+        'epoch': epoch,
+        'effectiveSlot': effectiveSlot,
+        'amount': amount,
+        'postBalance': postBalance,
+        'commission': commission,
+      };
 }

@@ -6,24 +6,21 @@ import '../configs/get_block_config.dart';
 import '../interfaces/json_rpc_method.dart';
 import '../models/block.dart';
 
-
 /// Get Block
 /// ------------------------------------------------------------------------------------------------
 
 /// A method handler for `getBlock`.
 class GetBlock extends JsonRpcMethod<Map<String, dynamic>?, Block?> {
-  
   /// Creates a method handler for `getBlock`.
   GetBlock(
     final u64 slot, {
     final GetBlockConfig? config,
-  }): super(
-    'getBlock', 
-    values: [slot],
-    config: config ?? GetBlockConfig(),
-  );
-  
+  }) : super(
+          'getBlock',
+          values: [slot],
+          config: config ?? GetBlockConfig(),
+        );
+
   @override
-  Block? decoder(final Map<String, dynamic>? value)
-    => value != null ? Block.fromJson(value) : null;
+  Block? decoder(final Map<String, dynamic>? value) => value != null ? Block.fromJson(value) : null;
 }

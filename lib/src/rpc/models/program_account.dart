@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'account_info.dart';
 
-
 /// ProgramAccount
 /// ------------------------------------------------------------------------------------------------
 
 class ProgramAccount extends Serializable {
-  
   /// The ProgramAccount public key for a node.
   const ProgramAccount({
     required this.pubkey,
@@ -24,9 +22,9 @@ class ProgramAccount extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory ProgramAccount.fromJson(final Map<String, dynamic> json) => ProgramAccount(
-    pubkey: json['pubkey'],
-    account: AccountInfo.fromJson(json['account']),
-  );
+        pubkey: json['pubkey'],
+        account: AccountInfo.fromJson(json['account']),
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static ProgramAccount? tryFromJson(final Map<String, dynamic>? json) {
@@ -35,7 +33,7 @@ class ProgramAccount extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'pubkey': pubkey,
-    'account': account.toJson(),
-  };
+        'pubkey': pubkey,
+        'account': account.toJson(),
+      };
 }

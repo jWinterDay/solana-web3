@@ -4,12 +4,10 @@
 import 'dart:typed_data' show Uint8List;
 import 'package:json_annotation/json_annotation.dart' show JsonConverter;
 
-
 /// Uint8 List Json Converter
 /// ------------------------------------------------------------------------------------------------
 
 class Uint8ListJsonConverter extends JsonConverter<Uint8List, List<int>> {
-
   /// JSON encodes [Uint8List]s.
   const Uint8ListJsonConverter();
 

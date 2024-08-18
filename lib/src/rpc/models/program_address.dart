@@ -3,12 +3,10 @@
 
 import '../../crypto/pubkey.dart';
 
-
 /// Program Address
 /// ------------------------------------------------------------------------------------------------
 
 class ProgramAddress {
-
   /// Creates a program address ([pubkey] + [bump]).
   const ProgramAddress(this.pubkey, this.bump);
 

@@ -6,21 +6,13 @@ part of 'message_address_table_lookup.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MessageAddressTableLookup _$MessageAddressTableLookupFromJson(
-        Map<String, dynamic> json) =>
-    MessageAddressTableLookup(
+MessageAddressTableLookup _$MessageAddressTableLookupFromJson(Map<String, dynamic> json) => MessageAddressTableLookup(
       accountKey: Pubkey.fromJson(json['accountKey'] as String),
-      writableIndexes: (json['writableIndexes'] as List<dynamic>)
-          .map((e) => e as int)
-          .toList(),
-      readonlyIndexes: (json['readonlyIndexes'] as List<dynamic>)
-          .map((e) => e as int)
-          .toList(),
+      writableIndexes: (json['writableIndexes'] as List<dynamic>).map((e) => e as int).toList(),
+      readonlyIndexes: (json['readonlyIndexes'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
-Map<String, dynamic> _$MessageAddressTableLookupToJson(
-        MessageAddressTableLookup instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$MessageAddressTableLookupToJson(MessageAddressTableLookup instance) => <String, dynamic>{
       'accountKey': instance.accountKey.toJson(),
       'writableIndexes': instance.writableIndexes,
       'readonlyIndexes': instance.readonlyIndexes,

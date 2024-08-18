@@ -7,12 +7,10 @@ import '../configs/get_block_config.dart';
 import '../mixins/data_serializable_mixin.dart';
 import 'meta.dart';
 
-
 /// Transaction Data
 /// ------------------------------------------------------------------------------------------------
 
 class TransactionData<T extends Object> extends Serializable with DataSerializableMixin {
-  
   /// Confirmed Transaction Block.
   const TransactionData({
     required this.transaction,
@@ -26,19 +24,19 @@ class TransactionData<T extends Object> extends Serializable with DataSerializab
   /// Transaction status metadata.
   final Meta? meta;
 
-  /// Transaction version ('legacy'|number) or `null` if 
+  /// Transaction version ('legacy'|number) or `null` if
   /// [GetBlockConfig.maxSupportedTransactionVersion] was not set in the request params.
   final Object? version;
-  
+
   /// The transaction data key.
   static const String transactionKey = 'transaction';
-  
+
   @override
   T get rawData => transaction;
 
-  /// Creates an instance of `this` class from the constructor parameters defined in the [json] 
+  /// Creates an instance of `this` class from the constructor parameters defined in the [json]
   /// object.
-  /// 
+  ///
   /// ```
   /// TransactionData.parse({ '<parameter>': <value> });
   /// ```
@@ -54,7 +52,7 @@ class TransactionData<T extends Object> extends Serializable with DataSerializab
   }
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory TransactionData.fromJson(final Map<String, dynamic> json) { 
+  factory TransactionData.fromJson(final Map<String, dynamic> json) {
     return TransactionData(
       transaction: json[transactionKey],
       meta: Meta.tryFromJson(json['meta']),
@@ -64,8 +62,8 @@ class TransactionData<T extends Object> extends Serializable with DataSerializab
 
   @override
   Map<String, dynamic> toJson() => {
-    transactionKey: transaction,
-    'meta': meta,
-    'version': version,
-  };
+        transactionKey: transaction,
+        'meta': meta,
+        'version': version,
+      };
 }

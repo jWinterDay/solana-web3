@@ -4,14 +4,11 @@
 import '../../crypto/pubkey.dart';
 import '../program.dart';
 
-
 /// Token Program 2022
 /// ------------------------------------------------------------------------------------------------
 
 class TokenProgram2022 extends Program {
-
-  TokenProgram2022._()
-    : super(Pubkey.fromBase58('TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'));
+  TokenProgram2022._() : super(Pubkey.fromBase58('TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'));
 
   /// Internal singleton instance.
   static final TokenProgram2022 _instance = TokenProgram2022._();

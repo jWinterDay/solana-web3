@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u8;
 
-
 /// Token Amount
 /// ------------------------------------------------------------------------------------------------
 
 class TokenAmount extends Serializable {
-  
   /// The token balance of an SPL Token account.
   const TokenAmount({
     required this.amount,
@@ -25,13 +23,13 @@ class TokenAmount extends Serializable {
 
   /// The balance as a string, using mint-prescribed decimals.
   final String uiAmountString;
-  
+
   /// {@macro solana_common.Serializable.fromJson}
   factory TokenAmount.fromJson(final Map<String, dynamic> json) => TokenAmount(
-    amount: BigInt.parse(json['amount']),
-    decimals: json['decimals'],
-    uiAmountString: json['uiAmountString'],
-  );
+        amount: BigInt.parse(json['amount']),
+        decimals: json['decimals'],
+        uiAmountString: json['uiAmountString'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static TokenAmount? tryFromJson(final Map<String, dynamic>? json) {
@@ -40,8 +38,8 @@ class TokenAmount extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'amount': amount.toString(),
-    'decimals': decimals,
-    'uiAmountString': uiAmountString,
-  };
+        'amount': amount.toString(),
+        'decimals': decimals,
+        'uiAmountString': uiAmountString,
+      };
 }

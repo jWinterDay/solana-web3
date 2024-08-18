@@ -4,13 +4,11 @@
 import 'types.dart';
 import 'websocket_subscription.dart';
 
-
 /// Websocket Listener
 /// ------------------------------------------------------------------------------------------------
 
 /// A [WebsocketSubscription] with notification handlers.
 class WebsocketListener<T> extends WebsocketSubscription<T> {
-
   /// Creates a notification listeners.
   const WebsocketListener(
     super.subscriptionId, {

@@ -9,13 +9,11 @@ import '../encodings/unit8_list_json_converter.dart';
 
 part 'signature_pubkey_pair.g.dart';
 
-
 /// Signature Public Key Pair
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable()
 class SignaturePubkeyPair extends Serializable {
-
   /// A signature and its corresponding public key.
   const SignaturePubkeyPair({
     this.signature,
@@ -28,10 +26,9 @@ class SignaturePubkeyPair extends Serializable {
 
   /// The public key.
   final Pubkey pubkey;
-  
+
   /// {@macro solana_common.Serializable.fromJson}
-  factory SignaturePubkeyPair.fromJson(final Map<String, dynamic> json) 
-    => _$SignaturePubkeyPairFromJson(json);
+  factory SignaturePubkeyPair.fromJson(final Map<String, dynamic> json) => _$SignaturePubkeyPairFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$SignaturePubkeyPairToJson(this);
@@ -40,8 +37,9 @@ class SignaturePubkeyPair extends Serializable {
   SignaturePubkeyPair copyWith({
     final Uint8List? signature,
     final Pubkey? pubkey,
-  }) => SignaturePubkeyPair(
-    signature: signature ?? this.signature,
-    pubkey: pubkey ?? this.pubkey,
-  ); 
+  }) =>
+      SignaturePubkeyPair(
+        signature: signature ?? this.signature,
+        pubkey: pubkey ?? this.pubkey,
+      );
 }

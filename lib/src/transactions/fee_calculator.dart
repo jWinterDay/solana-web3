@@ -10,14 +10,12 @@ import 'package:solana_borsh/types.dart';
 
 part 'fee_calculator.g.dart';
 
-
 /// Fee Calculator
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable()
 @Deprecated('Deprecated since Solana v1.8.0')
 class FeeCalculator extends BorshObject {
-
   // Transaction fee calculator.
   const FeeCalculator(this.lamportsPerSignature);
 
@@ -32,28 +30,26 @@ class FeeCalculator extends BorshObject {
   }
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory FeeCalculator.fromJson(final Map<String, dynamic> json) 
-    => _$FeeCalculatorFromJson(json);
+  factory FeeCalculator.fromJson(final Map<String, dynamic> json) => _$FeeCalculatorFromJson(json);
 
   /// {@macro solana_borsh.BorshObject.fromBorsh}
-  static FeeCalculator fromBorsh(final Iterable<int> buffer) 
-    => borsh.deserialize(codec.schema, buffer, FeeCalculator.fromJson);
+  static FeeCalculator fromBorsh(final Iterable<int> buffer) =>
+      borsh.deserialize(codec.schema, buffer, FeeCalculator.fromJson);
 
   /// {@macro solana_borsh.BorshObject.tryFromBorsh}
-  static FeeCalculator? tryFromBorsh(final Iterable<int>? buffer)
-    => buffer != null ? FeeCalculator.fromBorsh(buffer) : null;
+  static FeeCalculator? tryFromBorsh(final Iterable<int>? buffer) =>
+      buffer != null ? FeeCalculator.fromBorsh(buffer) : null;
 
   /// {@macro solana_borsh.BorshObject.fromBorshBase64}
-  static FeeCalculator fromBorshBase64(final String encoded) 
-    => FeeCalculator.fromBorsh(base64.decode(encoded));
+  static FeeCalculator fromBorshBase64(final String encoded) => FeeCalculator.fromBorsh(base64.decode(encoded));
 
   /// {@macro solana_borsh.BorshObject.tryFromBorshBase64}
-  static FeeCalculator? tryFromBorshBase64(final String? encoded)
-    => encoded != null ? FeeCalculator.fromBorshBase64(encoded) : null;
+  static FeeCalculator? tryFromBorshBase64(final String? encoded) =>
+      encoded != null ? FeeCalculator.fromBorshBase64(encoded) : null;
 
   @override
   BorshSchema get borshSchema => codec.schema;
-  
+
   @override
   Map<String, dynamic> toJson() => _$FeeCalculatorToJson(this);
 }

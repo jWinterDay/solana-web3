@@ -6,8 +6,7 @@ part of 'transaction_signature_exception.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TransactionSignatureException _$TransactionSignatureExceptionFromJson(
-        Map<String, dynamic> json) =>
+TransactionSignatureException _$TransactionSignatureExceptionFromJson(Map<String, dynamic> json) =>
     TransactionSignatureException(
       json['message'] as String,
       code: json['code'] as int?,

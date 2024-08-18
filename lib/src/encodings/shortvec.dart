@@ -3,7 +3,6 @@
 
 import 'package:solana_buffer/buffer.dart' show BufferReader;
 
-
 /// Shortvec Encoding (Compact-u16 Format)
 /// ------------------------------------------------------------------------------------------------
 

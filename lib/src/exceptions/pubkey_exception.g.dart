@@ -6,8 +6,7 @@ part of 'pubkey_exception.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PubkeyException _$PubkeyExceptionFromJson(Map<String, dynamic> json) =>
-    PubkeyException(
+PubkeyException _$PubkeyExceptionFromJson(Map<String, dynamic> json) => PubkeyException(
       json['message'] as String,
       code: json['code'] as int?,
     );

@@ -6,12 +6,10 @@ part of 'fee_calculator.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FeeCalculator _$FeeCalculatorFromJson(Map<String, dynamic> json) =>
-    FeeCalculator(
+FeeCalculator _$FeeCalculatorFromJson(Map<String, dynamic> json) => FeeCalculator(
       BigInt.parse(json['lamportsPerSignature'] as String),
     );
 
-Map<String, dynamic> _$FeeCalculatorToJson(FeeCalculator instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$FeeCalculatorToJson(FeeCalculator instance) => <String, dynamic>{
       'lamportsPerSignature': instance.lamportsPerSignature.toString(),
     };

@@ -1,6 +1,8 @@
 /// Imports
 /// ------------------------------------------------------------------------------------------------
 
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,16 +10,13 @@ import 'package:solana_web3/programs.dart' show SystemProgram;
 import 'package:solana_web3/solana_web3.dart' as web3;
 import 'package:solana_web3/solana_web3.dart';
 
-
 /// Examples Tests
 /// ------------------------------------------------------------------------------------------------
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
-  
-  test('transfer', () async {
 
+  test('transfer', () async {
     // Create a connection to the devnet cluster.
     final cluster = web3.Cluster.devnet;
     final connection = web3.Connection(cluster);
@@ -34,7 +33,7 @@ void main() {
 
     // Fund the sending wallet.
     await connection.requestAndConfirmAirdrop(
-      wallet1.pubkey, 
+      wallet1.pubkey,
       solToLamports(2).toInt(),
     );
 
@@ -47,17 +46,13 @@ void main() {
     final BlockhashWithExpiryBlockHeight blockhash = await connection.getLatestBlockhash();
 
     // Create a System Program instruction to transfer 0.5 SOL from [address1] to [address2].
-    final transaction = web3.Transaction.v0(
-      payer: wallet1.pubkey,
-      recentBlockhash: blockhash.blockhash,
-      instructions: [
-        SystemProgram.transfer(
-          fromPubkey: address1, 
-          toPubkey: address2, 
-          lamports: web3.solToLamports(0.5),
-        ),
-      ]
-    );
+    final transaction = web3.Transaction.v0(payer: wallet1.pubkey, recentBlockhash: blockhash.blockhash, instructions: [
+      SystemProgram.transfer(
+        fromPubkey: address1,
+        toPubkey: address2,
+        lamports: web3.solToLamports(0.5),
+      ),
+    ]);
 
     // Sign the transaction.
     transaction.sign([wallet1]);
@@ -65,7 +60,7 @@ void main() {
     // Send the transaction to the cluster and wait for it to be confirmed.
     print('Send and confirm transaction...\n');
     await connection.sendAndConfirmTransaction(
-      transaction, 
+      transaction,
     );
 
     // Check the updated account balances.
@@ -76,7 +71,6 @@ void main() {
   });
 
   test('account notification', () async {
-    
     // Create a connection to the devnet cluster.
     final cluster = Cluster.devnet;
     final connection = web3.Connection(cluster);
@@ -95,12 +89,10 @@ void main() {
 
     try {
       // Subscribe to receive notifications when the account data changes.
-      await connection.accountSubscribe(
-        address,
-        onData: (final AccountInfo accountInfo) {
-          print('Account Notification Received ${accountInfo.toJson()}\n');
-          assert(accountInfo.lamports == airdropAmount);
-          completer.complete();
+      await connection.accountSubscribe(address, onData: (final AccountInfo accountInfo) {
+        print('Account Notification Received ${accountInfo.toJson()}\n');
+        assert(accountInfo.lamports == airdropAmount);
+        completer.complete();
       });
 
       print('Airdrop $airdropAmount lamports to $address...\n');
@@ -108,7 +100,6 @@ void main() {
       // Check the account balances before making the transfer.
       final airdropSignature = await connection.requestAirdrop(address, airdropAmount);
       await connection.confirmTransaction(airdropSignature);
-      
     } catch (error, stackTrace) {
       completer.completeError(error, stackTrace);
     }

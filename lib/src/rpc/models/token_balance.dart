@@ -4,14 +4,12 @@
 import 'package:solana_common/models.dart';
 import 'ui_token_amount.dart';
 
-
 /// Token Balance
 /// ------------------------------------------------------------------------------------------------
 
 class TokenBalance extends Serializable {
-
-  /// The Solana runtime records the cross-program instructions that are invoked during transaction 
-  /// processing and makes these available for greater transparency of what was executed on-chain 
+  /// The Solana runtime records the cross-program instructions that are invoked during transaction
+  /// processing and makes these available for greater transparency of what was executed on-chain
   /// per transaction instruction.
   const TokenBalance({
     required this.accountIndex,
@@ -34,17 +32,17 @@ class TokenBalance extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory TokenBalance.fromJson(final Map<String, dynamic> json) => TokenBalance(
-    accountIndex: json['accountIndex'], 
-    mint: json['mint'],
-    owner: json['owner'],
-    uiTokenAmount: UITokenAmount.fromJson(json['uiTokenAmount']),
-  );
+        accountIndex: json['accountIndex'],
+        mint: json['mint'],
+        owner: json['owner'],
+        uiTokenAmount: UITokenAmount.fromJson(json['uiTokenAmount']),
+      );
 
   @override
   Map<String, dynamic> toJson() => {
-    'accountIndex': accountIndex,
-    'mint': mint,
-    'owner': owner,
-    'uiTokenAmount': uiTokenAmount.toJson(),
-  };
+        'accountIndex': accountIndex,
+        'mint': mint,
+        'owner': owner,
+        'uiTokenAmount': uiTokenAmount.toJson(),
+      };
 }

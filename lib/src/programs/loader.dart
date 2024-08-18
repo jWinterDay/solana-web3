@@ -17,7 +17,6 @@
 // import '../transactions/transaction_instruction.dart';
 // import 'system/program.dart';
 
-
 // /// Loader
 // /// ------------------------------------------------------------------------------------------------
 
@@ -26,11 +25,11 @@
 //   /// Program loader interface.
 //   const Loader._();
 
-//   /// Keep program chunks under `packetDataSize`, leaving enough room for the rest of the 
+//   /// Keep program chunks under `packetDataSize`, leaving enough room for the rest of the
 //   /// Transaction fields.
-//   /// 
+//   ///
 //   /// TODO: replace 300 with a proper constant for the size of the other Transaction fields.
-//   /// 
+//   ///
 //   /// The amount of program data placed in each load Transaction.
 //   static const int chunkSize = packetDataSize - 300;
 
@@ -40,17 +39,17 @@
 //   static int getMinNumSignatures(final int dataLength) {
 //     return (
 //       2 *     // Every transaction requires two signatures (payer + program)
-//       ((dataLength / Loader.chunkSize).ceil() 
+//       ((dataLength / Loader.chunkSize).ceil()
 //         + 1   // Add one for Create transaction
 //         + 1)  // Add one for Finalise transaction
 //     );
 //   }
 
 //   /// Loads a generic program.
-//   /// 
-//   /// Returns `true` if the [program] was loaded successfully and `false` if the program was already 
+//   ///
+//   /// Returns `true` if the [program] was loaded successfully and `false` if the program was already
 //   /// loaded.
-//   /// 
+//   ///
 //   /// [connection]      The connection to use.
 //   /// [payer]           the `account` that will pay program loading fees.
 //   /// [program]         The `account` to load the program into.
@@ -125,7 +124,7 @@
 //         );
 //       }
 
-//       // If the account is already created correctly, skip this step and proceed directly to loading 
+//       // If the account is already created correctly, skip this step and proceed directly to loading
 //       // instructions
 //       if (transaction.instructions.isNotEmpty) {
 //         await connection.sendAndConfirmTransaction(
@@ -148,10 +147,9 @@
 //       data.setUint32(0);      // bytesLengthPadding
 //       data.setBuffer(bytes);  // bytes
 
-
 //       final Transaction transaction = Transaction()..add(
 //         TransactionInstruction(
-//           keys: [AccountMeta(program.pubkey, isSigner: true, isWritable: true)], 
+//           keys: [AccountMeta(program.pubkey, isSigner: true, isWritable: true)],
 //           programId: programId,
 //           data: data.buffer.asUint8List(),
 //         ),
@@ -159,8 +157,8 @@
 
 //       transactions.add(
 //         connection.sendAndConfirmTransaction(
-//           transaction, 
-//           signers: [payer, program], 
+//           transaction,
+//           signers: [payer, program],
 //           config: SendAndConfirmTransactionConfig(commitment: Commitment.confirmed),
 //         ),
 //       );

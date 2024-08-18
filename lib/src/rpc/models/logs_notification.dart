@@ -3,12 +3,10 @@
 
 import 'package:solana_common/models.dart';
 
-
 /// Logs Notification
 /// ------------------------------------------------------------------------------------------------
 
 class LogsNotification extends Serializable {
-  
   /// Logs notification.
   const LogsNotification({
     required this.signature,
@@ -20,21 +18,21 @@ class LogsNotification extends Serializable {
   final String signature;
 
   /// The error if transaction failed, null if transaction succeeded.
-  /// 
+  ///
   /// TODO: check error definitions.
   final dynamic err;
 
-  /// An array of log messages the transaction instructions output during execution, null if 
-  /// simulation failed before the transaction was able to execute (for example due to an invalid 
+  /// An array of log messages the transaction instructions output during execution, null if
+  /// simulation failed before the transaction was able to execute (for example due to an invalid
   /// blockhash or signature verification failure).
   final List? logs;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory LogsNotification.fromJson(final Map<String, dynamic> json) => LogsNotification(
-    signature: json['signature'],
-    err: json['err'],
-    logs: json['logs'],
-  );
+        signature: json['signature'],
+        err: json['err'],
+        logs: json['logs'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static LogsNotification? tryFromJson(final Map<String, dynamic>? json) {
@@ -43,8 +41,8 @@ class LogsNotification extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'signature': signature,
-    'err': err,
-    'logs': logs,
-  };
+        'signature': signature,
+        'err': err,
+        'logs': logs,
+      };
 }

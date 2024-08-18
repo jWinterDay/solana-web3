@@ -5,12 +5,10 @@ import 'package:solana_jsonrpc/jsonrpc.dart' show CommitmentConfig;
 import '../../crypto/pubkey.dart';
 import '../models/slot_range.dart';
 
-
 /// Get Block Production Config
 /// ------------------------------------------------------------------------------------------------
 
 class GetBlockProductionConfig extends CommitmentConfig {
-
   /// JSON RPC configurations for `getBlockProduction` methods.
   const GetBlockProductionConfig({
     super.commitment,
@@ -26,8 +24,8 @@ class GetBlockProductionConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-    'commitment': commitment?.name,
-    'range': range?.toJson(),
-    'identity': identity?.toBase58(),
-  };
+        'commitment': commitment?.name,
+        'range': range?.toJson(),
+        'identity': identity?.toBase58(),
+      };
 }

@@ -6,26 +6,19 @@ part of 'accounts.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MasterEditionAccount _$MasterEditionAccountFromJson(
-        Map<String, dynamic> json) =>
-    MasterEditionAccount(
+MasterEditionAccount _$MasterEditionAccountFromJson(Map<String, dynamic> json) => MasterEditionAccount(
       key: json['key'] as int,
       supply: BigInt.parse(json['supply'] as String),
-      maxSupply: json['maxSupply'] == null
-          ? null
-          : BigInt.parse(json['maxSupply'] as String),
+      maxSupply: json['maxSupply'] == null ? null : BigInt.parse(json['maxSupply'] as String),
     );
 
-Map<String, dynamic> _$MasterEditionAccountToJson(
-        MasterEditionAccount instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$MasterEditionAccountToJson(MasterEditionAccount instance) => <String, dynamic>{
       'key': instance.key,
       'supply': instance.supply.toString(),
       'maxSupply': instance.maxSupply?.toString(),
     };
 
-MetadataAccount _$MetadataAccountFromJson(Map<String, dynamic> json) =>
-    MetadataAccount(
+MetadataAccount _$MetadataAccountFromJson(Map<String, dynamic> json) => MetadataAccount(
       key: json['key'] as int,
       updateAuthority: json['updateAuthority'] as String,
       mint: json['mint'] as String,
@@ -39,19 +32,13 @@ MetadataAccount _$MetadataAccountFromJson(Map<String, dynamic> json) =>
       primarySaleHappened: json['primarySaleHappened'] as bool,
       isMutable: json['isMutable'] as bool,
       editionNonce: json['editionNonce'] as int?,
-      tokenStandard:
-          $enumDecodeNullable(_$TokenStandardEnumMap, json['tokenStandard']),
-      collection: json['collection'] == null
-          ? null
-          : MetadataCollection.fromJson(
-              json['collection'] as Map<String, dynamic>),
-      uses: json['uses'] == null
-          ? null
-          : MetadataUses.fromJson(json['uses'] as Map<String, dynamic>),
+      tokenStandard: $enumDecodeNullable(_$TokenStandardEnumMap, json['tokenStandard']),
+      collection:
+          json['collection'] == null ? null : MetadataCollection.fromJson(json['collection'] as Map<String, dynamic>),
+      uses: json['uses'] == null ? null : MetadataUses.fromJson(json['uses'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$MetadataAccountToJson(MetadataAccount instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$MetadataAccountToJson(MetadataAccount instance) => <String, dynamic>{
       'key': instance.key,
       'updateAuthority': instance.updateAuthority,
       'mint': instance.mint,

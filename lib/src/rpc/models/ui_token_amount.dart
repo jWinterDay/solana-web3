@@ -3,12 +3,10 @@
 
 import 'package:solana_common/models.dart';
 
-
 /// UI Token Amount
 /// ------------------------------------------------------------------------------------------------
 
 class UITokenAmount extends Serializable {
-
   /// Token amount.
   const UITokenAmount({
     required this.amount,
@@ -27,15 +25,15 @@ class UITokenAmount extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory UITokenAmount.fromJson(final Map<String, dynamic> json) => UITokenAmount(
-    amount: json['amount'], 
-    decimals: json['decimals'],
-    uiAmountString: json['uiAmountString'],
-  );
+        amount: json['amount'],
+        decimals: json['decimals'],
+        uiAmountString: json['uiAmountString'],
+      );
 
   @override
   Map<String, dynamic> toJson() => {
-    'amount': amount,
-    'decimals': decimals,
-    'uiAmountString': uiAmountString,
-  };
+        'amount': amount,
+        'decimals': decimals,
+        'uiAmountString': uiAmountString,
+      };
 }

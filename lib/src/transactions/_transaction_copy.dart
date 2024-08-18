@@ -29,12 +29,10 @@
 
 // part 'transaction.g.dart';
 
-
 // /// Default (empty) Signature
 // /// ------------------------------------------------------------------------------------------------
 
 // final Buffer defaultSignature = Buffer(nacl.signatureLength);
-
 
 // /// Transaction
 // /// ------------------------------------------------------------------------------------------------
@@ -77,10 +75,10 @@
 //   /// If provided, the transaction will use a durable Nonce hash instead of a [recentBlockhash].
 //   final NonceInformation? nonceInfo;
 
-//   /// A list of address table lookups used by a transaction to dynamically load addresses from 
+//   /// A list of address table lookups used by a transaction to dynamically load addresses from
 //   /// on-chain address lookup tables.
 //   final List<MessageAddressTableLookup> addressTableLookups;
-  
+
 //   /// The saved compiled message.
 //   Message? _message;
 
@@ -94,7 +92,7 @@
 //   BlockhashWithExpiryBlockHeight? get blockhash {
 //     return recentBlockhash != null && lastValidBlockHeight != null
 //       ? BlockhashWithExpiryBlockHeight(
-//           blockhash: recentBlockhash!, 
+//           blockhash: recentBlockhash!,
 //           lastValidBlockHeight: lastValidBlockHeight!,
 //         )
 //       : null;
@@ -102,11 +100,11 @@
 
 //   /// Creates a `legacy` transaction.
 //   factory Transaction.legacy({
-//     final Pubkey? feePayer, 
-//     final List<SignaturePubkeyPair>? signatures, 
-//     final Blockhash? recentBlockhash, 
-//     final u64? lastValidBlockHeight, 
-//     final List<TransactionInstruction>? instructions, 
+//     final Pubkey? feePayer,
+//     final List<SignaturePubkeyPair>? signatures,
+//     final Blockhash? recentBlockhash,
+//     final u64? lastValidBlockHeight,
+//     final List<TransactionInstruction>? instructions,
 //     final NonceInformation? nonceInfo,
 //   }) => Transaction(
 //     version: null,
@@ -120,11 +118,11 @@
 
 //   /// Creates a `v0` transaction.
 //   factory Transaction.v0({
-//     final Pubkey? feePayer, 
-//     final List<SignaturePubkeyPair>? signatures, 
-//     final Blockhash? recentBlockhash, 
-//     final u64? lastValidBlockHeight, 
-//     final List<TransactionInstruction>? instructions, 
+//     final Pubkey? feePayer,
+//     final List<SignaturePubkeyPair>? signatures,
+//     final Blockhash? recentBlockhash,
+//     final u64? lastValidBlockHeight,
+//     final List<TransactionInstruction>? instructions,
 //     final NonceInformation? nonceInfo,
 //     final List<MessageAddressTableLookup>? addressTableLookups,
 //   }) => Transaction(
@@ -139,9 +137,9 @@
 //   );
 
 //   /// {@macro solana_common.Serializable.fromJson}
-//   factory Transaction.fromJson(final Map<String, dynamic> json) 
+//   factory Transaction.fromJson(final Map<String, dynamic> json)
 //     => _$TransactionFromJson(json);
-  
+
 //   @override
 //   Map<String, dynamic> toJson() => _$TransactionToJson(this);
 
@@ -251,8 +249,8 @@
 //     for (final Pubkey programId in programIds) {
 //       accountMetas.add(
 //         AccountMeta(
-//           programId, 
-//           isSigner: false, 
+//           programId,
+//           isSigner: false,
 //           isWritable: false,
 //         ),
 //       );
@@ -300,7 +298,7 @@
 //     } else {
 //       final AccountMeta payerMeta = uniqueMetas.removeAt(feePayerIndex);
 //       uniqueMetas.insert(0, payerMeta.copyWith(isSigner: true, isWritable: true));
-//     } 
+//     }
 
 //     // Check that there are no unknown signers.
 //     for (final SignaturePubkeyPair signature in signatures) {
@@ -323,7 +321,7 @@
 //     int numReadonlySignedAccounts = 0;
 //     int numReadonlyUnsignedAccounts = 0;
 
-//     // Collect the signing and non-signing keys into separate lists and count [MessageHeader] 
+//     // Collect the signing and non-signing keys into separate lists and count [MessageHeader]
 //     // values.
 //     final List<Pubkey> signedKeys = [];
 //     final List<Pubkey> unsignedKeys = [];
@@ -361,11 +359,11 @@
 //       version: version,
 //       header: MessageHeader(
 //         numRequiredSignatures: numRequiredSignatures,
-//         numReadonlySignedAccounts: numReadonlySignedAccounts, 
-//         numReadonlyUnsignedAccounts: numReadonlyUnsignedAccounts, 
-//       ), 
-//       accountKeys: accountKeys, 
-//       recentBlockhash: recentBlockhash, 
+//         numReadonlySignedAccounts: numReadonlySignedAccounts,
+//         numReadonlyUnsignedAccounts: numReadonlyUnsignedAccounts,
+//       ),
+//       accountKeys: accountKeys,
+//       recentBlockhash: recentBlockhash,
 //       instructions: compiledInstructions,
 //       addressTableLookups: addressTableLookups,
 //     );
@@ -383,7 +381,7 @@
 //     // Get the public keys of the accounts that must sign this transaction.
 //     final List<Pubkey> pubkeys = message.accountKeys.sublist(0, numRequiredSignatures);
 
-//     // Verify that the accounts required to sign this transaction ([pubkeys]) have provided their 
+//     // Verify that the accounts required to sign this transaction ([pubkeys]) have provided their
 //     // [signatures] or unsign the transaction.
 //     if (!validSignatures(pubkeys: pubkeys)) {
 //       unsign(pubkeys: pubkeys);
@@ -412,14 +410,14 @@
 //     }
 //   }
 
-//   /// Signs this [Transaction] with the specified signers. Multiple signatures may be applied to a 
-//   /// [Transaction]. The first signature is considered "primary" and is used to identify and confirm 
+//   /// Signs this [Transaction] with the specified signers. Multiple signatures may be applied to a
+//   /// [Transaction]. The first signature is considered "primary" and is used to identify and confirm
 //   /// transactions.
 //   ///
-//   /// If the [Transaction]'s `feePayer` is not set, the first signer will be used as the 
+//   /// If the [Transaction]'s `feePayer` is not set, the first signer will be used as the
 //   /// transaction's fee payer account.
 //   ///
-//   /// Transaction fields should not be modified after the first call to `sign`, as doing so may 
+//   /// Transaction fields should not be modified after the first call to `sign`, as doing so may
 //   /// invalidate the signature and cause the [Transaction] to be rejected.
 //   ///
 //   /// The Transaction must be assigned a valid `recentBlockhash` before invoking this method.
@@ -439,10 +437,10 @@
 //     if (clear) {
 //       unsign(pubkeys: uniqueSigners.map((final Signer pair) => pair.pubkey));
 //     }
-    
+
 //     final Message message = compileMessage();
 //     _partialSign(message, signers);
-    
+
 //     // final Buffer message = serializeMessage();
 
 //     // for (final Signer signer in uniqueSigners) {
@@ -458,9 +456,9 @@
 //     // }
 //   }
 
-//   /// Partially sign a transaction with the specified accounts. All accounts must correspond to 
+//   /// Partially sign a transaction with the specified accounts. All accounts must correspond to
 //   /// either the fee payer or a signer account in the transaction instructions.
-//   /// 
+//   ///
 //   /// All the caveats from the `sign` method apply to `partialSign`.
 //   void partialSign(final Iterable<Signer> signers) {
 //     if (signers.isEmpty) {
@@ -486,7 +484,7 @@
 //     }
 //   }
 
-//   /// Add an externally created signature to a transaction. The public key must correspond to either 
+//   /// Add an externally created signature to a transaction. The public key must correspond to either
 //   /// the fee payer or a signer account in the transaction instructions.
 //   void addSignature(final Pubkey pubkey, final Buffer signature) {
 //     compileMessage(); // Ensure signatures array is populated
@@ -520,7 +518,7 @@
 //         }
 //       } else {
 //         if (!nacl.sign.detached.verifySync(
-//           message.asUint8List(), 
+//           message.asUint8List(),
 //           signature, pair.pubkey.toBytes()
 //         )) {
 //           return false;
@@ -533,7 +531,7 @@
 //   /// Serialises this [Transaction] into the wire format.
 //   @override
 //   Buffer serialize([TransactionSerializableConfig? config]) {
-    
+
 //     config ??= const TransactionSerializableConfig();
 
 //     final Buffer message = serializeMessage();
@@ -543,7 +541,7 @@
 //     }
 
 //     return _serialize(message);
-    
+
 //     // final List<int> signatureCount = shortvec.encodeLength(signatures.length);
 //     // final int transactionLength = signatureCount.length + signatures.length * 64 + message.length;
 //     // check(
@@ -554,7 +552,7 @@
 //     // final BufferWriter writer = BufferWriter(transactionLength);
 //     // check(signatures.length < 256, 'The number of signatures must be < 256');
 //     // writer.setBuffer(signatureCount);
-    
+
 //     // for (int i = 0; i < signatures.length; ++i) {
 //     //   final Uint8List? signature = signatures[i].signature;
 //     //   if (signature != null) {
@@ -574,7 +572,7 @@
 //     final Buffer wireTransaction = Buffer(transactionLength);
 //     check(signatures.length < 256, 'The number of signatures must be < 256');
 //     Buffer.fromList(signatureCount).copy(wireTransaction, 0);
-    
+
 //     for (int i = 0; i < signatures.length; ++i) {
 //       final Uint8List? signature = signatures[i].signature;
 //       if (signature != null) {
@@ -588,7 +586,7 @@
 //       wireTransaction.length <= packetDataSize,
 //       'Transaction is too large: ${wireTransaction.length} > $packetDataSize',
 //     );
-    
+
 //     return wireTransaction;
 //   }
 
@@ -606,7 +604,7 @@
 //       signatures.add(base58.encode(signature.asUint8List()));
 //     }
 //     return Transaction.populate(
-//       Message.fromBufferReader(reader), 
+//       Message.fromBufferReader(reader),
 //       signatures,
 //     );
 //   }
@@ -616,11 +614,11 @@
 //     final Message message, [
 //     final List<String> signatures = const [],
 //   ]) {
-    
+
 //     final Blockhash? recentBlockhash = message.recentBlockhash;
-//     final Pubkey? feePayer = message.header.numRequiredSignatures > 0 
+//     final Pubkey? feePayer = message.header.numRequiredSignatures > 0
 //       && message.accountKeys.isNotEmpty
-//         ? message.accountKeys.first 
+//         ? message.accountKeys.first
 //         : null;
 
 //     final Transaction transaction = Transaction(
@@ -631,7 +629,7 @@
 //     for (int i = 0; i < signatures.length; ++i) {
 //       final String signature = signatures[i];
 //       final SignaturePubkeyPair pair = SignaturePubkeyPair(
-//         signature: signature != base58.encode(defaultSignature.asUint8List()) 
+//         signature: signature != base58.encode(defaultSignature.asUint8List())
 //           ? base58.decode(signature)
 //           : null,
 //         pubkey: message.accountKeys[i],
@@ -645,15 +643,15 @@
 //         return AccountMeta(
 //           pubkey,
 //           isSigner: transaction.signatures.any(
-//             (pair) => pair.pubkey == pubkey, 
+//             (pair) => pair.pubkey == pubkey,
 //           ) || message.isAccountSigner(i),
 //           isWritable: message.isAccountWritable(i)
 //         );
 //       });
-      
+
 //       transaction.instructions.add(
 //         TransactionInstruction(
-//           keys: keys.toList(), 
+//           keys: keys.toList(),
 //           programId: message.accountKeys[instruction.programIdIndex],
 //           data: base58.decode(instruction.data),
 //         )

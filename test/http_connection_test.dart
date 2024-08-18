@@ -1,19 +1,15 @@
-/// Imports
-/// ------------------------------------------------------------------------------------------------
+// ignore_for_file: avoid_print
 
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:solana_web3/solana_web3.dart';
 import 'package:solana_web3/programs.dart' show SystemProgram;
 
-
 /// Tests
 /// ------------------------------------------------------------------------------------------------
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   /// Cluster connections.
@@ -34,7 +30,7 @@ void main() {
   void _printRpcException(String method, JsonRpcException error) {
     print('[RpcException] $method = ${error.code} : ${error.message} : ${error.data}');
   }
-  
+
   /// Print Unknown Exception.
   void _printUnknownException(String method, Object error) {
     print('[UnknownException] $method = ${error.toString()}');
@@ -42,15 +38,13 @@ void main() {
 
   /// Print RPC error and throw the [error].
   void _printException(
-    final String method, 
-    final Object error, { 
-    final StackTrace? stack, 
+    final String method,
+    final Object error, {
+    final StackTrace? stack,
   }) {
-    error is JsonRpcException 
-      ? _printRpcException(method, error) 
-      : _printUnknownException(method, error);
-    if (stack != null) { 
-      print('[StackTrace]: $stack'); 
+    error is JsonRpcException ? _printRpcException(method, error) : _printUnknownException(method, error);
+    if (stack != null) {
+      print('[StackTrace]: $stack');
     }
   }
 
@@ -92,7 +86,7 @@ void main() {
       final response = await request;
       _printResponse(method, (response is SerializableMixin) ? response.toJson() : response);
       return response;
-    } catch(e, stack) {
+    } catch (e, stack) {
       _printException(method, e, stack: stack);
       return Future.error(e);
     }
@@ -172,8 +166,7 @@ void main() {
   });
 
   /// Get Block Production
-  const getBlockProductionConfig = GetBlockProductionConfig(
-  );
+  const getBlockProductionConfig = GetBlockProductionConfig();
   test('get block production raw', () async {
     await _testRequest(
       'get block production raw',
@@ -204,8 +197,7 @@ void main() {
   });
 
   /// Get Blocks
-  const getBlocksConfig = GetBlocksConfig(
-  );
+  const getBlocksConfig = GetBlocksConfig();
   test('get blocks raw', () async {
     final slot = await connection.getBlockHeight();
     await _testRequest(
@@ -222,7 +214,7 @@ void main() {
   });
 
   /// Get Blocks With Limit
-  final getBlocksWithLimitConfig = GetBlocksWithLimitConfig();
+  const getBlocksWithLimitConfig = GetBlocksWithLimitConfig();
   test('get blocks with limit raw', () async {
     final slot = await connection.getBlockHeight();
     await _testRequest(
@@ -254,7 +246,6 @@ void main() {
     );
   });
 
-
   /// Get Cluster Nodes
   test('get cluster nodes raw', () async {
     await _testRequest(
@@ -270,8 +261,7 @@ void main() {
   });
 
   /// Get Epoch Info
-  const getEpochInfoConfig = GetEpochInfoConfig(
-  );
+  const getEpochInfoConfig = GetEpochInfoConfig();
   test('get epoch info raw', () async {
     await _testRequest(
       'get epoch info raw',
@@ -303,12 +293,9 @@ void main() {
   const getFeeForMessageConfig = GetFeeForMessageConfig();
   Future<Transaction> _emptyTransaction() async {
     final bh = await connection.getLatestBlockhash();
-    return Transaction.v0(
-      payer: pubkey1,
-      recentBlockhash: bh.blockhash,
-      instructions: const []
-    );
+    return Transaction.v0(payer: pubkey1, recentBlockhash: bh.blockhash, instructions: const []);
   }
+
   test('get fee for message raw', () async {
     final transaction = await _emptyTransaction();
     await _testRequest(
@@ -463,9 +450,9 @@ void main() {
     );
   });
 
-  final getLeaderScheduleConfig = GetLeaderScheduleConfig(
-    // identity: Pubkey.fromBase58('XkCriyrNwS3G4rzAXtG5B1nnvb5Ka1JtCku93VqeKAr'),
-  );
+  const getLeaderScheduleConfig = GetLeaderScheduleConfig(
+      // identity: Pubkey.fromBase58('XkCriyrNwS3G4rzAXtG5B1nnvb5Ka1JtCku93VqeKAr'),
+      );
   test('get leader schedule raw', () async {
     await _testRequest(
       'get leader schedule raw',
@@ -510,7 +497,7 @@ void main() {
     await _testRequest(
       'get minimum balance for rent exemption raw',
       connection.getMinimumBalanceForRentExemptionRaw(
-        10240000, 
+        10240000,
         config: getMinimumBalanceForRentExemptionConfig,
       ),
     );
@@ -519,7 +506,7 @@ void main() {
     await _testRequest(
       'get minimum balance for rent exemption',
       connection.getMinimumBalanceForRentExemption(
-        10240000, 
+        10240000,
         config: getMinimumBalanceForRentExemptionConfig,
       ),
     );
@@ -530,7 +517,7 @@ void main() {
     await _testRequest(
       'get multiple accounts raw',
       connection.getMultipleAccountsRaw(
-        [pubkey1, pubkey2], 
+        [pubkey1, pubkey2],
         config: getMultipleAccountsConfig,
       ),
     );
@@ -539,7 +526,7 @@ void main() {
     await _testRequest(
       'get multiple accounts',
       connection.getMultipleAccounts(
-        [pubkey1, pubkey2], 
+        [pubkey1, pubkey2],
         config: getMultipleAccountsConfig,
       ),
     );
@@ -550,8 +537,8 @@ void main() {
     await _testRequest(
       'get program accounts raw',
       connection.getProgramAccountsRaw(
-        programId, 
-        config: getProgramAccountsConfig ,
+        programId,
+        config: getProgramAccountsConfig,
       ),
     );
   });
@@ -559,8 +546,8 @@ void main() {
     await _testRequest(
       'get program accounts',
       connection.getProgramAccounts(
-        programId, 
-        config: getProgramAccountsConfig ,
+        programId,
+        config: getProgramAccountsConfig,
       ),
     );
   });
@@ -569,7 +556,7 @@ void main() {
     await _testRequest(
       'get recent performance samples raw',
       connection.getRecentPerformanceSamplesRaw(
-        limit: 24, 
+        limit: 24,
       ),
     );
   });
@@ -577,7 +564,7 @@ void main() {
     await _testRequest(
       'get recent performance samples',
       connection.getRecentPerformanceSamples(
-        limit: 24, 
+        limit: 24,
       ),
     );
   });
@@ -586,7 +573,7 @@ void main() {
     await _testRequest(
       'get recent prioritization fees raw',
       connection.getRecentPrioritizationFeesRaw(
-        [Pubkey.fromBase58('CxELquR1gPP8wHe33gZ4QxqGB3sZ9RSwsJ2KshVewkFY')], 
+        [Pubkey.fromBase58('CxELquR1gPP8wHe33gZ4QxqGB3sZ9RSwsJ2KshVewkFY')],
       ),
     );
   });
@@ -604,8 +591,8 @@ void main() {
     await _testRequest(
       'get signatures for address raw',
       connection.getSignaturesForAddressRaw(
-        pubkey1, 
-        config: getSignaturesForAddressConfig ,
+        pubkey1,
+        config: getSignaturesForAddressConfig,
       ),
     );
   });
@@ -613,12 +600,11 @@ void main() {
     await _testRequest(
       'get signatures for address',
       connection.getSignaturesForAddress(
-        pubkey1, 
+        pubkey1,
         config: getSignaturesForAddressConfig,
       ),
     );
   });
-
 
   const getSignatureStatusesConfig = GetSignatureStatusesConfig(
     searchTransactionHistory: true,
@@ -630,8 +616,8 @@ void main() {
         [
           "2zjrwykjviryabtyjRKk4quWgQ2tURhKBR1YeuyQf1AWj2swwd57qqe2zyXUaoMdspinRJzx28wKygExgq4HWCWA",
           "5j7s6NiJS3JAkvgkoc18WVAsiSaci2pxB2A6ueCJP4tprA2TFg9wSyTLeYouxPBJEMzJinENTkpA52YStRW5Dia7",
-        ], 
-        config: getSignatureStatusesConfig ,
+        ],
+        config: getSignatureStatusesConfig,
       ),
     );
   });
@@ -642,7 +628,7 @@ void main() {
         [
           "2zjrwykjviryabtyjRKk4quWgQ2tURhKBR1YeuyQf1AWj2swwd57qqe2zyXUaoMdspinRJzx28wKygExgq4HWCWA",
           "5j7s6NiJS3JAkvgkoc18WVAsiSaci2pxB2A6ueCJP4tprA2TFg9wSyTLeYouxPBJEMzJinENTkpA52YStRW5Dia7",
-        ], 
+        ],
         config: getSignatureStatusesConfig,
       ),
     );
@@ -675,7 +661,7 @@ void main() {
       connection.getSlotLeader(config: getSlotLeaderConfig),
     );
   });
-  
+
   test('get slot leaders raw', () async {
     const limit = 10;
     final slot = await connection.getSlot() - limit;
@@ -724,6 +710,7 @@ void main() {
   });
 
   const getTokenAccountBalanceConfig = GetTokenAccountBalanceConfig();
+
   /// USDT Mint Address.
   final usdtMint = Pubkey.fromBase58('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB');
   final usdcMintTestnet = Pubkey.fromBase58('CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp');
@@ -734,7 +721,7 @@ void main() {
     await _testRequest(
       'get token account balance raw',
       connection.getTokenAccountBalanceRaw(
-        Pubkey.fromBase58(tokenAccounts.first.pubkey), 
+        Pubkey.fromBase58(tokenAccounts.first.pubkey),
         config: getTokenAccountBalanceConfig,
       ),
     );
@@ -744,7 +731,7 @@ void main() {
     await _testRequest(
       'get token account balance',
       connection.getTokenAccountBalance(
-        Pubkey.fromBase58(tokenAccounts.first.pubkey), 
+        Pubkey.fromBase58(tokenAccounts.first.pubkey),
         config: getTokenAccountBalanceConfig,
       ),
     );
@@ -754,13 +741,15 @@ void main() {
   test('get token accounts by delegate raw', () async {
     await _testRequest(
       'get token accounts by delegate raw',
-      connection.getTokenAccountsByDelegateRaw(tokenOwner, filter: getTokenAccountFilter, config: getTokenAccountsByDelegateConfig),
+      connection.getTokenAccountsByDelegateRaw(tokenOwner,
+          filter: getTokenAccountFilter, config: getTokenAccountsByDelegateConfig),
     );
   });
   test('get token accounts by delegate', () async {
     await _testRequest(
       'get token accounts by delegate',
-      connection.getTokenAccountsByDelegate(pubkey1, filter: getTokenAccountFilter, config: getTokenAccountsByDelegateConfig),
+      connection.getTokenAccountsByDelegate(pubkey1,
+          filter: getTokenAccountFilter, config: getTokenAccountsByDelegateConfig),
     );
   });
 
@@ -768,13 +757,15 @@ void main() {
   test('get token accounts by owner raw', () async {
     await _testRequest(
       'get token accounts by owner raw',
-      connection.getTokenAccountsByOwnerRaw(pubkey1, filter: getTokenAccountFilter, config: getTokenAccountsByOwnerConfig),
+      connection.getTokenAccountsByOwnerRaw(pubkey1,
+          filter: getTokenAccountFilter, config: getTokenAccountsByOwnerConfig),
     );
   });
   test('get token accounts by owner', () async {
     await _testRequest(
       'get token accounts by owner',
-      connection.getTokenAccountsByOwner(tokenOwner, filter: getTokenAccountFilter, config: getTokenAccountsByOwnerConfig),
+      connection.getTokenAccountsByOwner(tokenOwner,
+          filter: getTokenAccountFilter, config: getTokenAccountsByOwnerConfig),
     );
   });
 
@@ -807,7 +798,8 @@ void main() {
   });
 
   final getTransactionConfig = GetTransactionConfig();
-  const usdcTxSignatureTestnet = 'W7Fr3y1gGRVD39Mo9cuD3tfPtHkzA5Sa4cZieLS9i6SU4q8gA91eM6aLryYYiuL8WvntDRaqVcLf46mvpsQ3Xep';
+  const usdcTxSignatureTestnet =
+      'W7Fr3y1gGRVD39Mo9cuD3tfPtHkzA5Sa4cZieLS9i6SU4q8gA91eM6aLryYYiuL8WvntDRaqVcLf46mvpsQ3Xep';
   test('get transaction raw', () async {
     await _testRequest(
       'get transaction raw',
@@ -905,28 +897,84 @@ void main() {
     );
   });
 
-  final sendTransactionConfig = SendTransactionConfig();
+  const sendTransactionConfig = SendTransactionConfig();
   final signer = Keypair.fromSeckeySync(Uint8List.fromList([
-    128, 51, 160, 52, 171, 166, 169, 66, 132, 150, 192, 12, 25, 230, 245, 134, 232, 55, 35, 79, 
-    123, 218, 85, 199, 242, 115, 122, 214, 79, 206, 122, 15, 228, 6, 185, 235, 146, 84, 148, 251, 
-    25, 199, 195, 33, 35, 151, 151, 77, 122, 6, 10, 1, 27, 148, 69, 50, 73, 250, 70, 64, 247, 204, 
-    53, 239,
+    128,
+    51,
+    160,
+    52,
+    171,
+    166,
+    169,
+    66,
+    132,
+    150,
+    192,
+    12,
+    25,
+    230,
+    245,
+    134,
+    232,
+    55,
+    35,
+    79,
+    123,
+    218,
+    85,
+    199,
+    242,
+    115,
+    122,
+    214,
+    79,
+    206,
+    122,
+    15,
+    228,
+    6,
+    185,
+    235,
+    146,
+    84,
+    148,
+    251,
+    25,
+    199,
+    195,
+    33,
+    35,
+    151,
+    151,
+    77,
+    122,
+    6,
+    10,
+    1,
+    27,
+    148,
+    69,
+    50,
+    73,
+    250,
+    70,
+    64,
+    247,
+    204,
+    53,
+    239,
   ]));
 
   Future<Transaction> _transferTx() async {
     final bh = await connection.getLatestBlockhash();
     final transaction = Transaction(
-      message: Message.v0(
-        payer: signer.pubkey, 
-        recentBlockhash: bh.blockhash,
-        instructions: [
-          SystemProgram.transfer(
-            fromPubkey: signer.pubkey, 
-            toPubkey: pubkey1, 
-            lamports: solToLamports(0.01),
-          ),
-        ]
-      ),
+      message: Message.v0(payer: signer.pubkey, recentBlockhash: bh.blockhash, instructions: [
+        SystemProgram.transfer(
+          fromPubkey: signer.pubkey,
+          toPubkey: pubkey1,
+          lamports: solToLamports(0.01),
+        ),
+      ]),
     );
     transaction.sign([signer]);
     return transaction;
@@ -964,32 +1012,32 @@ void main() {
   });
 
   test('test', () async {
-      final client = Connection(Cluster.mainnet);
+    final client = Connection(Cluster.mainnet);
 
-      final minSlot = await client.minimumLedgerSlot();
-      final maxSlot = (await client.getHighestSnapshotSlot()).full;
+    // final minSlot = await client.minimumLedgerSlot();
+    final maxSlot = (await client.getHighestSnapshotSlot()).full;
 
-      final slots = await client.getBlocks(
-        maxSlot - 5,
-        endSlot: maxSlot,
-        config: GetBlocksConfig(),
+    final slots = await client.getBlocks(
+      maxSlot - 5,
+      endSlot: maxSlot,
+      config: const GetBlocksConfig(),
+    );
+
+    print('GOT ${slots.length} slots');
+
+    for (final slot in slots) {
+      // Exception here
+      final block = await client.getBlock(
+        slot,
+        config: GetBlockConfig(maxSupportedTransactionVersion: 10),
       );
-
-      print('GOT ${slots.length} slots');
-
-      for (final slot in slots) {
-        // Exception here
-        final block = await client.getBlock(
-          slot,
-          config: GetBlockConfig(maxSupportedTransactionVersion: 10),
-        );
-        if (block == null) {
-          print('BLOCK IS NULL');
-          continue;
-        }
-        final json = jsonEncode(block.toJson());
-        print('GOT JSON');
-        break;
+      if (block == null) {
+        print('BLOCK IS NULL');
+        continue;
       }
-    });
+      // final json = jsonEncode(block.toJson());
+      print('GOT JSON');
+      break;
+    }
+  });
 }

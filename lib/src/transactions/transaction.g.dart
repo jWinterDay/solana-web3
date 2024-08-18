@@ -13,10 +13,7 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       message: Message.fromJson(json['message'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
-    <String, dynamic>{
-      'signatures': instance.signatures
-          .map(const Uint8ListJsonConverter().toJson)
-          .toList(),
+Map<String, dynamic> _$TransactionToJson(Transaction instance) => <String, dynamic>{
+      'signatures': instance.signatures.map(const Uint8ListJsonConverter().toJson).toList(),
       'message': instance.message.toJson(),
     };

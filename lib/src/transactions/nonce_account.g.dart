@@ -11,12 +11,10 @@ NonceAccount _$NonceAccountFromJson(Map<String, dynamic> json) => NonceAccount(
       state: json['state'] as int,
       authorizedPubkey: Pubkey.fromJson(json['authorizedPubkey'] as String),
       nonce: json['nonce'] as String,
-      feeCalculator:
-          FeeCalculator.fromJson(json['feeCalculator'] as Map<String, dynamic>),
+      feeCalculator: FeeCalculator.fromJson(json['feeCalculator'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$NonceAccountToJson(NonceAccount instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$NonceAccountToJson(NonceAccount instance) => <String, dynamic>{
       'version': instance.version,
       'state': instance.state,
       'authorizedPubkey': instance.authorizedPubkey.toJson(),

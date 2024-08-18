@@ -8,14 +8,11 @@ import '../../transactions/transaction_instruction.dart';
 import '../program.dart';
 import 'instruction.dart';
 
-
 /// Compute Budget Program
 /// ------------------------------------------------------------------------------------------------
 
 class ComputeBudgetProgram extends Program {
-
-  ComputeBudgetProgram._()
-    : super(Pubkey.fromBase58('ComputeBudget111111111111111111111111111111'));
+  ComputeBudgetProgram._() : super(Pubkey.fromBase58('ComputeBudget111111111111111111111111111111'));
 
   /// Internal singleton instance.
   static final ComputeBudgetProgram _instance = ComputeBudgetProgram._();
@@ -24,7 +21,7 @@ class ComputeBudgetProgram extends Program {
   static Pubkey get programId => _instance.pubkey;
 
   /// Request units.
-  /// 
+  ///
   /// - [units] - Units to request for transaction-wide compute.
   /// - [additionalFee] - Prioritization fee lamports.
   @Deprecated("Instead, call [setComputeUnitLimit] and/or [setComputeUnitPrice].")
@@ -38,17 +35,17 @@ class ComputeBudgetProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      ComputeBudgetInstruction.requestUnitsDeprecated, 
-      keys: const [], 
+      ComputeBudgetInstruction.requestUnitsDeprecated,
+      keys: const [],
       data: data,
     );
   }
 
-  /// Request a specific transaction-wide program heap region size in bytes. The value requested 
-  /// must be a multiple of 1024. This new heap region size applies to each program executed in the 
+  /// Request a specific transaction-wide program heap region size in bytes. The value requested
+  /// must be a multiple of 1024. This new heap region size applies to each program executed in the
   /// transaction, including all calls to CPIs.
-  /// 
-  /// - [bytes] - Requested transaction-wide program heap size in bytes. Must be multiple of 1024. 
+  ///
+  /// - [bytes] - Requested transaction-wide program heap size in bytes. Must be multiple of 1024.
   /// Applies to each program, including CPIs.
   TransactionInstruction requestHeapFrame({
     required final u32 bytes,
@@ -59,14 +56,14 @@ class ComputeBudgetProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      ComputeBudgetInstruction.requestHeapFrame, 
-      keys: const [], 
+      ComputeBudgetInstruction.requestHeapFrame,
+      keys: const [],
       data: data,
     );
   }
 
   /// Set a specific compute unit limit that the transaction is allowed to consume.
-  /// 
+  ///
   /// - [units] - Transaction-wide compute unit limit.
   TransactionInstruction setComputeUnitLimit({
     required final u32 units,
@@ -76,15 +73,15 @@ class ComputeBudgetProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      ComputeBudgetInstruction.setComputeUnitLimit, 
-      keys: const [], 
+      ComputeBudgetInstruction.setComputeUnitLimit,
+      keys: const [],
       data: data,
     );
   }
-  
-  /// Set a compute unit price in [microLamports] to pay a higher transaction fee for higher 
+
+  /// Set a compute unit price in [microLamports] to pay a higher transaction fee for higher
   /// transaction prioritization.
-  /// 
+  ///
   /// - [microLamports] - Transaction compute unit price used for prioritization fees.
   TransactionInstruction setComputeUnitPrice({
     required final bu64 microLamports,
@@ -94,14 +91,14 @@ class ComputeBudgetProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      ComputeBudgetInstruction.setComputeUnitPrice, 
-      keys: const [], 
+      ComputeBudgetInstruction.setComputeUnitPrice,
+      keys: const [],
       data: data,
     );
   }
-  
+
   /// Set a specific transaction-wide account data size limit in bytes.
-  /// 
+  ///
   /// - [limit] - Maximum allocation size in bytes.
   TransactionInstruction setAccountsDataSizeLimit({
     required final u32 limit,
@@ -111,8 +108,8 @@ class ComputeBudgetProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      ComputeBudgetInstruction.setAccountsDataSizeLimit, 
-      keys: const [], 
+      ComputeBudgetInstruction.setAccountsDataSizeLimit,
+      keys: const [],
       data: data,
     );
   }

@@ -12,8 +12,7 @@ AccountMeta _$AccountMetaFromJson(Map<String, dynamic> json) => AccountMeta(
       isWritable: json['isWritable'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$AccountMetaToJson(AccountMeta instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$AccountMetaToJson(AccountMeta instance) => <String, dynamic>{
       'pubkey': instance.pubkey.toJson(),
       'isSigner': instance.isSigner,
       'isWritable': instance.isWritable,

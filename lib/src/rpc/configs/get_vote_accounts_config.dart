@@ -4,12 +4,10 @@
 import 'package:solana_jsonrpc/jsonrpc.dart' show CommitmentConfig;
 import '../../crypto/pubkey.dart';
 
-
 /// Get Vote Accounts Config
 /// ------------------------------------------------------------------------------------------------
 
 class GetVoteAccountsConfig extends CommitmentConfig {
-
   /// JSON RPC configurations for `getVoteAccounts` methods.
   const GetVoteAccountsConfig({
     super.commitment,
@@ -25,8 +23,8 @@ class GetVoteAccountsConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-    'commitment': commitment?.name,
-    'votePubkey': votePubkey?.toBase58(),
-    'keepUnstakedDelinquents': keepUnstakedDelinquents,
-  };
+        'commitment': commitment?.name,
+        'votePubkey': votePubkey?.toBase58(),
+        'keepUnstakedDelinquents': keepUnstakedDelinquents,
+      };
 }

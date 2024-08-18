@@ -14,15 +14,12 @@ import '../system/program.dart';
 import 'instruction.dart';
 import 'state.dart';
 
-
 /// Stake Program
 /// ------------------------------------------------------------------------------------------------
 
 class StakeProgram extends Program {
-
   /// Stake program.
-  StakeProgram._()
-    : super(Pubkey.fromBase58('Stake11111111111111111111111111111111111111'));
+  StakeProgram._() : super(Pubkey.fromBase58('Stake11111111111111111111111111111111111111'));
 
   /// Internal singleton instance.
   static final StakeProgram _instance = StakeProgram._();
@@ -32,8 +29,8 @@ class StakeProgram extends Program {
 
   /// Configuration account.
   static Pubkey get configId => Pubkey.fromBase58(
-    'StakeConfig11111111111111111111111111111111',
-  );
+        'StakeConfig11111111111111111111111111111111',
+      );
 
   /// The max space of a Stake account.
   ///
@@ -42,8 +39,7 @@ class StakeProgram extends Program {
   static const int space = 200;
 
   @override
-  Iterable<int> encodeInstruction<T extends Enum>(final T instruction) 
-    => Buffer.fromUint32(instruction.index);
+  Iterable<int> encodeInstruction<T extends Enum>(final T instruction) => Buffer.fromUint32(instruction.index);
 
   /// Creates a [SystemProgram] instruction that generates a stake account.
   static TransactionInstruction createAccount({
@@ -52,15 +48,15 @@ class StakeProgram extends Program {
     required final bu64 lamports,
   }) {
     return SystemProgram.createAccount(
-        fromPubkey: fromPubkey,
-        newAccountPubkey: newAccountPubkey,
-        lamports: lamports,
-        space: space.toBigInt(),
-        programId: programId,
+      fromPubkey: fromPubkey,
+      newAccountPubkey: newAccountPubkey,
+      lamports: lamports,
+      space: space.toBigInt(),
+      programId: programId,
     );
   }
 
-  /// Creates a [SystemProgram] instruction that generates a stake account. The address is derived 
+  /// Creates a [SystemProgram] instruction that generates a stake account. The address is derived
   /// from [fromPubkey] and [seed].
   static TransactionInstruction createAccountWithSeed({
     required final Pubkey fromPubkey,
@@ -89,13 +85,13 @@ class StakeProgram extends Program {
   /// - [authorized] - Public keys that must sign staker transactions and withdrawer transactions.
   /// - [lockup] - Information about withdrawal restrictions.
   static TransactionInstruction initialize({
-    required final Pubkey stakeAccount, 
-    required final Authorized authorized, 
+    required final Pubkey stakeAccount,
+    required final Authorized authorized,
     required final Lockup lockup,
   }) {
     // 0. `[w]` Uninitialized stake account.
     // 1. `[]` Rent sysvar.
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarRentPubkey),
     ];
@@ -106,8 +102,8 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.initialize, 
-      keys: keys, 
+      StakeInstruction.initialize,
+      keys: keys,
       data: data,
     );
   }
@@ -117,8 +113,8 @@ class StakeProgram extends Program {
   /// ### Keys:
   /// - `[w]` [stakeAccount] - Stake account to be updated.
   /// - `[s]` [authority] - The stake or withdraw authority.
-  /// - `[s]` [custodian] - Lockup authority, if updating StakeAuthorize.withdrawer before lockup. 
-  /// 
+  /// - `[s]` [custodian] - Lockup authority, if updating StakeAuthorize.withdrawer before lockup.
+  ///
   /// ### Data:
   /// - [newAuthority]
   /// - [authorityType]
@@ -134,23 +130,22 @@ class StakeProgram extends Program {
     // 0. `[w]` Stake account to be updated
     // 1. `[]` Clock sysvar
     // 2. `[s]` The stake or withdraw authority
-    // 3. `[s]` Lockup authority, if updating StakeAuthorize.withdrawer before lockup. 
-    final List<AccountMeta> keys = [ 
+    // 3. `[s]` Lockup authority, if updating StakeAuthorize.withdrawer before lockup.
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(authority),
-      if (custodian != null)
-        AccountMeta.signer(custodian)
+      if (custodian != null) AccountMeta.signer(custodian)
     ];
 
     final List<Iterable<u8>> data = [
       borsh.pubkey.encode(newAuthority.toBase58()),
-      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0,0,0], // padding
+      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0, 0, 0], // padding
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.authorize, 
-      keys: keys, 
+      StakeInstruction.authorize,
+      keys: keys,
       data: data,
     );
   }
@@ -162,7 +157,7 @@ class StakeProgram extends Program {
   /// - `[]` [voteAccount] - Vote account to which this stake will be delegated.
   /// - `[s]` [authority] - Stake authority.
   ///
-  /// The entire balance of the staking account is staked. DelegateStake can be called multiple 
+  /// The entire balance of the staking account is staked. DelegateStake can be called multiple
   /// times, but re-delegation is delayed by one epoch.
   static TransactionInstruction delegateStake({
     required final Pubkey stakeAccount,
@@ -175,7 +170,7 @@ class StakeProgram extends Program {
     // 3. `[]` Stake history sysvar that carries stake warmup/cooldown history
     // 4. `[]` Address of config account that carries stake config
     // 5. `[s]` Stake authority
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta(voteAccount),
       AccountMeta(sysvarClockPubkey),
@@ -185,8 +180,8 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.delegateStake, 
-      keys: keys, 
+      StakeInstruction.delegateStake,
+      keys: keys,
     );
   }
 
@@ -194,7 +189,7 @@ class StakeProgram extends Program {
   ///
   /// ### Keys:
   /// - `[w]` [stakeAccount] - Stake account to be split; must be in the Initialized or Stake state.
-  /// - `[w]` [uninitializedStakeAccount] - Uninitialized stake account that will take the split-off 
+  /// - `[w]` [uninitializedStakeAccount] - Uninitialized stake account that will take the split-off
   ///   amount.
   /// - `[s]` [authority] - Stake authority.
   static TransactionInstruction split({
@@ -208,7 +203,7 @@ class StakeProgram extends Program {
     // 0. `[w]` Stake account to be split; must be in the Initialized or Stake state.
     // 1. `[w]` Uninitialized stake account that will take the split-off amount.
     // 2. `[s]` Stake authority.
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta.writable(uninitializedStakeAccount),
       AccountMeta.signer(authority),
@@ -219,8 +214,8 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.split, 
-      keys: keys, 
+      StakeInstruction.split,
+      keys: keys,
       data: data,
     );
   }
@@ -232,7 +227,7 @@ class StakeProgram extends Program {
   /// - `[w]` [recipientAccount] - Recipient account.
   /// - `[s]` [withdrawAuthority] - Withdraw authority.
   /// - `[s]` [custodian] - Lockup authority, if before lockup expiration.
-  /// 
+  ///
   /// ### Data:
   /// - [lamports] - The portion of the stake account balance to be withdrawn.
   static TransactionInstruction withdraw({
@@ -250,14 +245,13 @@ class StakeProgram extends Program {
     // 3. `[]` Stake history sysvar that carries stake warmup/cooldown history
     // 4. `[s]` Withdraw authority
     // 5. `[s]` Lockup authority, if before lockup expiration
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta.writable(recipientAccount),
       AccountMeta(sysvarClockPubkey),
       AccountMeta(sysvarStakeHistoryPubkey),
       AccountMeta.signer(withdrawAuthority),
-      if (custodian != null)
-        AccountMeta.signer(custodian),
+      if (custodian != null) AccountMeta.signer(custodian),
     ];
 
     final List<Iterable<u8>> data = [
@@ -265,8 +259,8 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.withdraw, 
-      keys: keys, 
+      StakeInstruction.withdraw,
+      keys: keys,
       data: data,
     );
   }
@@ -283,15 +277,15 @@ class StakeProgram extends Program {
     // 0. `[w]` Delegated stake account
     // 1. `[]` Clock sysvar
     // 2. `[s]` Stake authority
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(authority),
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.deactivate, 
-      keys: keys, 
+      StakeInstruction.deactivate,
+      keys: keys,
     );
   }
 
@@ -303,7 +297,7 @@ class StakeProgram extends Program {
   /// ### Keys:
   /// - `[w]` [stakeAccount] - Initialized stake account.
   /// - `[s]` [authority] - Lockup authority or withdraw authority.
-  /// 
+  ///
   /// ### Data:
   /// - [lockup]
   static TransactionInstruction setLockup({
@@ -315,7 +309,7 @@ class StakeProgram extends Program {
   }) {
     // 0. `[w]` Initialized stake account
     // 1. `[s]` Lockup authority or withdraw authority
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta.signer(authority),
     ];
@@ -325,15 +319,15 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.setLockup, 
-      keys: keys, 
+      StakeInstruction.setLockup,
+      keys: keys,
       data: data,
     );
   }
 
   /// Merge two stake accounts.
   ///
-  /// Both accounts must have identical lockup and authority keys. A merge is possible between two 
+  /// Both accounts must have identical lockup and authority keys. A merge is possible between two
   /// stakes in the following states with no additional conditions:
   ///
   /// * two deactivated stakes
@@ -344,7 +338,7 @@ class StakeProgram extends Program {
   /// * two activated stakes
   /// * two activating accounts that share an activation epoch, during the activation epoch
   ///
-  /// All other combinations of stake states will fail to merge, including all "transient" states, 
+  /// All other combinations of stake states will fail to merge, including all "transient" states,
   /// where a stake is activating or deactivating with a non-zero effective stake.
   ///
   /// ### Keys:
@@ -361,7 +355,7 @@ class StakeProgram extends Program {
     // 2. `[]` Clock sysvar
     // 3. `[]` Stake history sysvar that carries stake warmup/cooldown history
     // 4. `[s]` Stake authority
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(destinationStakeAccount),
       AccountMeta.writable(sourceStakeAccount),
       AccountMeta(sysvarClockPubkey),
@@ -370,8 +364,8 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.merge, 
-      keys: keys, 
+      StakeInstruction.merge,
+      keys: keys,
     );
   }
 
@@ -380,7 +374,7 @@ class StakeProgram extends Program {
   /// ### Keys:
   /// - `[w]` [stakeAccount] - Stake account to be updated.
   /// - `[s]` [authorityBase] - Base key of stake or withdraw authority.
-  /// - `[s]` [custodian] - Lockup authority, if updating StakeAuthorize.withdrawer before lockup. 
+  /// - `[s]` [custodian] - Lockup authority, if updating StakeAuthorize.withdrawer before lockup.
   static TransactionInstruction authorizeWithSeed({
     // Keys
     required final Pubkey stakeAccount,
@@ -396,31 +390,30 @@ class StakeProgram extends Program {
     // 1. `[]` Clock sysvar
     // 2. `[s]` The stake or withdraw authority
     // 3. `[s]` Lockup authority, if updating StakeAuthorize::Withdrawer before lockup expiration.
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(authorityBase),
-      if (custodian != null)
-        AccountMeta.signer(custodian)
+      if (custodian != null) AccountMeta.signer(custodian)
     ];
 
     final List<Iterable<u8>> data = [
       borsh.pubkey.encode(newAuthority.toBase58()),
-      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0,0,0], // padding
+      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0, 0, 0], // padding
       borsh.rustString().encode(authoritySeed),
       borsh.pubkey.encode(authorityOwner.toBase58()),
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.authorizeWithSeed, 
-      keys: keys, 
+      StakeInstruction.authorizeWithSeed,
+      keys: keys,
       data: data,
     );
   }
 
   /// Initialize a stake with authorization information.
   ///
-  /// This instruction is similar to `initialize` except that the withdraw authority must be a 
+  /// This instruction is similar to `initialize` except that the withdraw authority must be a
   /// signer, and no lockup is applied to the account.
   ///
   /// ### Keys:
@@ -429,15 +422,15 @@ class StakeProgram extends Program {
   /// - `[s]` [withdrawAuthority] - The withdraw authority.
   ///
   static TransactionInstruction initializeChecked({
-    required final Pubkey stakeAccount, 
-    required final Pubkey authority, 
+    required final Pubkey stakeAccount,
+    required final Pubkey authority,
     required final Pubkey withdrawAuthority,
   }) {
     // `[w]` Uninitialized stake account
     // `[]` Rent sysvar
     // `[]` The stake authority
     // `[s]` The withdraw authority
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarRentPubkey),
       AccountMeta(authority),
@@ -445,14 +438,14 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.initializeChecked, 
+      StakeInstruction.initializeChecked,
       keys: keys,
     );
   }
 
   /// Authorize a key to manage stake or withdrawal.
   ///
-  /// This instruction behaves like `Authorize` with the additional requirement that the new stake 
+  /// This instruction behaves like `Authorize` with the additional requirement that the new stake
   /// or withdraw authority must also be a signer.
   ///
   /// ### Keys:
@@ -473,30 +466,29 @@ class StakeProgram extends Program {
     // 1. `[]` Clock sysvar
     // 2. `[s]` The stake or withdraw authority
     // 3. `[s]` [newAuthority] - The new stake or withdraw authority.
-    // 4. `[s]` Lockup authority if updating StakeAuthorize.withdrawer before lockup expiration. 
-    final List<AccountMeta> keys = [ 
+    // 4. `[s]` Lockup authority if updating StakeAuthorize.withdrawer before lockup expiration.
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(authority),
       AccountMeta.signer(newAuthority),
-      if (custodian != null)
-        AccountMeta.signer(custodian)
+      if (custodian != null) AccountMeta.signer(custodian)
     ];
 
     final List<Iterable<u8>> data = [
-      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0,0,0], // padding
+      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0, 0, 0], // padding
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.authorizeChecked, 
-      keys: keys, 
+      StakeInstruction.authorizeChecked,
+      keys: keys,
       data: data,
     );
   }
 
   /// Authorize a key to manage stake or withdrawal with a derived key.
   ///
-  /// This instruction behaves like `AuthorizeWithSeed` with the additional requirement that the new 
+  /// This instruction behaves like `AuthorizeWithSeed` with the additional requirement that the new
   /// stake or withdraw authority must also be a signer.
   ///
   /// ### Keys:
@@ -521,31 +513,30 @@ class StakeProgram extends Program {
     // 2. `[]` Clock sysvar
     // 3. `[s]` The new stake or withdraw authority
     // 4. `[s]` Lockup authority if updating StakeAuthorize.withdrawer before lockup expiration.
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta.signer(authorityBase),
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(newAuthority),
-      if (custodian != null)
-        AccountMeta.signer(custodian),
+      if (custodian != null) AccountMeta.signer(custodian),
     ];
 
     final List<Iterable<u8>> data = [
-      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0,0,0], // padding
+      borsh.enumeration(StakeAuthorize.values).encode(authorityType), [0, 0, 0], // padding
       borsh.rustString().encode(authoritySeed),
       borsh.pubkey.encode(authorityOwner.toBase58()),
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.authorizeCheckedWithSeed, 
-      keys: keys, 
+      StakeInstruction.authorizeCheckedWithSeed,
+      keys: keys,
       data: data,
     );
   }
 
   /// Set stake lockup.
   ///
-  /// This instruction behaves like `SetLockup` with the additional requirement that the new lockup 
+  /// This instruction behaves like `SetLockup` with the additional requirement that the new lockup
   /// authority also be a signer.
   ///
   /// If a lockup is not active, the withdraw authority may set a new lockup.
@@ -566,11 +557,10 @@ class StakeProgram extends Program {
     // 0. `[w]` Initialized stake account
     // 1. `[s]` Lockup authority or withdraw authority
     // 2. `[s]` New lockup authority (optional)
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(stakeAccount),
       AccountMeta.signer(authority),
-      if (custodian != null)
-        AccountMeta.signer(custodian),
+      if (custodian != null) AccountMeta.signer(custodian),
     ];
 
     final List<Iterable<u8>> data = [
@@ -578,8 +568,8 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.setLockupChecked, 
-      keys: keys, 
+      StakeInstruction.setLockupChecked,
+      keys: keys,
       data: data,
     );
   }
@@ -589,14 +579,14 @@ class StakeProgram extends Program {
   /// ### Keys:
   /// - None
   ///
-  /// Returns the minimum delegation as a little-endian encoded u64 value. Programs can use the 
-  /// [`getMinimumDelegation()`] helper function to invoke and retrieve the return value for this 
+  /// Returns the minimum delegation as a little-endian encoded u64 value. Programs can use the
+  /// [`getMinimumDelegation()`] helper function to invoke and retrieve the return value for this
   /// instruction.
   ///
   /// [`getMinimumDelegation()`]: super::tools::get_minimum_delegation
   static TransactionInstruction getMinimumDelegation() {
     return _instance.createTransactionIntruction(
-      StakeInstruction.getMinimumDelegation, 
+      StakeInstruction.getMinimumDelegation,
       keys: const [],
     );
   }
@@ -610,7 +600,7 @@ class StakeProgram extends Program {
   /// ### Keys:
   /// - `[w]` [delegatedStakeAccount] - Delegated stake account.
   /// - `[]` [delinquentVoteAccount] - Delinquent vote account for the delegated stake account.
-  /// - `[]` [referenceVoteAccount] - Reference vote account that has voted at least once in the 
+  /// - `[]` [referenceVoteAccount] - Reference vote account that has voted at least once in the
   ///   last `MINIMUM_DELINQUENT_EPOCHS_FOR_DEACTIVATION` epochs
   static TransactionInstruction deactivateDelinquent({
     required final Pubkey delegatedStakeAccount,
@@ -619,17 +609,17 @@ class StakeProgram extends Program {
   }) {
     // 0. `[w]` Delegated stake account
     // 1. `[]` Delinquent vote account for the delegated stake account
-    // 2. `[]` Reference vote account that has voted at least once in the last 
+    // 2. `[]` Reference vote account that has voted at least once in the last
     //    `MINIMUM_DELINQUENT_EPOCHS_FOR_DEACTIVATION` epochs
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(delegatedStakeAccount),
       AccountMeta(delinquentVoteAccount),
       AccountMeta(referenceVoteAccount),
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.deactivateDelinquent, 
-      keys: keys, 
+      StakeInstruction.deactivateDelinquent,
+      keys: keys,
     );
   }
 
@@ -645,10 +635,10 @@ class StakeProgram extends Program {
   ///     will also be included in the re-delegation.
   ///
   /// ### Keys:
-  /// - `[w]` [delegatedStakeAccount] - Delegated stake account to be redelegated. The account must 
-  ///     be fullyvactivated and carry a balance greater than or equal to the minimum delegation 
+  /// - `[w]` [delegatedStakeAccount] - Delegated stake account to be redelegated. The account must
+  ///     be fullyvactivated and carry a balance greater than or equal to the minimum delegation
   ///     amountvplus rent exempt minimum.
-  /// - `[w]` [uninitializedtStakeAccount] - Uninitialized stake account that will hold the 
+  /// - `[w]` [uninitializedtStakeAccount] - Uninitialized stake account that will hold the
   ///     redelegated stake.
   /// - `[]` [voteAccount] - Vote account to which this stake will be re-delegated.
   /// - `[s]` [authority] - Stake authority.
@@ -658,14 +648,14 @@ class StakeProgram extends Program {
     required final Pubkey voteAccount,
     required final Pubkey authority,
   }) {
-    // 0. `[w]` Delegated stake account to be redelegated. The account must be fully activated and 
-    //    carry a balance greater than or equal to the minimum delegation amount plus rent exempt 
+    // 0. `[w]` Delegated stake account to be redelegated. The account must be fully activated and
+    //    carry a balance greater than or equal to the minimum delegation amount plus rent exempt
     //    minimum
     // 1. `[w]` Uninitialized stake account that will hold the redelegated stake
     // 2. `[]` Vote account to which this stake will be re-delegated
     // 3. `[]` Address of config account that carries stake config
     // 4. `[s]` Stake authority
-    final List<AccountMeta> keys = [ 
+    final List<AccountMeta> keys = [
       AccountMeta.writable(delegatedStakeAccount),
       AccountMeta.writable(uninitializedtStakeAccount),
       AccountMeta(voteAccount),
@@ -674,8 +664,8 @@ class StakeProgram extends Program {
     ];
 
     return _instance.createTransactionIntruction(
-      StakeInstruction.redelegate, 
-      keys: keys, 
+      StakeInstruction.redelegate,
+      keys: keys,
     );
   }
 }

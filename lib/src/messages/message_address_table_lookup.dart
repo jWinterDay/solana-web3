@@ -7,13 +7,11 @@ import '../crypto/pubkey.dart';
 
 part 'message_address_table_lookup.g.dart';
 
-
 /// Message Address Table Lookup
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable(explicitToJson: true)
 class MessageAddressTableLookup extends Serializable {
-  
   /// Used by a transaction to dynamically load addresses from on-chain address lookup tables.
   const MessageAddressTableLookup({
     required this.accountKey,
@@ -27,13 +25,14 @@ class MessageAddressTableLookup extends Serializable {
   /// A List of indices used to load addresses of writable accounts from a lookup table.
   final List<int> writableIndexes;
 
-   /// A list of indices used to load addresses of readonly accounts from a lookup table.
+  /// A list of indices used to load addresses of readonly accounts from a lookup table.
   final List<int> readonlyIndexes;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory MessageAddressTableLookup.fromJson(
     final Map<String, dynamic> json,
-  ) => _$MessageAddressTableLookupFromJson(json);
+  ) =>
+      _$MessageAddressTableLookupFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$MessageAddressTableLookupToJson(this);

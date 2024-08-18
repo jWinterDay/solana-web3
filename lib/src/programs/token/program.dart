@@ -12,14 +12,11 @@ import '../../transactions/transaction_instruction.dart';
 import '../program.dart';
 import 'instruction.dart';
 
-
 /// Token Program
 /// ------------------------------------------------------------------------------------------------
 
 class TokenProgram extends Program {
-
-  TokenProgram._()
-    : super(Pubkey.fromBase58('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'));
+  TokenProgram._() : super(Pubkey.fromBase58('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'));
 
   /// Internal singleton instance.
   static final TokenProgram _instance = TokenProgram._();
@@ -35,8 +32,8 @@ class TokenProgram extends Program {
 
   /// Initializes a new mint and optionally deposits all the newly minted tokens in an account.
   ///
-  /// The `initializeMint` instruction requires no signers and MUST be included within the same 
-  /// Transaction as the system program's `createAccount` instruction that creates the account being 
+  /// The `initializeMint` instruction requires no signers and MUST be included within the same
+  /// Transaction as the system program's `createAccount` instruction that creates the account being
   /// initialized. Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// ### Keys:
@@ -69,18 +66,18 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeMint,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
-  /// Initializes a new account to hold tokens. If this account is associated with the native mint 
-  /// then the token balance of the initialized account will be equal to the amount of SOL in the 
-  /// account. If this account is associated with another mint, that mint must be initialized before 
+  /// Initializes a new account to hold tokens. If this account is associated with the native mint
+  /// then the token balance of the initialized account will be equal to the amount of SOL in the
+  /// account. If this account is associated with another mint, that mint must be initialized before
   /// this command can succeed.
   ///
-  /// The `initializeAccount` instruction requires no signers and MUST be included within the same 
-  /// Transaction as the system program's `createAccount` instruction that creates the account being 
+  /// The `initializeAccount` instruction requires no signers and MUST be included within the same
+  /// Transaction as the system program's `createAccount` instruction that creates the account being
   /// initialized. Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// ### Keys:
@@ -105,24 +102,24 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeAccount,
-      keys: keys, 
+      keys: keys,
     );
   }
 
   /// Initializes a multisignature account with N provided signers.
   ///
-  /// Multisignature accounts can used in place of any single owner/delegate accounts in any token 
-  /// instruction that require an owner/delegate to be present. The variant field represents the 
+  /// Multisignature accounts can used in place of any single owner/delegate accounts in any token
+  /// instruction that require an owner/delegate to be present. The variant field represents the
   /// number of signers required to validate this multisignature account.
   ///
-  /// The `initializeMultisig` instruction requires no signers and MUST be included within the same 
-  /// Transaction as the system program's `createAccount` instruction that creates the account being 
+  /// The `initializeMultisig` instruction requires no signers and MUST be included within the same
+  /// Transaction as the system program's `createAccount` instruction that creates the account being
   /// initialized. Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// ### Keys:
   /// - `[w]` [account] - The multisignature account to initialize.
   /// - `[]` [signers] - The signer accounts ([minSigners] : [maxSigners]).
-  /// 
+  ///
   /// Data
   /// - [numberOfSigners] - The number of signers required to validate this multisignature account.
   static TransactionInstruction initializeMultisig({
@@ -142,8 +139,7 @@ class TokenProgram extends Program {
     final List<AccountMeta> keys = [
       AccountMeta.writable(account),
       AccountMeta(sysvarRentPubkey),
-      for (final Pubkey signer in signers)
-        AccountMeta(signer),
+      for (final Pubkey signer in signers) AccountMeta(signer),
     ];
 
     final List<Iterable<int>> data = [
@@ -152,13 +148,13 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeMultisig,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
-  /// Transfers tokens from one account to another either directly or via a delegate. If this 
-  /// account is associated with the native mint then equal amounts of SOL and Tokens will be 
+  /// Transfers tokens from one account to another either directly or via a delegate. If this
+  /// account is associated with the native mint then equal amounts of SOL and Tokens will be
   /// transferred to the destination account.
   ///
   /// ### Keys:
@@ -172,7 +168,7 @@ class TokenProgram extends Program {
   /// - `[w]` [destination] - The destination account.
   /// - `[]` [owner] - The source account's multisignature owner/delegate.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of tokens to transfer.
   static TransactionInstruction transfer({
@@ -198,8 +194,7 @@ class TokenProgram extends Program {
       AccountMeta.writable(source),
       AccountMeta.writable(destination),
       AccountMeta(owner, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<int>> data = [
@@ -208,12 +203,12 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.transfer,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
-  /// Approves a delegate. A delegate is given the authority over tokens on behalf of the source 
+  /// Approves a delegate. A delegate is given the authority over tokens on behalf of the source
   /// account's owner.
   ///
   /// ### Keys:
@@ -227,7 +222,7 @@ class TokenProgram extends Program {
   /// - `[]` [delegate] - The delegate.
   /// - `[]` [owner] - The source account's multisignature owner.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of tokens the delegate is approved for.
   static TransactionInstruction approve({
@@ -239,22 +234,21 @@ class TokenProgram extends Program {
     // Data
     required final bu64 amount,
   }) {
-      // * Single owner
-      // 0. `[w]` The source account.
-      // 1. `[]` The delegate.
-      // 2. `[s]` The source account owner.
-      //
-      // * Multisignature owner
-      // 0. `[w]` The source account.
-      // 1. `[]` The delegate.
-      // 2. `[]` The source account's multisignature owner.
-      // 3. ..3+M `[s]` M signer accounts
+    // * Single owner
+    // 0. `[w]` The source account.
+    // 1. `[]` The delegate.
+    // 2. `[s]` The source account owner.
+    //
+    // * Multisignature owner
+    // 0. `[w]` The source account.
+    // 1. `[]` The delegate.
+    // 2. `[]` The source account's multisignature owner.
+    // 3. ..3+M `[s]` M signer accounts
     final List<AccountMeta> keys = [
       AccountMeta.writable(source),
       AccountMeta(delegate),
       AccountMeta(owner, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<int>> data = [
@@ -263,7 +257,7 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.approve,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
@@ -296,18 +290,17 @@ class TokenProgram extends Program {
     final List<AccountMeta> keys = [
       AccountMeta.writable(source),
       AccountMeta(owner, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.revoke,
-      keys: keys, 
+      keys: keys,
     );
   }
 
   /// Sets a new authority of a mint or account.
-  /// 
+  ///
   /// ### Keys:
   /// Single authority
   /// - `[w]` [account] - The mint or account to change the authority of.
@@ -317,7 +310,7 @@ class TokenProgram extends Program {
   /// - `[w]` [account] - The mint or account to change the authority of.
   /// - `[]` [authority] - The mint's or account's current multisignature authority.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [authorityType] - The type of authority to update.
   /// - [newAuthority] - The new authority.
@@ -326,7 +319,7 @@ class TokenProgram extends Program {
     required final Pubkey account,
     required final Pubkey authority,
     final List<Pubkey> signers = const [],
-    // Data 
+    // Data
     required final AuthorityType authorityType,
     required final Pubkey? newAuthority,
   }) {
@@ -341,8 +334,7 @@ class TokenProgram extends Program {
     final List<AccountMeta> keys = [
       AccountMeta.writable(account),
       AccountMeta(authority, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<u8>> data = [
@@ -352,7 +344,7 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.setAuthority,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
@@ -370,7 +362,7 @@ class TokenProgram extends Program {
   /// - `[w]` [account] - The account to mint tokens to.
   /// - `[]` [mintAuthority] - The mint's multisignature mint-tokens authority.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of new tokens to mint.
   static TransactionInstruction mintTo({
@@ -396,8 +388,7 @@ class TokenProgram extends Program {
       AccountMeta.writable(mint),
       AccountMeta.writable(account),
       AccountMeta(mintAuthority, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<u8>> data = [
@@ -406,7 +397,7 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.mintTo,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
@@ -425,7 +416,7 @@ class TokenProgram extends Program {
   /// - `[w]` [mint] - The token mint.
   /// - `[]` [authority] - The account's multisignature owner/delegate.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of tokens to burn.
   static TransactionInstruction burn({
@@ -451,8 +442,7 @@ class TokenProgram extends Program {
       AccountMeta.writable(account),
       AccountMeta.writable(mint),
       AccountMeta(authority, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<u8>> data = [
@@ -461,7 +451,7 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.burn,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
@@ -500,13 +490,12 @@ class TokenProgram extends Program {
       AccountMeta.writable(account),
       AccountMeta.writable(destination),
       AccountMeta(owner, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.closeAccount,
-      keys: keys, 
+      keys: keys,
     );
   }
 
@@ -544,13 +533,12 @@ class TokenProgram extends Program {
       AccountMeta.writable(account),
       AccountMeta.writable(mint),
       AccountMeta(authority, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.freezeAccount,
-      keys: keys, 
+      keys: keys,
     );
   }
 
@@ -587,21 +575,20 @@ class TokenProgram extends Program {
       AccountMeta.writable(account),
       AccountMeta.writable(mint),
       AccountMeta(authority, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.freezeAccount,
-      keys: keys, 
+      keys: keys,
     );
   }
 
-  /// Transfers tokens from one account to another either directly or via a delegate.  If this 
-  /// account is associated with the native mint then equal amounts of SOL and Tokens will be 
+  /// Transfers tokens from one account to another either directly or via a delegate.  If this
+  /// account is associated with the native mint then equal amounts of SOL and Tokens will be
   /// transferred to the destination account.
   ///
-  /// This instruction differs from Transfer in that the token mint and decimals value is checked by 
+  /// This instruction differs from Transfer in that the token mint and decimals value is checked by
   /// the caller.  This may be useful when creating transactions offline or within a hardware
   /// wallet.
   ///
@@ -618,7 +605,7 @@ class TokenProgram extends Program {
   /// - `[w]` [destination] - The destination account.
   /// - `[]` [owner] - The source account's multisignature owner/delegate.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of tokens to transfer.
   /// - [decimals] - Expected number of base 10 digits to the right of the decimal place.
@@ -650,8 +637,7 @@ class TokenProgram extends Program {
       AccountMeta(mint),
       AccountMeta.writable(destination),
       AccountMeta(owner, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<int>> data = [
@@ -661,16 +647,16 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.transferChecked,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
-  /// Approves a delegate.  A delegate is given the authority over tokens on behalf of the source 
+  /// Approves a delegate.  A delegate is given the authority over tokens on behalf of the source
   /// account's owner.
   ///
-  /// This instruction differs from Approve in that the token mint and decimals value is checked by 
-  /// the caller.  This may be useful when creating transactions offline or within a hardware 
+  /// This instruction differs from Approve in that the token mint and decimals value is checked by
+  /// the caller.  This may be useful when creating transactions offline or within a hardware
   /// wallet.
   ///
   /// ### Keys:
@@ -686,7 +672,7 @@ class TokenProgram extends Program {
   /// - `[]` [delegate] - The delegate.
   /// - `[]` [owner] - The source account's multisignature owner.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of tokens the delegate is approved for.
   /// - [decimals] - Expected number of base 10 digits to the right of the decimal place.
@@ -718,8 +704,7 @@ class TokenProgram extends Program {
       AccountMeta(mint),
       AccountMeta(delegate),
       AccountMeta(owner, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<int>> data = [
@@ -729,14 +714,14 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.approveChecked,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
   /// Mints new tokens to an account.  The native mint does not support minting.
   ///
-  /// This instruction differs from MintTo in that the decimals value is checked by the caller. This 
+  /// This instruction differs from MintTo in that the decimals value is checked by the caller. This
   /// may be useful when creating transactions offline or within a hardware wallet.
   ///
   /// ### Keys:
@@ -750,7 +735,7 @@ class TokenProgram extends Program {
   /// - `[w]` [account] - The account to mint tokens to.
   /// - `[]` [mintAuthority] - The mint's multisignature mint-tokens authority.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of new tokens to mint.
   /// - [decimals] - Expected number of base 10 digits to the right of the decimal place.
@@ -778,8 +763,7 @@ class TokenProgram extends Program {
       AccountMeta.writable(mint),
       AccountMeta.writable(account),
       AccountMeta(mintAuthority, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<u8>> data = [
@@ -789,17 +773,17 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.mintToChecked,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
-  /// Burns tokens by removing them from an account.  `BurnChecked` does not support accounts 
+  /// Burns tokens by removing them from an account.  `BurnChecked` does not support accounts
   /// associated with the native mint, use `closeAccount` instead.
   ///
-  /// This instruction differs from Burn in that the decimals value is checked by the caller. This 
+  /// This instruction differs from Burn in that the decimals value is checked by the caller. This
   /// may be useful when creating transactions offline or within a hardware wallet.
-  /// 
+  ///
   /// ### Keys:
   /// Single owner/delegate
   /// - `[w]` [account] - The account to burn from.
@@ -811,7 +795,7 @@ class TokenProgram extends Program {
   /// - `[w]` [mint] - The token mint.
   /// - `[]` [authority] - The account's multisignature owner/delegate.
   /// - `[s]` [signers] - The signer accounts.
-  /// 
+  ///
   /// ### Data:
   /// - [amount] - The amount of tokens to burn.
   /// - [decimals] - Expected number of base 10 digits to the right of the decimal place.
@@ -839,8 +823,7 @@ class TokenProgram extends Program {
       AccountMeta.writable(account),
       AccountMeta.writable(mint),
       AccountMeta(authority, isSigner: signers.isEmpty),
-      for (final Pubkey signer in signers)
-        AccountMeta.signer(signer),
+      for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
     final List<Iterable<u8>> data = [
@@ -850,19 +833,19 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.burnChecked,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
-  /// Like InitializeAccount, but the owner pubkey is passed via instruction data rather than the 
-  /// accounts list. This variant may be preferable when using Cross Program Invocation from an 
+  /// Like InitializeAccount, but the owner pubkey is passed via instruction data rather than the
+  /// accounts list. This variant may be preferable when using Cross Program Invocation from an
   /// instruction that does not need the owner's `AccountInfo` otherwise.
   ///
   /// ### Keys:
   /// - `[w]` [account] - The account to initialize.
   /// - `[]` [mint] - The mint this account will be associated with.
-  /// 
+  ///
   /// ### Data:
   /// - [owner] - The new account's owner/multisignature.
   static TransactionInstruction initializeAccount2({
@@ -887,14 +870,14 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeAccount2,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
-  /// Given a wrapped / native token account (a token account containing SOL) updates its amount 
-  /// field based on the account's underlying `lamports`. This is useful if a non-wrapped SOL 
-  /// account uses `system_instruction::transfer` to move lamports to a wrapped token account, and 
+  /// Given a wrapped / native token account (a token account containing SOL) updates its amount
+  /// field based on the account's underlying `lamports`. This is useful if a non-wrapped SOL
+  /// account uses `system_instruction::transfer` to move lamports to a wrapped token account, and
   /// needs to have its token `amount` field updated.
   ///
   /// ### Keys:
@@ -909,16 +892,16 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.syncNative,
-      keys: keys, 
+      keys: keys,
     );
   }
 
   /// Like InitializeAccount2, but does not require the Rent sysvar to be provided.
-  /// 
+  ///
   /// ### Keys:
   /// - `[w]` [account] - The account to initialize.
   /// - `[]` [mint] - The mint this account will be associated with.
-  /// 
+  ///
   /// ### Data:
   /// - [owner] - The new account's owner/multisignature.
   static TransactionInstruction initializeAccount3({
@@ -941,17 +924,17 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeAccount3,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
-  /// 
+  ///
   /// ### Keys:
   /// - `[w]` [account] - The multisignature account to initialize.
   /// - `[]` [signers] - The signer accounts ([minSigners] : [maxSigners]).
-  /// 
+  ///
   /// Data
   /// - [numberOfSigners] - The number of signers required to validate this multisignature account.
   static TransactionInstruction initializeMultisig2({
@@ -969,8 +952,7 @@ class TokenProgram extends Program {
     // 1. `[]` ..2+N The signer accounts, must equal to N where 1 <= N <= 11.
     final List<AccountMeta> keys = [
       AccountMeta.writable(account),
-      for (final Pubkey signer in signers)
-        AccountMeta(signer),
+      for (final Pubkey signer in signers) AccountMeta(signer),
     ];
 
     final List<Iterable<int>> data = [
@@ -979,13 +961,13 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeMultisig2,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
 
   /// Like InitializeMint, but does not require the Rent sysvar to be provided.
-  /// 
+  ///
   /// ### Keys:
   /// - `[w]` [mint] - The mint to initialize.
   ///
@@ -1014,7 +996,7 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeMint2,
-      keys: keys, 
+      keys: keys,
       data: data,
     );
   }
@@ -1031,10 +1013,10 @@ class TokenProgram extends Program {
 
   /// Initialize the Immutable Owner extension for the given token account.
   ///
-  /// Fails if the account has already been initialized, so must be called before 
+  /// Fails if the account has already been initialized, so must be called before
   /// `initializeAccount`.
   ///
-  /// No-ops in this version of the program, but is included for compatibility with the Associated 
+  /// No-ops in this version of the program, but is included for compatibility with the Associated
   /// Token Account program.
   ///
   /// ### Keys:
@@ -1049,7 +1031,7 @@ class TokenProgram extends Program {
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeImmutableOwner,
-      keys: keys, 
+      keys: keys,
     );
   }
 
@@ -1082,7 +1064,7 @@ class TokenProgram extends Program {
   // },
 
   // ***********************************************************************************************
-  // Any new variants also need to be added to program-2022 `TokenInstruction`, so that the latter 
+  // Any new variants also need to be added to program-2022 `TokenInstruction`, so that the latter
   // remains a superset of this instruction set.
   // ***********************************************************************************************
 }

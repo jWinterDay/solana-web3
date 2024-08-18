@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'slot_range.dart';
 
-
 /// Block Production
 /// ------------------------------------------------------------------------------------------------
 
 class BlockProduction extends Serializable {
-  
   /// Block production information.
   const BlockProduction({
     required this.byIdentity,
@@ -23,7 +21,7 @@ class BlockProduction extends Serializable {
   // ** final BlockProduction p = BlockProduction.fromJson(...);                                  **
   // ** print(p.byIdentity) // 'List<dynamic>' is not a subtype of type 'List<int>' in type cast  **
   // ***********************************************************************************************
-  /// A dictionary of validator identities, as base-58 encoded strings. The values are a two element 
+  /// A dictionary of validator identities, as base-58 encoded strings. The values are a two element
   /// array, containing the number of leader slots and the number of blocks produced.
   final Map<String, List> byIdentity;
 
@@ -32,9 +30,9 @@ class BlockProduction extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory BlockProduction.fromJson(final Map<String, dynamic> json) => BlockProduction(
-    byIdentity: Map.castFrom(json['byIdentity']),
-    range: SlotRange.fromJson(json['range']),
-  );
+        byIdentity: Map.castFrom(json['byIdentity']),
+        range: SlotRange.fromJson(json['range']),
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static BlockProduction? tryFromJson(final Map<String, dynamic>? json) {
@@ -43,7 +41,7 @@ class BlockProduction extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'byIdentity': byIdentity,
-    'range': range.toJson(),
-  };
+        'byIdentity': byIdentity,
+        'range': range.toJson(),
+      };
 }

@@ -4,7 +4,6 @@
 // import 'package:flutter_test/flutter_test.dart';
 // import 'package:solana_web3/rpc_models/slot_notification.dart';
 
-
 // /// Playground Tests
 // /// ------------------------------------------------------------------------------------------------
 

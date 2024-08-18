@@ -13,12 +13,10 @@ import 'package:solana_common/types.dart';
 import '../../rpc/models/account_info.dart';
 import '../stake/state.dart';
 
-
 /// Account Type
 /// ------------------------------------------------------------------------------------------------
 
 enum AccountType {
-
   /// The account has not been initialized.
   uninitialized,
 
@@ -29,19 +27,17 @@ enum AccountType {
   validatorList,
 }
 
-
 /// Fee
 /// ------------------------------------------------------------------------------------------------
 
 /// Fee rate as a ratio, minted on `UpdateStakePoolBalance` as a proportion of the rewards.
 /// If either the numerator or the denominator is 0, the fee is considered to be 0.
 class Fee extends BorshObject {
-
   const Fee({
     required this.denominator,
     required this.numerator,
   });
-  
+
   /// Denominator of the fee ratio.
   final u64 denominator;
 
@@ -51,34 +47,31 @@ class Fee extends BorshObject {
   double get ratio => denominator == 0.0 ? 0.0 : numerator / denominator;
 
   factory Fee.fromJson(final Map<String, dynamic> json) => Fee(
-    denominator: json['denominator'],
-    numerator: json['numerator'],
-  );
+        denominator: json['denominator'],
+        numerator: json['numerator'],
+      );
 
-  static Fee? tryFromJson(final Map<String, dynamic>? json) 
-    => json != null ? Fee.fromJson(json) : null;
+  static Fee? tryFromJson(final Map<String, dynamic>? json) => json != null ? Fee.fromJson(json) : null;
 
   static BorshStructSizedCodec get codec => borsh.structSized({
-    'denominator': borsh.u64,
-    'numerator': borsh.u64,
-  });
-  
+        'denominator': borsh.u64,
+        'numerator': borsh.u64,
+      });
+
   @override
   BorshSchema get borshSchema => codec.schema;
-  
+
   @override
   Map<String, dynamic> toJson() => {
-    'denominator': denominator,
-    'numerator': numerator,
-  };
+        'denominator': denominator,
+        'numerator': numerator,
+      };
 }
-
 
 /// Stake Pool
 /// ------------------------------------------------------------------------------------------------
 
 class StakePool extends BorshObject {
-
   const StakePool({
     required this.accountType,
     required this.manager,
@@ -124,13 +117,13 @@ class StakePool extends BorshObject {
 
   /// Stake deposit authority
   ///
-  /// If a depositor pubkey is specified on initialization, then deposits must be signed by this 
-  /// authority. If no deposit authority is specified, then the stake pool will default to the 
+  /// If a depositor pubkey is specified on initialization, then deposits must be signed by this
+  /// authority. If no deposit authority is specified, then the stake pool will default to the
   /// result of:
   /// ```
   /// Pubkey::find_program_address(
   ///     [
-  ///       <stake_pool_address>, 
+  ///       <stake_pool_address>,
   ///       utf8.encode("deposit"),
   ///     ],
   ///     <stake_pool_program_id>,
@@ -233,115 +226,113 @@ class StakePool extends BorshObject {
   }
 
   factory StakePool.fromJson(final Map<String, dynamic> json) => StakePool(
-    accountType: json['accountType'],
-    manager: json['manager'],
-    staker: json['staker'],
-    stakeDepositAuthority: json['stakeDepositAuthority'],
-    stakeWithdrawBumpSeed: json['stakeWithdrawBumpSeed'],
-    validatorList: json['validatorList'],
-    reserveStake: json['reserveStake'],
-    poolMint: json['poolMint'],
-    managerFeeAccount: json['managerFeeAccount'],
-    tokenProgramId: json['tokenProgramId'],
-    totalLamports: json['totalLamports'],
-    poolTokenSupply: json['poolTokenSupply'],
-    lastUpdateEpoch: json['lastUpdateEpoch'],
-    lockup: Lockup.fromJson(json['lockup']),
-    epochFee: Fee.fromJson(json['epochFee']),
-    nextEpochFee: Fee.tryFromJson(json['nextEpochFee']),
-    preferredDepositValidatorVoteAddress: json['preferredDepositValidatorVoteAddress'],
-    preferredWithdrawValidatorVoteAddress: json['preferredWithdrawValidatorVoteAddress'],
-    stakeDepositFee: Fee.fromJson(json['stakeDepositFee']),
-    stakeWithdrawalFee: Fee.fromJson(json['stakeWithdrawalFee']),
-    nextStakeWithdrawalFee: Fee.tryFromJson(json['nextStakeWithdrawalFee']),
-    stakeReferralFee: json['stakeReferralFee'],
-    solDepositAuthority: json['solDepositAuthority'],
-    solDepositFee: Fee.fromJson(json['solDepositFee']),
-    solReferralFee: json['solReferralFee'],
-    solWithdrawAuthority: json['solWithdrawAuthority'],
-    solWithdrawalFee: Fee.fromJson(json['solWithdrawalFee']),
-    nextSolWithdrawalFee: Fee.tryFromJson(json['nextSolWithdrawalFee']),
-    lastEpochPoolTokenSupply: json['lastEpochPoolTokenSupply'],
-    lastEpochTotalLamports: json['lastEpochTotalLamports'],
-  );
+        accountType: json['accountType'],
+        manager: json['manager'],
+        staker: json['staker'],
+        stakeDepositAuthority: json['stakeDepositAuthority'],
+        stakeWithdrawBumpSeed: json['stakeWithdrawBumpSeed'],
+        validatorList: json['validatorList'],
+        reserveStake: json['reserveStake'],
+        poolMint: json['poolMint'],
+        managerFeeAccount: json['managerFeeAccount'],
+        tokenProgramId: json['tokenProgramId'],
+        totalLamports: json['totalLamports'],
+        poolTokenSupply: json['poolTokenSupply'],
+        lastUpdateEpoch: json['lastUpdateEpoch'],
+        lockup: Lockup.fromJson(json['lockup']),
+        epochFee: Fee.fromJson(json['epochFee']),
+        nextEpochFee: Fee.tryFromJson(json['nextEpochFee']),
+        preferredDepositValidatorVoteAddress: json['preferredDepositValidatorVoteAddress'],
+        preferredWithdrawValidatorVoteAddress: json['preferredWithdrawValidatorVoteAddress'],
+        stakeDepositFee: Fee.fromJson(json['stakeDepositFee']),
+        stakeWithdrawalFee: Fee.fromJson(json['stakeWithdrawalFee']),
+        nextStakeWithdrawalFee: Fee.tryFromJson(json['nextStakeWithdrawalFee']),
+        stakeReferralFee: json['stakeReferralFee'],
+        solDepositAuthority: json['solDepositAuthority'],
+        solDepositFee: Fee.fromJson(json['solDepositFee']),
+        solReferralFee: json['solReferralFee'],
+        solWithdrawAuthority: json['solWithdrawAuthority'],
+        solWithdrawalFee: Fee.fromJson(json['solWithdrawalFee']),
+        nextSolWithdrawalFee: Fee.tryFromJson(json['nextSolWithdrawalFee']),
+        lastEpochPoolTokenSupply: json['lastEpochPoolTokenSupply'],
+        lastEpochTotalLamports: json['lastEpochTotalLamports'],
+      );
 
   static BorshStructCodec get codec => borsh.struct({
-    'accountType': borsh.enumeration(AccountType.values),
-    'manager': borsh.pubkey,
-    'staker': borsh.pubkey,
-    'stakeDepositAuthority': borsh.pubkey,
-    'stakeWithdrawBumpSeed': borsh.u8,
-    'validatorList': borsh.pubkey,
-    'reserveStake': borsh.pubkey,
-    'poolMint': borsh.pubkey,
-    'managerFeeAccount': borsh.pubkey,
-    'tokenProgramId': borsh.pubkey,
-    'totalLamports': borsh.u64,
-    'poolTokenSupply': borsh.u64,
-    'lastUpdateEpoch': borsh.u64,
-    'lockup': Lockup.codec,
-    'epochFee': Fee.codec,
-    'nextEpochFee': Fee.codec.option(),
-    'preferredDepositValidatorVoteAddress': borsh.pubkey.option(),
-    'preferredWithdrawValidatorVoteAddress': borsh.pubkey.option(),
-    'stakeDepositFee': Fee.codec,
-    'stakeWithdrawalFee': Fee.codec,
-    'nextStakeWithdrawalFee': Fee.codec.option(),
-    'stakeReferralFee': borsh.u8,
-    'solDepositAuthority': borsh.pubkey.option(),
-    'solDepositFee': Fee.codec,
-    'solReferralFee': borsh.u8,
-    'solWithdrawAuthority': borsh.pubkey.option(),
-    'solWithdrawalFee': Fee.codec,
-    'nextSolWithdrawalFee': Fee.codec.option(),
-    'lastEpochPoolTokenSupply': borsh.u64,
-    'lastEpochTotalLamports': borsh.u64,
-  });
+        'accountType': borsh.enumeration(AccountType.values),
+        'manager': borsh.pubkey,
+        'staker': borsh.pubkey,
+        'stakeDepositAuthority': borsh.pubkey,
+        'stakeWithdrawBumpSeed': borsh.u8,
+        'validatorList': borsh.pubkey,
+        'reserveStake': borsh.pubkey,
+        'poolMint': borsh.pubkey,
+        'managerFeeAccount': borsh.pubkey,
+        'tokenProgramId': borsh.pubkey,
+        'totalLamports': borsh.u64,
+        'poolTokenSupply': borsh.u64,
+        'lastUpdateEpoch': borsh.u64,
+        'lockup': Lockup.codec,
+        'epochFee': Fee.codec,
+        'nextEpochFee': Fee.codec.option(),
+        'preferredDepositValidatorVoteAddress': borsh.pubkey.option(),
+        'preferredWithdrawValidatorVoteAddress': borsh.pubkey.option(),
+        'stakeDepositFee': Fee.codec,
+        'stakeWithdrawalFee': Fee.codec,
+        'nextStakeWithdrawalFee': Fee.codec.option(),
+        'stakeReferralFee': borsh.u8,
+        'solDepositAuthority': borsh.pubkey.option(),
+        'solDepositFee': Fee.codec,
+        'solReferralFee': borsh.u8,
+        'solWithdrawAuthority': borsh.pubkey.option(),
+        'solWithdrawalFee': Fee.codec,
+        'nextSolWithdrawalFee': Fee.codec.option(),
+        'lastEpochPoolTokenSupply': borsh.u64,
+        'lastEpochTotalLamports': borsh.u64,
+      });
 
   @override
   BorshSchema get borshSchema => codec.schema;
 
   @override
   Map<String, dynamic> toJson() => {
-    'accountType': accountType,
-    'manager': manager,
-    'staker': staker,
-    'stakeDepositAuthority': stakeDepositAuthority,
-    'stakeWithdrawBumpSeed': stakeWithdrawBumpSeed,
-    'validatorList': validatorList,
-    'reserveStake': reserveStake,
-    'poolMint': poolMint,
-    'managerFeeAccount': managerFeeAccount,
-    'tokenProgramId': tokenProgramId,
-    'totalLamports': totalLamports,
-    'poolTokenSupply': poolTokenSupply,
-    'lastUpdateEpoch': lastUpdateEpoch,
-    'lockup': lockup.toJson(),
-    'epochFee': epochFee.toJson(),
-    'nextEpochFee': nextEpochFee?.toJson(),
-    'preferredDepositValidatorVoteAddress': preferredDepositValidatorVoteAddress,
-    'preferredWithdrawValidatorVoteAddress': preferredWithdrawValidatorVoteAddress,
-    'stakeDepositFee': stakeDepositFee.toJson(),
-    'stakeWithdrawalFee': stakeWithdrawalFee.toJson(),
-    'nextStakeWithdrawalFee': nextStakeWithdrawalFee?.toJson(),
-    'stakeReferralFee': stakeReferralFee,
-    'solDepositAuthority': solDepositAuthority,
-    'solDepositFee': solDepositFee.toJson(),
-    'solReferralFee': solReferralFee,
-    'solWithdrawAuthority': solWithdrawAuthority,
-    'solWithdrawalFee': solWithdrawalFee.toJson(),
-    'nextSolWithdrawalFee': nextSolWithdrawalFee?.toJson(),
-    'lastEpochPoolTokenSupply': lastEpochPoolTokenSupply,
-    'lastEpochTotalLamports': lastEpochTotalLamports,
-  };
+        'accountType': accountType,
+        'manager': manager,
+        'staker': staker,
+        'stakeDepositAuthority': stakeDepositAuthority,
+        'stakeWithdrawBumpSeed': stakeWithdrawBumpSeed,
+        'validatorList': validatorList,
+        'reserveStake': reserveStake,
+        'poolMint': poolMint,
+        'managerFeeAccount': managerFeeAccount,
+        'tokenProgramId': tokenProgramId,
+        'totalLamports': totalLamports,
+        'poolTokenSupply': poolTokenSupply,
+        'lastUpdateEpoch': lastUpdateEpoch,
+        'lockup': lockup.toJson(),
+        'epochFee': epochFee.toJson(),
+        'nextEpochFee': nextEpochFee?.toJson(),
+        'preferredDepositValidatorVoteAddress': preferredDepositValidatorVoteAddress,
+        'preferredWithdrawValidatorVoteAddress': preferredWithdrawValidatorVoteAddress,
+        'stakeDepositFee': stakeDepositFee.toJson(),
+        'stakeWithdrawalFee': stakeWithdrawalFee.toJson(),
+        'nextStakeWithdrawalFee': nextStakeWithdrawalFee?.toJson(),
+        'stakeReferralFee': stakeReferralFee,
+        'solDepositAuthority': solDepositAuthority,
+        'solDepositFee': solDepositFee.toJson(),
+        'solReferralFee': solReferralFee,
+        'solWithdrawAuthority': solWithdrawAuthority,
+        'solWithdrawalFee': solWithdrawalFee.toJson(),
+        'nextSolWithdrawalFee': nextSolWithdrawalFee?.toJson(),
+        'lastEpochPoolTokenSupply': lastEpochPoolTokenSupply,
+        'lastEpochTotalLamports': lastEpochTotalLamports,
+      };
 }
-
 
 /// Validator List
 /// ------------------------------------------------------------------------------------------------
 
 class ValidatorList extends BorshObject {
-
   /// Storage list for all validator stake accounts in the pool.
   const ValidatorList({
     required this.header,
@@ -353,7 +344,7 @@ class ValidatorList extends BorshObject {
 
   /// List of stake info for each validator in the pool
   final List<ValidatorStakeInfo> validators;
-  
+
   factory ValidatorList.fromAccountInfo(final AccountInfo info) {
     final Uint8List buffer = base64.decode((info.data as List)[0]);
     return borsh.deserialize(codec.schema, buffer, ValidatorList.fromJson);
@@ -367,26 +358,24 @@ class ValidatorList extends BorshObject {
   }
 
   static BorshStructCodec get codec => borsh.struct({
-    'header': ValidatorListHeader.codec,
-    'validators': borsh.vec(ValidatorStakeInfo.codec),
-  });
+        'header': ValidatorListHeader.codec,
+        'validators': borsh.vec(ValidatorStakeInfo.codec),
+      });
 
   @override
   BorshSchema get borshSchema => codec.schema;
-    
+
   @override
   Map<String, dynamic> toJson() => {
-    'header': header.toJson(),
-    'validators': validators.toJson(),
-  };
+        'header': header.toJson(),
+        'validators': validators.toJson(),
+      };
 }
-
 
 /// Validator List Header
 /// ------------------------------------------------------------------------------------------------
 
 class ValidatorListHeader extends BorshObject {
-
   /// Helper type to deserialize just the start of a ValidatorList.
   const ValidatorListHeader({
     required this.accountType,
@@ -398,82 +387,76 @@ class ValidatorListHeader extends BorshObject {
 
   /// Maximum allowable number of validators
   final int maxValidators;
-  
+
   factory ValidatorListHeader.fromAccountInfo(final AccountInfo info) {
     final Uint8List buffer = base64.decode((info.data as List)[0]);
     return borsh.deserialize(codec.schema, buffer, ValidatorListHeader.fromJson);
   }
 
   factory ValidatorListHeader.fromJson(final Map<String, dynamic> json) => ValidatorListHeader(
-    accountType: json['accountType'],
-    maxValidators: json['maxValidators'],
-  );
+        accountType: json['accountType'],
+        maxValidators: json['maxValidators'],
+      );
 
   static BorshStructSizedCodec get codec => borsh.structSized({
-    'accountType': borsh.enumeration(AccountType.values),
-    'maxValidators': borsh.u32,
-  });
+        'accountType': borsh.enumeration(AccountType.values),
+        'maxValidators': borsh.u32,
+      });
 
   @override
   BorshSchema get borshSchema => codec.schema;
 
   @override
   Map<String, dynamic> toJson() => {
-    'accountType': accountType,
-    'maxValidators': maxValidators,
-  };
+        'accountType': accountType,
+        'maxValidators': maxValidators,
+      };
 }
-
 
 /// Stake Status
 /// ------------------------------------------------------------------------------------------------
 
 /// Status of the stake account in the validator list, for accounting.
 enum StakeStatus {
-
   /// Stake account is active, there may be a transient stake as well
   active,
-  
+
   /// Only transient stake account exists, when a transient stake is
   /// deactivating during validator removal
   deactivatingTransient,
-  
+
   /// No more validator stake accounts exist, entry ready for removal during
   /// `UpdateStakePoolBalance`
   readyForRemoval,
-  
+
   /// Only the validator stake account is deactivating, no transient stake
   /// account exists
   deactivatingValidator,
-  
+
   /// Both the transient and validator stake account are deactivating, when
   /// a validator is removed with a transient stake active
   deactivatingAll,
 }
-
 
 /// Stake Withdraw Source
 /// ------------------------------------------------------------------------------------------------
 
 /// Withdrawal type, figured out during process_withdraw_stake
 enum StakeWithdrawSource {
-  
   /// Some of an active stake account, but not all
   active,
-  
+
   /// Some of a transient stake account
   transient,
-  
+
   /// Take a whole validator stake account
   validatorRemoval,
 }
-
 
 /// Validator Stake Info
 /// ------------------------------------------------------------------------------------------------
 
 class ValidatorStakeInfo extends Serializable with BorshObjectMixin {
-
   /// Information about a validator in the pool
   ///
   /// NOTE: ORDER IS VERY IMPORTANT HERE, PLEASE DO NOT RE-ORDER THE FIELDS UNLESS
@@ -529,50 +512,48 @@ class ValidatorStakeInfo extends Serializable with BorshObjectMixin {
   }
 
   factory ValidatorStakeInfo.fromJson(final Map<String, dynamic> json) => ValidatorStakeInfo(
-    activeStakeLamports: json['activeStakeLamports'],
-    transientStakeLamports: json['transientStakeLamports'],
-    lastUpdateEpoch: json['lastUpdateEpoch'],
-    transientSeedSuffix: json['transientSeedSuffix'],
-    unused: json['unused'],
-    validatorSeedSuffix: json['validatorSeedSuffix'],
-    status: json['status'],
-    voteAccountAddress: json['voteAccountAddress'],
-  );
+        activeStakeLamports: json['activeStakeLamports'],
+        transientStakeLamports: json['transientStakeLamports'],
+        lastUpdateEpoch: json['lastUpdateEpoch'],
+        transientSeedSuffix: json['transientSeedSuffix'],
+        unused: json['unused'],
+        validatorSeedSuffix: json['validatorSeedSuffix'],
+        status: json['status'],
+        voteAccountAddress: json['voteAccountAddress'],
+      );
 
   static BorshStructSizedCodec get codec => borsh.structSized({
-    'activeStakeLamports': borsh.u64,
-    'transientStakeLamports': borsh.u64,
-    'lastUpdateEpoch': borsh.u64,
-    'transientSeedSuffix': borsh.u64,
-    'unused': borsh.u32,
-    'validatorSeedSuffix': borsh.u32,
-    'status': borsh.enumeration(StakeStatus.values),
-    'voteAccountAddress': borsh.pubkey,
-  });
+        'activeStakeLamports': borsh.u64,
+        'transientStakeLamports': borsh.u64,
+        'lastUpdateEpoch': borsh.u64,
+        'transientSeedSuffix': borsh.u64,
+        'unused': borsh.u32,
+        'validatorSeedSuffix': borsh.u32,
+        'status': borsh.enumeration(StakeStatus.values),
+        'voteAccountAddress': borsh.pubkey,
+      });
 
   @override
   BorshSchema get borshSchema => codec.schema;
-  
+
   @override
   Map<String, dynamic> toJson() => {
-    'activeStakeLamports': activeStakeLamports,
-    'transientStakeLamports': transientStakeLamports,
-    'lastUpdateEpoch': lastUpdateEpoch,
-    'transientSeedSuffix': transientSeedSuffix,
-    'unused': unused,
-    'validatorSeedSuffix': validatorSeedSuffix,
-    'status': status,
-    'voteAccountAddress': voteAccountAddress,
-  };
+        'activeStakeLamports': activeStakeLamports,
+        'transientStakeLamports': transientStakeLamports,
+        'lastUpdateEpoch': lastUpdateEpoch,
+        'transientSeedSuffix': transientSeedSuffix,
+        'unused': unused,
+        'validatorSeedSuffix': validatorSeedSuffix,
+        'status': status,
+        'voteAccountAddress': voteAccountAddress,
+      };
 }
-
 
 /// Preferred Validator Type
 /// ------------------------------------------------------------------------------------------------
 
 /// Defines which validator vote account is set during the `setPreferredValidator` instruction.
 enum PreferredValidatorType {
-  
   /// Set preferred validator for deposits.
   deposit,
 
@@ -580,66 +561,61 @@ enum PreferredValidatorType {
   withdraw,
 }
 
-
 /// Funding Type
 /// ------------------------------------------------------------------------------------------------
 
 /// Defines which authority to update in the `setFundingAuthority` instruction.
 enum FundingType {
-  
   /// Sets the stake deposit authority.
   stakeDeposit,
-  
+
   /// Sets the SOL deposit authority.
   solDeposit,
-  
+
   /// Sets the SOL withdraw authority.
   solWithdraw,
 }
-
 
 /// Fee Type
 /// ------------------------------------------------------------------------------------------------
 
 /// The type of fees that can be set on the stake pool.
 class FeeType extends RustEnum {
-
   const FeeType._(
     super.index,
     super.codec,
   );
-  
-  factory FeeType.from(final int index, final List values)
-    => FeeType._(index, values);
+
+  factory FeeType.from(final int index, final List values) => FeeType._(index, values);
 
   static List<BorshTupleSizedCodec> get codecs => [
-    borsh.tupleSized([borsh.u8]),
-    borsh.tupleSized([borsh.u8]),
-    borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
-    borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
-    borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
-    borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
-    borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
-  ];
+        borsh.tupleSized([borsh.u8]),
+        borsh.tupleSized([borsh.u8]),
+        borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
+        borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
+        borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
+        borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
+        borsh.tupleSized([borsh.structSized(Fee.codec.schema)]),
+      ];
 
   /// Referral fees for SOL deposits.
   static FeeType solReferral(final u8 arg0) => FeeType._(0, [arg0]);
-  
+
   /// Referral fees for stake deposits.
   static FeeType stakeReferral(final u8 arg0) => FeeType._(1, [arg0]);
-  
+
   /// Management fee paid per epoch.
   static FeeType epoch(final Fee fee) => FeeType._(2, [fee]);
-  
+
   /// Stake withdrawal fee.
   static FeeType stakeWithdrawal(final Fee fee) => FeeType._(3, [fee]);
 
   /// Deposit fee for SOL deposits.
   static FeeType solDeposit(final Fee fee) => FeeType._(4, [fee]);
-  
+
   /// Deposit fee for stake deposits.
   static FeeType stakeDeposit(final Fee fee) => FeeType._(5, [fee]);
-  
+
   /// SOL withdrawal fee.
   static FeeType solWithdrawal(final Fee fee) => FeeType._(6, [fee]);
 }

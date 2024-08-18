@@ -5,12 +5,10 @@ import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u64;
 import 'account_info.dart';
 
-
 /// Transaction Status
 /// ------------------------------------------------------------------------------------------------
 
 class TransactionStatus extends Serializable {
-  
   /// Transaction status.
   const TransactionStatus({
     required this.err,
@@ -20,12 +18,12 @@ class TransactionStatus extends Serializable {
   });
 
   /// The error if transaction failed, null if transaction succeeded.
-  /// 
+  ///
   /// TODO: check error definitions.
   final dynamic err;
 
-  /// An array of log messages the transaction instructions output during execution, null if 
-  /// simulation failed before the transaction was able to execute (for example due to an invalid 
+  /// An array of log messages the transaction instructions output during execution, null if
+  /// simulation failed before the transaction was able to execute (for example due to an invalid
   /// blockhash or signature verification failure).
   final List? logs;
 
@@ -37,21 +35,21 @@ class TransactionStatus extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory TransactionStatus.fromJson(final Map<String, dynamic> json) => TransactionStatus(
-    err: json['err'],
-    logs: json['logs'],
-    accounts: json['accounts'],
-    unitsConsumed: json['unitsConsumed'],
-  );
+        err: json['err'],
+        logs: json['logs'],
+        accounts: json['accounts'],
+        unitsConsumed: json['unitsConsumed'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static TransactionStatus? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? TransactionStatus.fromJson(json) : null;
+  static TransactionStatus? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? TransactionStatus.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'err': err,
-    'logs': logs,
-    'accounts': accounts,
-    'unitsConsumed': unitsConsumed,
-  };
+        'err': err,
+        'logs': logs,
+        'accounts': accounts,
+        'unitsConsumed': unitsConsumed,
+      };
 }

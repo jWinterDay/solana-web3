@@ -3,12 +3,9 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-
 /// Buffer Layout Tests
 /// ------------------------------------------------------------------------------------------------
 
 void main() {
-
-  test('buffer layout', () async {
-  });
+  test('buffer layout', () async {});
 }

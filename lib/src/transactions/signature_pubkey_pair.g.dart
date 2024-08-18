@@ -6,18 +6,15 @@ part of 'signature_pubkey_pair.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SignaturePubkeyPair _$SignaturePubkeyPairFromJson(Map<String, dynamic> json) =>
-    SignaturePubkeyPair(
-      signature: _$JsonConverterFromJson<List<int>, Uint8List>(
-          json['signature'], const Uint8ListJsonConverter().fromJson),
+SignaturePubkeyPair _$SignaturePubkeyPairFromJson(Map<String, dynamic> json) => SignaturePubkeyPair(
+      signature:
+          _$JsonConverterFromJson<List<int>, Uint8List>(json['signature'], const Uint8ListJsonConverter().fromJson),
       pubkey: Pubkey.fromJson(json['pubkey'] as String),
     );
 
-Map<String, dynamic> _$SignaturePubkeyPairToJson(
-        SignaturePubkeyPair instance) =>
-    <String, dynamic>{
-      'signature': _$JsonConverterToJson<List<int>, Uint8List>(
-          instance.signature, const Uint8ListJsonConverter().toJson),
+Map<String, dynamic> _$SignaturePubkeyPairToJson(SignaturePubkeyPair instance) => <String, dynamic>{
+      'signature':
+          _$JsonConverterToJson<List<int>, Uint8List>(instance.signature, const Uint8ListJsonConverter().toJson),
       'pubkey': instance.pubkey,
     };
 

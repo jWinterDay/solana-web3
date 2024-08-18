@@ -8,12 +8,10 @@ import 'package:solana_borsh/models.dart';
 import 'package:solana_borsh/types.dart';
 import 'account_info.dart';
 
-
 /// Mint Account Info
 /// ------------------------------------------------------------------------------------------------
 
 class MintAccountInfo extends BorshObject {
-  
   /// Mint Account Information.
   const MintAccountInfo({
     required this.mintAuthority,
@@ -23,8 +21,8 @@ class MintAccountInfo extends BorshObject {
     required this.freezeAuthority,
   });
 
-  /// Optional authority (base-58) used to mint new tokens. The mint authority may only be provided 
-  /// during mint creation. If no mint authority is present then the mint has a fixed supply and no 
+  /// Optional authority (base-58) used to mint new tokens. The mint authority may only be provided
+  /// during mint creation. If no mint authority is present then the mint has a fixed supply and no
   /// further tokens may be minted.
   final String? mintAuthority;
 
@@ -39,7 +37,7 @@ class MintAccountInfo extends BorshObject {
 
   /// Optional authority (base-58) to freeze token accounts.
   final String? freezeAuthority;
-  
+
   @override
   BorshSchema get borshSchema => codec.schema;
 
@@ -59,57 +57,54 @@ class MintAccountInfo extends BorshObject {
   }
 
   /// {@macro solana_borsh.BorshObject.tryFromBorsh}
-  static MintAccountInfo? tryFromBorsh(final Iterable<int>? buffer)
-    => buffer != null ? MintAccountInfo.fromBorsh(buffer) : null;
+  static MintAccountInfo? tryFromBorsh(final Iterable<int>? buffer) =>
+      buffer != null ? MintAccountInfo.fromBorsh(buffer) : null;
 
   /// {@macro solana_borsh.BorshObject.fromBorshBase64}
-  factory MintAccountInfo.fromBorshBase64(final String encoded) 
-    => MintAccountInfo.fromBorsh(base64.decode(encoded));
+  factory MintAccountInfo.fromBorshBase64(final String encoded) => MintAccountInfo.fromBorsh(base64.decode(encoded));
 
   /// {@macro solana_borsh.BorshObject.tryFromBorshBase64}
-  static MintAccountInfo? tryFromBorshBase64(final String? encoded)
-    => encoded != null && encoded.isNotEmpty ? MintAccountInfo.fromBorshBase64(encoded) : null;
+  static MintAccountInfo? tryFromBorshBase64(final String? encoded) =>
+      encoded != null && encoded.isNotEmpty ? MintAccountInfo.fromBorshBase64(encoded) : null;
 
   /// Creates an instance of `this` class from an account [info].
-  /// 
+  ///
   /// ```
   /// MintAccountInfo.fromAccountInfo('AA==');
   /// ```
   factory MintAccountInfo.fromAccountInfo(final AccountInfo info) {
-    return info.isJson
-      ? MintAccountInfo.fromJson(info.jsonData)
-      : MintAccountInfo.fromBorshBase64(info.binaryData);
+    return info.isJson ? MintAccountInfo.fromJson(info.jsonData) : MintAccountInfo.fromBorshBase64(info.binaryData);
   }
 
   /// Creates an instance of `this` class from an account [info].
-  /// 
+  ///
   /// Returns `null` if [info] is omitted.
-  /// 
+  ///
   /// ```
   /// MintAccountInfo.tryFromAccountInfo('AA==');
   /// ```
-  static MintAccountInfo? tryFromAccountInfo(final AccountInfo? info)
-    => info != null ? MintAccountInfo.fromAccountInfo(info) : null;
+  static MintAccountInfo? tryFromAccountInfo(final AccountInfo? info) =>
+      info != null ? MintAccountInfo.fromAccountInfo(info) : null;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory MintAccountInfo.fromJson(final Map<String, dynamic> json) => MintAccountInfo(
-    mintAuthority: json['mintAuthority'], 
-    supply: json['supply'], 
-    decimals: json['decimals'], 
-    isInitialized: json['isInitialized'], 
-    freezeAuthority: json['freezeAuthority'],
-  );
+        mintAuthority: json['mintAuthority'],
+        supply: json['supply'],
+        decimals: json['decimals'],
+        isInitialized: json['isInitialized'],
+        freezeAuthority: json['freezeAuthority'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static MintAccountInfo? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? MintAccountInfo.fromJson(json) : null;
+  static MintAccountInfo? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? MintAccountInfo.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'mintAuthority': mintAuthority,
-    'supply': supply,
-    'decimals': decimals,
-    'isInitialized': isInitialized,
-    'freezeAuthority': freezeAuthority,
-  };
+        'mintAuthority': mintAuthority,
+        'supply': supply,
+        'decimals': decimals,
+        'isInitialized': isInitialized,
+        'freezeAuthority': freezeAuthority,
+      };
 }

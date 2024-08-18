@@ -12,13 +12,11 @@ import 'account_meta.dart';
 
 part 'transaction_instruction.g.dart';
 
-
 /// Transaction Instruction
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable(explicitToJson: true)
 class TransactionInstruction extends Serializable {
-
   /// A TransactionInstruction object.
   TransactionInstruction({
     required this.keys,
@@ -37,17 +35,16 @@ class TransactionInstruction extends Serializable {
   final Uint8List data;
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory TransactionInstruction.fromJson(final Map<String, dynamic> json) 
-    => _$TransactionInstructionFromJson(json);
+  factory TransactionInstruction.fromJson(final Map<String, dynamic> json) => _$TransactionInstructionFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$TransactionInstructionToJson(this);
 
-  /// Converts this [TransactionInstruction] into an [MessageInstruction]. The [keys] are an ordered 
+  /// Converts this [TransactionInstruction] into an [MessageInstruction]. The [keys] are an ordered
   /// list of `all` public keys referenced by this transaction.
   MessageInstruction toMessageInstruction(final List<Pubkey> keys) => MessageInstruction(
-    programIdIndex: keys.indexOf(programId), 
-    accounts: this.keys.map((final AccountMeta meta) => keys.indexOf(meta.pubkey)), 
-    data: base58.encode(Uint8List.fromList(data)),
-  );
+        programIdIndex: keys.indexOf(programId),
+        accounts: this.keys.map((final AccountMeta meta) => keys.indexOf(meta.pubkey)),
+        data: base58.encode(Uint8List.fromList(data)),
+      );
 }

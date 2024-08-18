@@ -4,12 +4,10 @@
 import 'package:solana_common/types.dart' show i64, u64;
 import 'transaction_data.dart';
 
-
 /// Transaction Info
 /// ------------------------------------------------------------------------------------------------
 
 class TransactionInfo<T extends Object> extends TransactionData<T> {
-  
   /// Confirmed Transaction Block.
   const TransactionInfo({
     required super.transaction,
@@ -22,13 +20,13 @@ class TransactionInfo<T extends Object> extends TransactionData<T> {
   /// The slot this transaction was processed in.
   final u64 slot;
 
-  /// The estimated production time, as Unix timestamp (seconds since the Unix epoch) of when the 
+  /// The estimated production time, as Unix timestamp (seconds since the Unix epoch) of when the
   /// transaction was processed - null if not available.
   final i64? blockTime;
 
-  /// Creates an instance of `this` class from the constructor parameters defined in the [json] 
+  /// Creates an instance of `this` class from the constructor parameters defined in the [json]
   /// object.
-  /// 
+  ///
   /// ```
   /// TransactionInfo.parse({ '<parameter>': <value> });
   /// ```
@@ -43,19 +41,18 @@ class TransactionInfo<T extends Object> extends TransactionData<T> {
     );
   }
 
-  /// Creates an instance of `this` class from the constructor parameters defined in the [json] 
+  /// Creates an instance of `this` class from the constructor parameters defined in the [json]
   /// object.
-  /// 
+  ///
   /// Return `null` if [json] is omitted.
-  /// 
+  ///
   /// ```
   /// TransactionInfo.tryParse({ '<parameter>': <value> });
   /// ```
-  static TransactionInfo? tryParse(final Map<String, dynamic>? json)
-    => json != null ? parse(json) : null;
+  static TransactionInfo? tryParse(final Map<String, dynamic>? json) => json != null ? parse(json) : null;
 
   /// {@macro solana_common.Serializable.fromJson}
-  static TransactionInfo fromJson(final Map<String, dynamic> json) { 
+  static TransactionInfo fromJson(final Map<String, dynamic> json) {
     final TransactionData data = TransactionData.fromJson(json);
     return TransactionInfo(
       transaction: data.transaction,

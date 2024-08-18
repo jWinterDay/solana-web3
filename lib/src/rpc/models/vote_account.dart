@@ -5,12 +5,10 @@ import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u64;
 import '../../crypto/pubkey.dart';
 
-
 /// Vote Account
 /// ------------------------------------------------------------------------------------------------
 
 class VoteAccount extends Serializable {
-  
   /// Account info and associated stake of a voting account.
   const VoteAccount({
     required this.votePubkey,
@@ -40,9 +38,9 @@ class VoteAccount extends Serializable {
   /// The most recent slot voted on by this vote account.
   final u64 lastVote;
 
-  /// The history of how many credits earned by the end of each epoch, as an array of arrays 
+  /// The history of how many credits earned by the end of each epoch, as an array of arrays
   /// containing: (epoch, credits, previousCredits).
-  /// 
+  ///
   /// ```
   /// "epochCredits": [
   ///   [1, 64, 0],
@@ -53,27 +51,26 @@ class VoteAccount extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory VoteAccount.fromJson(final Map<String, dynamic> json) => VoteAccount(
-    votePubkey: Pubkey.fromBase58(json['votePubkey']),
-    nodePubkey: Pubkey.fromBase58(json['nodePubkey']),
-    activatedStake: json['activatedStake'],
-    epochVoteAccount: json['epochVoteAccount'],
-    commission: json['commission'],
-    lastVote: json['lastVote'],
-    epochCredits: List<List>.from(json['epochCredits']).map(List<int>.from).toList(growable: false),
-  );
+        votePubkey: Pubkey.fromBase58(json['votePubkey']),
+        nodePubkey: Pubkey.fromBase58(json['nodePubkey']),
+        activatedStake: json['activatedStake'],
+        epochVoteAccount: json['epochVoteAccount'],
+        commission: json['commission'],
+        lastVote: json['lastVote'],
+        epochCredits: List<List>.from(json['epochCredits']).map(List<int>.from).toList(growable: false),
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static VoteAccount? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? VoteAccount.fromJson(json) : null;
+  static VoteAccount? tryFromJson(final Map<String, dynamic>? json) => json != null ? VoteAccount.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'votePubkey': votePubkey.toBase58(),
-    'nodePubkey': nodePubkey.toBase58(),
-    'activatedStake': activatedStake,
-    'epochVoteAccount': epochVoteAccount,
-    'commission': commission,
-    'lastVote': lastVote,
-    'epochCredits': epochCredits,
-  };
+        'votePubkey': votePubkey.toBase58(),
+        'nodePubkey': nodePubkey.toBase58(),
+        'activatedStake': activatedStake,
+        'epochVoteAccount': epochVoteAccount,
+        'commission': commission,
+        'lastVote': lastVote,
+        'epochCredits': epochCredits,
+      };
 }

@@ -3,12 +3,10 @@
 
 import 'package:solana_common/models.dart';
 
-
 /// Loaded Address
 /// ------------------------------------------------------------------------------------------------
 
 class LoadedAddress extends Serializable {
-  
   /// Transaction addresses loaded from the address lookup tables.
   const LoadedAddress({
     required this.writable,
@@ -23,9 +21,9 @@ class LoadedAddress extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory LoadedAddress.fromJson(final Map<String, dynamic> json) => LoadedAddress(
-    writable: List.castFrom(json['writable']),
-    readonly: List.castFrom(json['readonly']),
-  );
+        writable: List.castFrom(json['writable']),
+        readonly: List.castFrom(json['readonly']),
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static LoadedAddress? tryFromJson(final Map<String, dynamic>? json) {
@@ -34,7 +32,7 @@ class LoadedAddress extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'writable': writable,
-    'readonly': readonly,
-  };
+        'writable': writable,
+        'readonly': readonly,
+      };
 }

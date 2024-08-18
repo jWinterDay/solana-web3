@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u64;
 
-
 /// Slot Notification
 /// ------------------------------------------------------------------------------------------------
 
 class SlotNotification extends Serializable {
-  
   /// Slot notification.
   const SlotNotification({
     required this.parent,
@@ -28,19 +26,19 @@ class SlotNotification extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   static SlotNotification fromJson(final Map<String, dynamic> json) => SlotNotification(
-    parent: json['parent'],
-    root: json['root'],
-    slot: json['slot'],
-  );
+        parent: json['parent'],
+        root: json['root'],
+        slot: json['slot'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static SlotNotification? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? SlotNotification.fromJson(json) : null;
+  static SlotNotification? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? SlotNotification.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'parent': parent,
-    'root': root,
-    'slot': slot,
-  };
+        'parent': parent,
+        'root': root,
+        'slot': slot,
+      };
 }

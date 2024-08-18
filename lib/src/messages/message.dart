@@ -23,13 +23,11 @@ import 'message_instruction.dart';
 
 part 'message.g.dart';
 
-
 /// Message
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable(explicitToJson: true)
 class Message extends Serializable {
-  
   /// Creates a the list of [instructions] to be processed atomically by a transaction.
   const Message({
     required this.version,
@@ -38,7 +36,7 @@ class Message extends Serializable {
     required this.recentBlockhash,
     required this.instructions,
     required final List<MessageAddressTableLookup>? addressTableLookups,
-  }): addressTableLookups = const [];
+  }) : addressTableLookups = const [];
 
   /// The transaction/message version (`null` == legacy).
   final int? version;
@@ -46,29 +44,29 @@ class Message extends Serializable {
   /// The account types and signatures required by the transaction.
   final MessageHeader header;
 
-  /// List of base-58 encoded public keys used by the transaction, including the instructions and 
-  /// signatures. The first [MessageHeader.numRequiredSignatures] public keys must sign the 
+  /// List of base-58 encoded public keys used by the transaction, including the instructions and
+  /// signatures. The first [MessageHeader.numRequiredSignatures] public keys must sign the
   /// transaction.
-  /// 
+  ///
   /// ### Example:
-  /// 
+  ///
   ///   If [accountKeys] = `['pk1', 'pk0', 'pk4', 'pk2', 'pk5']`,
-  /// 
+  ///
   ///   and [MessageHeader.numRequiredSignatures] = `2`,
-  /// 
+  ///
   ///   then [Transaction.signatures] must be = `['message signed by pk1', 'message signed by pk0']`
   ///
   final List<Pubkey> accountKeys;
 
-   /// A base-58 encoded hash of a recent block in the ledger used to prevent transaction 
-   /// duplication and to give transactions lifetimes.
+  /// A base-58 encoded hash of a recent block in the ledger used to prevent transaction
+  /// duplication and to give transactions lifetimes.
   final String recentBlockhash;
 
-  /// A list of program instructions that will be executed in sequence and committed in one atomic 
+  /// A list of program instructions that will be executed in sequence and committed in one atomic
   /// transaction if all succeed.
   final Iterable<MessageInstruction> instructions;
 
-  /// A list of address table lookups used by a transaction to dynamically load addresses from 
+  /// A list of address table lookups used by a transaction to dynamically load addresses from
   /// on-chain address lookup tables.
   final List<MessageAddressTableLookup> addressTableLookups;
 
@@ -77,12 +75,13 @@ class Message extends Serializable {
     required final Pubkey payer,
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
-  }) => Message.compile(
-    version: null, 
-    payer: payer, 
-    instructions: instructions, 
-    recentBlockhash: recentBlockhash, 
-  );
+  }) =>
+      Message.compile(
+        version: null,
+        payer: payer,
+        instructions: instructions,
+        recentBlockhash: recentBlockhash,
+      );
 
   /// Creates a `v0` message.
   factory Message.v0({
@@ -90,13 +89,14 @@ class Message extends Serializable {
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
     final List<AddressLookupTableAccount>? addressLookupTableAccounts,
-  }) => Message.compile(
-    version: 0, 
-    payer: payer, 
-    instructions: instructions, 
-    recentBlockhash: recentBlockhash, 
-    addressLookupTableAccounts: addressLookupTableAccounts,
-  );
+  }) =>
+      Message.compile(
+        version: 0,
+        payer: payer,
+        instructions: instructions,
+        recentBlockhash: recentBlockhash,
+        addressLookupTableAccounts: addressLookupTableAccounts,
+      );
 
   /// Creates a transaction message.
   factory Message.compile({
@@ -106,7 +106,6 @@ class Message extends Serializable {
     required final Blockhash recentBlockhash,
     final List<AddressLookupTableAccount>? addressLookupTableAccounts,
   }) {
-
     /// Program account keys.
     final HashSet<Pubkey> programMetasMap = HashSet();
 
@@ -124,9 +123,10 @@ class Message extends Serializable {
       for (final AccountMeta key in instruction.keys) {
         final AccountMeta? meta = staticAccountMetasMap[key.pubkey];
         staticAccountMetasMap[key.pubkey] = meta?.copyWith(
-          isSigner: meta.isSigner || key.isSigner,
-          isWritable: meta.isWritable || key.isWritable,
-        ) ?? key;
+              isSigner: meta.isSigner || key.isSigner,
+              isWritable: meta.isWritable || key.isWritable,
+            ) ??
+            key;
       }
     }
 
@@ -158,9 +158,9 @@ class Message extends Serializable {
       if (writableIndexes.isNotEmpty || readonlyIndexes.isNotEmpty) {
         addressTableLookups.add(
           MessageAddressTableLookup(
-            accountKey: lookupAccount.key, 
-            writableIndexes: writableIndexes, 
-            readonlyIndexes: readonlyIndexes, 
+            accountKey: lookupAccount.key,
+            writableIndexes: writableIndexes,
+            readonlyIndexes: readonlyIndexes,
           ),
         );
       }
@@ -187,33 +187,24 @@ class Message extends Serializable {
     final List<Pubkey> readonlyNonSigners = [];
     for (final AccountMeta meta in staticAccountMetas) {
       if (meta.isSigner) {
-        meta.isWritable 
-          ? writableSigners.add(meta.pubkey) 
-          : readonlySigners.add(meta.pubkey);
+        meta.isWritable ? writableSigners.add(meta.pubkey) : readonlySigners.add(meta.pubkey);
       } else {
-        meta.isWritable 
-          ? writableNonSigners.add(meta.pubkey) 
-          : readonlyNonSigners.add(meta.pubkey);
+        meta.isWritable ? writableNonSigners.add(meta.pubkey) : readonlyNonSigners.add(meta.pubkey);
       }
     }
 
     // Create the header.
     final MessageHeader header = MessageHeader(
-      numRequiredSignatures: writableSigners.length + readonlySigners.length, 
-      numReadonlySignedAccounts: readonlySigners.length, 
-      numReadonlyUnsignedAccounts: readonlyNonSigners.length, 
+      numRequiredSignatures: writableSigners.length + readonlySigners.length,
+      numReadonlySignedAccounts: readonlySigners.length,
+      numReadonlyUnsignedAccounts: readonlyNonSigners.length,
     );
 
     // Collect static account keys.
-    final List<Pubkey> staticAccountKeys = writableSigners
-      + readonlySigners
-      + writableNonSigners
-      + readonlyNonSigners;
+    final List<Pubkey> staticAccountKeys = writableSigners + readonlySigners + writableNonSigners + readonlyNonSigners;
 
     // Collect all account keys.
-    final List<Pubkey> accountKeys = staticAccountKeys
-      + writableLookups
-      + readonlyLookups;
+    final List<Pubkey> accountKeys = staticAccountKeys + writableLookups + readonlyLookups;
 
     // DEBUG: Check that the first account is the payer.
     assert(accountKeys.first == payer, 'Missing payer.');
@@ -232,37 +223,34 @@ class Message extends Serializable {
     for (final TransactionInstruction instruction in instructions) {
       compiledInstructions.add(
         MessageInstruction(
-          programIdIndex: accountKeysMap[instruction.programId]!, 
-          accounts: instruction.keys.map((e) => accountKeysMap[e.pubkey]!), 
-          data: base58.encode(instruction.data), 
+          programIdIndex: accountKeysMap[instruction.programId]!,
+          accounts: instruction.keys.map((e) => accountKeysMap[e.pubkey]!),
+          data: base58.encode(instruction.data),
         ),
       );
     }
 
     return Message(
-      version: version, 
-      header: header, 
-      accountKeys: staticAccountKeys, 
-      recentBlockhash: recentBlockhash, 
+      version: version,
+      header: header,
+      accountKeys: staticAccountKeys,
+      recentBlockhash: recentBlockhash,
       instructions: compiledInstructions,
       addressTableLookups: addressTableLookups,
     );
   }
-  
+
   /// The number of account keys contained within [addressTableLookups].
   int get numAccountKeysFromLookups => addressTableLookups.fold(
-    0, 
-    (total, lookup) => total 
-      + lookup.readonlyIndexes.length 
-      + lookup.writableIndexes.length,
-  );
+        0,
+        (total, lookup) => total + lookup.readonlyIndexes.length + lookup.writableIndexes.length,
+      );
 
   // /// Map each program id index to its corresponding account key.
   // final Map<int, Pubkey> _indexToProgramIds = {};
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory Message.fromJson(final Map<String, dynamic> json) 
-    => _$MessageFromJson(json);
+  factory Message.fromJson(final Map<String, dynamic> json) => _$MessageFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$MessageToJson(this);
@@ -282,16 +270,15 @@ class Message extends Serializable {
       }
       return false;
     } else {
-      return index < header.numRequiredSignatures - header.numReadonlySignedAccounts 
-        || (index >= header.numRequiredSignatures 
-          && index < accountKeys.length - header.numReadonlyUnsignedAccounts);
+      return index < header.numRequiredSignatures - header.numReadonlySignedAccounts ||
+          (index >= header.numRequiredSignatures && index < accountKeys.length - header.numReadonlyUnsignedAccounts);
     }
   }
 
   /// The programs accounts.
   Iterable<Pubkey> programIds() {
     final List<Pubkey> programIds = [];
-    for (final MessageInstruction instruction in instructions) { 
+    for (final MessageInstruction instruction in instructions) {
       final int index = instruction.programIdIndex;
       programIds.add(accountKeys[index]);
     }
@@ -306,7 +293,6 @@ class Message extends Serializable {
 
   /// Encodes this message into a buffer.
   Buffer serialize() {
-
     // Create a fixed-length writable buffer for signed data.
     final signaturesBuffer = BufferWriter(2048);
 
@@ -345,13 +331,12 @@ class Message extends Serializable {
 
     // Write the message instructions.
     for (final MessageInstruction instruction in instructions) {
-      
       // Program ID index.
       final int programIdIndex = instruction.programIdIndex;
       instructionsBuffer.setUint8(programIdIndex);
 
       // Compact array of account address indexes.
-      final List<int> keyIndicesCount = shortvec.encodeLength(instruction.accounts.length); 
+      final List<int> keyIndicesCount = shortvec.encodeLength(instruction.accounts.length);
       instructionsBuffer.setBuffer(keyIndicesCount);
       final Iterable<int> keyIndices = instruction.accounts;
       instructionsBuffer.setBuffer(keyIndices);
@@ -366,20 +351,18 @@ class Message extends Serializable {
     // Create a fixed-length writable buffer with the maximum packet size.
     final addressTableLookupsBuffer = BufferWriter(packetDataSize);
     if (version != null) {
-
       // Write the encoded table lookups length.
       final List<int> addressTableLookupsLength = shortvec.encodeLength(addressTableLookups.length);
       addressTableLookupsBuffer.setBuffer(addressTableLookupsLength);
 
       for (final MessageAddressTableLookup addressTableLookup in addressTableLookups) {
-
         // Compact array of the writable indexes length.
         final List<int> writableIndexes = addressTableLookup.writableIndexes;
-        final List<int> writableIndexesCount = shortvec.encodeLength(writableIndexes.length); 
+        final List<int> writableIndexesCount = shortvec.encodeLength(writableIndexes.length);
 
         // Compact array of the readonly indexes length.
         final List<int> readonlyIndexes = addressTableLookup.readonlyIndexes;
-        final List<int> readonlyIndexesCount = shortvec.encodeLength(readonlyIndexes.length); 
+        final List<int> readonlyIndexesCount = shortvec.encodeLength(readonlyIndexes.length);
 
         addressTableLookupsBuffer.setBuffer(addressTableLookup.accountKey.toBytes());
         addressTableLookupsBuffer.setBuffer(writableIndexesCount);
@@ -390,36 +373,33 @@ class Message extends Serializable {
     }
 
     /// Resize and merge the buffers.
-    return signaturesBuffer.toBuffer(slice: true) 
-      + instructionsBuffer.toBuffer(slice: true)
-      + addressTableLookupsBuffer.toBuffer(slice: true);
+    return signaturesBuffer.toBuffer(slice: true) +
+        instructionsBuffer.toBuffer(slice: true) +
+        addressTableLookupsBuffer.toBuffer(slice: true);
   }
 
   /// Decodes a byte-array into a [Message] instance.
-  factory Message.fromList(final List<int> byteArray) 
-    => Message.fromBuffer(Buffer.fromList(byteArray));
+  factory Message.fromList(final List<int> byteArray) => Message.fromBuffer(Buffer.fromList(byteArray));
 
   /// Decodes a `base-58` encoded string into a [Message] instance.
-  factory Message.fromBase58(final String encoded) 
-    => Message.fromBuffer(Buffer.fromString(encoded, BufferEncoding.base58));
+  factory Message.fromBase58(final String encoded) =>
+      Message.fromBuffer(Buffer.fromString(encoded, BufferEncoding.base58));
 
   /// Decodes a `base-64` encoded string into a [Message] instance.
-  factory Message.fromBase64(final String encoded) 
-    => Message.fromBuffer(Buffer.fromString(encoded, BufferEncoding.base64));
+  factory Message.fromBase64(final String encoded) =>
+      Message.fromBuffer(Buffer.fromString(encoded, BufferEncoding.base64));
 
   /// Decode a buffer into a [Message] instance.
-  factory Message.fromBuffer(final Buffer buffer)
-    => Message.fromBufferReader(buffer.reader);
+  factory Message.fromBuffer(final Buffer buffer) => Message.fromBufferReader(buffer.reader);
 
   /// Decodes a buffer reader into a [Message] instance.
   factory Message.fromBufferReader(final BufferReader reader) {
-
     /// Read version.
     final int prefix = reader.getUint8();
     final int maskedPrefix = prefix & versionPrefixMask;
     final int? version = prefix != maskedPrefix ? maskedPrefix : null;
     if (version == null) reader.advance(-1); // unread the first byte.
-    
+
     /// Read the message header.
     final int numRequiredSignatures = reader.getUint8();
     final int numReadonlySignedAccounts = reader.getUint8();
@@ -448,8 +428,8 @@ class Message extends Serializable {
       final String data = base58.encode(dataSlice.asUint8List());
       instructions.add(
         MessageInstruction(
-          programIdIndex: programIdIndex, 
-          accounts: accounts, 
+          programIdIndex: programIdIndex,
+          accounts: accounts,
           data: data,
         ),
       );
@@ -480,11 +460,11 @@ class Message extends Serializable {
       version: version,
       accountKeys: accountKeys,
       header: MessageHeader(
-        numRequiredSignatures: numRequiredSignatures, 
+        numRequiredSignatures: numRequiredSignatures,
         numReadonlySignedAccounts: numReadonlySignedAccounts,
         numReadonlyUnsignedAccounts: numReadonlyUnsignedAccounts,
-      ), 
-      recentBlockhash: base58.encode(recentBlockhash.asUint8List()), 
+      ),
+      recentBlockhash: base58.encode(recentBlockhash.asUint8List()),
       instructions: instructions,
       addressTableLookups: addressTableLookups,
     );
@@ -493,6 +473,7 @@ class Message extends Serializable {
   /// Serializes this message into an encoded string.
   @override
   String toString([
-    final BufferEncoding encoding = BufferEncoding.base64, 
-  ]) => serialize().getString(encoding);
+    final BufferEncoding encoding = BufferEncoding.base64,
+  ]) =>
+      serialize().getString(encoding);
 }

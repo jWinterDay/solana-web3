@@ -7,13 +7,11 @@ import 'types.dart';
 import 'websocket_listener.dart';
 import 'websocket_subscription.dart';
 
-
 /// Websocket Notifier
 /// ------------------------------------------------------------------------------------------------
 
 /// A notification dispatcher.
 class WebsocketNotifier<T> {
-
   /// Creates a notification dispatcher.
   WebsocketNotifier(
     this.subscribeMethod, {
@@ -23,10 +21,8 @@ class WebsocketNotifier<T> {
     required this.decoder,
     required final Duration? timeLimit,
     required void Function()? onTimeout,
-  }): assert(timeLimit == null || onTimeout != null),
-      _timer = timeLimit != null && onTimeout != null
-        ? Timer(timeLimit, onTimeout)
-        : null;
+  })  : assert(timeLimit == null || onTimeout != null),
+        _timer = timeLimit != null && onTimeout != null ? Timer(timeLimit, onTimeout) : null;
 
   /// The notification listeners.
   final List<WebsocketListener<T>> _listeners = [];
@@ -57,15 +53,15 @@ class WebsocketNotifier<T> {
 
   /// Adds a websocket subscription handler to the dispatcher.
   WebsocketSubscription<T> addListener({
-    final WebsocketOnDataHandler<T>? onData, 
+    final WebsocketOnDataHandler<T>? onData,
     final WebsocketOnErrorHandler? onError,
     final WebsocketOnDoneHandler? onDone,
   }) {
     final WebsocketListener<T> listener = WebsocketListener(
-      subscriptionId, 
-      onData: onData, 
-      onError: onError, 
-      onDone: onDone, 
+      subscriptionId,
+      onData: onData,
+      onError: onError,
+      onDone: onDone,
     );
     _listeners.add(listener);
     return listener;
@@ -74,7 +70,8 @@ class WebsocketNotifier<T> {
   /// Removes a websocket subscription handler from the dispatcher.
   bool removeListener(
     final WebsocketSubscription<T> listener,
-  ) => _listeners.remove(listener);
+  ) =>
+      _listeners.remove(listener);
 
   /// Notifies all listeners of [data] received by the websocket.
   void notifyData(final Map<String, dynamic> data) {
@@ -94,7 +91,7 @@ class WebsocketNotifier<T> {
       listener.onError?.call(error, stackTrace);
     }
   }
-  
+
   /// Notifies all listeners that the dispatcher has been closed.
   void close() {
     _timer?.cancel();

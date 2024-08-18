@@ -10,12 +10,10 @@ import '../../programs/stake/state.dart';
 import 'account_info.dart';
 import 'stake_account_info.dart';
 
-
 /// Stake Account
 /// ------------------------------------------------------------------------------------------------
 
 class StakeAccount extends BorshObject {
-  
   /// Stake Account Information.
   const StakeAccount({
     required this.type,
@@ -41,51 +39,48 @@ class StakeAccount extends BorshObject {
   }
 
   /// {@macro solana_borsh.BorshObject.tryFromBorsh}
-  static StakeAccount? tryFromBorsh(final Iterable<int>? buffer)
-    => buffer != null ? StakeAccount.fromBorsh(buffer) : null;
+  static StakeAccount? tryFromBorsh(final Iterable<int>? buffer) =>
+      buffer != null ? StakeAccount.fromBorsh(buffer) : null;
 
   /// {@macro solana_borsh.BorshObject.fromBorshBase64}
-  factory StakeAccount.fromBorshBase64(final String encoded) 
-    => StakeAccount.fromBorsh(base64.decode(encoded));
+  factory StakeAccount.fromBorshBase64(final String encoded) => StakeAccount.fromBorsh(base64.decode(encoded));
 
   /// {@macro solana_borsh.BorshObject.tryFromBorshBase64}
-  static StakeAccount? tryFromBorshBase64(final String? encoded)
-    => encoded != null ? StakeAccount.fromBorshBase64(encoded) : null;
+  static StakeAccount? tryFromBorshBase64(final String? encoded) =>
+      encoded != null ? StakeAccount.fromBorshBase64(encoded) : null;
 
   /// Creates an instance of `this` class from an account [info].
-  /// 
+  ///
   /// ```
   /// StakeAccount.fromAccountInfo('AA==');
   /// ```
   factory StakeAccount.fromAccountInfo(final AccountInfo info) {
-    return info.isJson
-      ? StakeAccount.fromJson(info.jsonData)
-      : StakeAccount.fromBorshBase64(info.binaryData);
+    return info.isJson ? StakeAccount.fromJson(info.jsonData) : StakeAccount.fromBorshBase64(info.binaryData);
   }
 
   /// Creates an instance of `this` class from an account [info].
-  /// 
+  ///
   /// Returns `null` if [info] is omitted.
-  /// 
+  ///
   /// ```
   /// StakeAccount.tryFromAccountInfo('AA==');
   /// ```
-  static StakeAccount? tryFromAccountInfo(final AccountInfo? info)
-    => info != null ? StakeAccount.fromAccountInfo(info) : null;
+  static StakeAccount? tryFromAccountInfo(final AccountInfo? info) =>
+      info != null ? StakeAccount.fromAccountInfo(info) : null;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory StakeAccount.fromJson(final Map<String, dynamic> json) => StakeAccount(
-    type: json['type'],
-    info: StakeAccountInfo.fromJson(json['stake']),
-  );
+        type: json['type'],
+        info: StakeAccountInfo.fromJson(json['stake']),
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static StakeAccount? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? StakeAccount.fromJson(json) : null;
+  static StakeAccount? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? StakeAccount.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'type': type,
-    'info': info?.toJson(),
-  };
+        'type': type,
+        'info': info?.toJson(),
+      };
 }

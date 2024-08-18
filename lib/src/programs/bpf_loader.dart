@@ -7,7 +7,6 @@
 // import '../rpc/connection.dart';
 // import 'loader.dart';
 
-
 // /// BPF Loader
 // /// ------------------------------------------------------------------------------------------------
 
@@ -20,17 +19,17 @@
 // class BpfLoader {
 
 //   /// Returns the minimum number of signatures required to load a program (not including retries).
-//   /// 
+//   ///
 //   /// Can be used to calculate transaction fees.
 //   static int getMinNumSignatures(final int dataLength) {
 //     return Loader.getMinNumSignatures(dataLength);
 //   }
 
 //   /// Loads a BPF program.
-//   /// 
-//   /// Returns `true` if the [program] was loaded successfully and `false` if the program was already 
+//   ///
+//   /// Returns `true` if the [program] was loaded successfully and `false` if the program was already
 //   /// loaded.
-//   /// 
+//   ///
 //   /// [connection]      The connection to use.
 //   /// [payer]           the `account` that will pay program loading fees.
 //   /// [program]         The `account` to load the program into.

@@ -5,12 +5,10 @@ import 'dart:math' as math show pow;
 import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u64;
 
-
 /// Epoch Schedule
 /// ------------------------------------------------------------------------------------------------
 
 class EpochSchedule extends Serializable {
-  
   /// Epoch schedule information from a cluster's genesis config.
   const EpochSchedule({
     required this.slotsPerEpoch,
@@ -20,7 +18,7 @@ class EpochSchedule extends Serializable {
     required this.firstNormalSlot,
   });
 
-   /// The minimum number of slots per epoch.
+  /// The minimum number of slots per epoch.
   static const int minimumSlotPerEpoch = 32;
 
   /// Returns the number of trailing zeros in the binary representation of [n].
@@ -56,21 +54,21 @@ class EpochSchedule extends Serializable {
 
   /// Whether epochs start short and grow.
   final bool warmup;
-  
+
   /// The first normal-length epoch, log2(slotsPerEpoch) - log2(MINIMUM_SLOTS_PER_EPOCH).
   final u64 firstNormalEpoch;
-  
+
   /// MINIMUM_SLOTS_PER_EPOCH * (2.pow(firstNormalEpoch) - 1).
   final u64 firstNormalSlot;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory EpochSchedule.fromJson(final Map<String, dynamic> json) => EpochSchedule(
-    slotsPerEpoch: json['slotsPerEpoch'],
-    leaderScheduleSlotOffset: json['leaderScheduleSlotOffset'],
-    warmup: json['warmup'],
-    firstNormalEpoch: json['firstNormalEpoch'],
-    firstNormalSlot: json['firstNormalSlot'],
-  );
+        slotsPerEpoch: json['slotsPerEpoch'],
+        leaderScheduleSlotOffset: json['leaderScheduleSlotOffset'],
+        warmup: json['warmup'],
+        firstNormalEpoch: json['firstNormalEpoch'],
+        firstNormalSlot: json['firstNormalSlot'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static EpochSchedule? tryFromJson(final Map<String, dynamic>? json) {
@@ -79,21 +77,19 @@ class EpochSchedule extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'slotsPerEpoch': slotsPerEpoch,
-    'leaderScheduleSlotOffset': leaderScheduleSlotOffset,
-    'warmup': warmup,
-    'firstNormalEpoch': firstNormalEpoch,
-    'firstNormalSlot': firstNormalSlot,
-  };
+        'slotsPerEpoch': slotsPerEpoch,
+        'leaderScheduleSlotOffset': leaderScheduleSlotOffset,
+        'warmup': warmup,
+        'firstNormalEpoch': firstNormalEpoch,
+        'firstNormalSlot': firstNormalSlot,
+      };
 
   u64 getEpoch(final u64 slot) => getEpochAndSlotIndex(slot)[0];
 
   List<u64> getEpochAndSlotIndex(final u64 slot) {
     if (slot < firstNormalSlot) {
       final epoch =
-        _trailingZeros(_nextPowerOfTwo(slot + minimumSlotPerEpoch + 1)) -
-        _trailingZeros(minimumSlotPerEpoch) -
-        1;
+          _trailingZeros(_nextPowerOfTwo(slot + minimumSlotPerEpoch + 1)) - _trailingZeros(minimumSlotPerEpoch) - 1;
       final epochLen = getSlotsInEpoch(epoch);
       final slotIndex = slot - (epochLen - minimumSlotPerEpoch);
       return [epoch, slotIndex];
@@ -108,8 +104,8 @@ class EpochSchedule extends Serializable {
 
   u64 getFirstSlotInEpoch(final u64 epoch) {
     return epoch <= firstNormalEpoch
-      ? (math.pow(2, epoch).toInt() - 1) * minimumSlotPerEpoch
-      : (epoch - firstNormalEpoch) * slotsPerEpoch + firstNormalSlot;
+        ? (math.pow(2, epoch).toInt() - 1) * minimumSlotPerEpoch
+        : (epoch - firstNormalEpoch) * slotsPerEpoch + firstNormalSlot;
   }
 
   u64 getLastSlotInEpoch(final u64 epoch) {
@@ -117,8 +113,6 @@ class EpochSchedule extends Serializable {
   }
 
   u64 getSlotsInEpoch(final u64 epoch) {
-    return epoch < firstNormalEpoch
-      ? math.pow(2, epoch + _trailingZeros(minimumSlotPerEpoch)).toInt()
-      : slotsPerEpoch;
+    return epoch < firstNormalEpoch ? math.pow(2, epoch + _trailingZeros(minimumSlotPerEpoch)).toInt() : slotsPerEpoch;
   }
 }

@@ -10,12 +10,10 @@ import '../../types.dart';
 import '../configs/get_latest_blockhash_config.dart';
 import 'blockhash_with_expiry_block_height.dart';
 
-
 /// Blockhash Cache
 /// ------------------------------------------------------------------------------------------------
 
 class BlockhashCache {
-  
   /// Stores the latest `blockhash` fetched from [HttpConnection.getLatestBlockhash].
   BlockhashCache({
     this.timeout = const Duration(seconds: 30),
@@ -58,19 +56,18 @@ class BlockhashCache {
   int _timestamp() => DateTime.now().millisecondsSinceEpoch;
 
   /// Returns the latest `blockhash`.
-  /// 
-  /// The cached [value] is returned when [disabled] is `false` and its [timeout] duration has not 
-  /// elapsed. Otherwise, a request is made over the provided [connection] to fetch and store the 
+  ///
+  /// The cached [value] is returned when [disabled] is `false` and its [timeout] duration has not
+  /// elapsed. Otherwise, a request is made over the provided [connection] to fetch and store the
   /// latest blockhash.
-  /// 
-  /// If a request to fetch the latest blockhash is in progress, the method waits for it to 
-  /// complete before returning a value, even if [disabled] is `false` and there's a valid cache 
+  ///
+  /// If a request to fetch the latest blockhash is in progress, the method waits for it to
+  /// complete before returning a value, even if [disabled] is `false` and there's a valid cache
   /// value.
   FutureOr<BlockhashWithExpiryBlockHeight> get(
-    final HttpConnection connection, { 
-    required final bool disabled, 
+    final HttpConnection connection, {
+    required final bool disabled,
   }) async {
-
     /// Make a request to fetch the latest blockhash if the cache is [disabled].
     if (disabled) {
       return _fetch(connection);
@@ -87,10 +84,10 @@ class BlockhashCache {
     _latestBlockhash = value;
     _latestBlockhashTimestamp = _timestamp();
   }
-  
-  /// Waits for the pending request to complete (if any) or makes a request to get the latest 
+
+  /// Waits for the pending request to complete (if any) or makes a request to get the latest
   /// `blockhash`.
-  /// 
+  ///
   /// Throws a [TransactionException] if the latest blockhash could not be retrieved.
   FutureOr<BlockhashWithExpiryBlockHeight> _syncFetch(final HttpConnection connection) async {
     await _fetchCompleter?.future;
@@ -98,10 +95,9 @@ class BlockhashCache {
   }
 
   /// Makes a request to get the latest `blockhash`.
-  /// 
+  ///
   /// Throws a [TransactionException] if the latest blockhash could not be retrieved.
   FutureOr<BlockhashWithExpiryBlockHeight> _fetch(final HttpConnection connection) async {
-
     /// Create a local [fetchCompleter] to be resolved when this method completes.
     final Completer<void> fetchCompleter = Completer.sync();
 
@@ -128,9 +124,7 @@ class BlockhashCache {
 
       final int elapsed = _timestamp() - fetchTimestamp;
       throw TransactionException('Unable to obtain a new blockhash after ${elapsed}ms');
-      
     } finally {
-
       /// Resolve the request's completer.
       fetchCompleter.complete();
 

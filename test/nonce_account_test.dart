@@ -13,7 +13,6 @@
 // import 'package:solana_web3/types.dart';
 // import 'utils.dart' as utils;
 
-
 // /// Nonce Account Tests
 // /// ------------------------------------------------------------------------------------------------
 
@@ -24,18 +23,18 @@
 //   final Keypair wallet = utils.wallet;
 //   final Connection connection = Connection(Cluster.devnet);
 //   final Keypair nonceWallet = Keypair.fromSeckeySync(Uint8List.fromList([
-//     160, 107, 64, 72, 178, 116, 194, 76, 161, 10, 25, 18, 28, 2, 130, 225, 
-//     119, 218, 151, 87, 233, 229, 165, 35, 27, 70, 21, 9, 195, 155, 206, 167, 
-//     245, 84, 3, 73, 22, 97, 15, 51, 70, 123, 193, 116, 5, 148, 121, 197, 
+//     160, 107, 64, 72, 178, 116, 194, 76, 161, 10, 25, 18, 28, 2, 130, 225,
+//     119, 218, 151, 87, 233, 229, 165, 35, 27, 70, 21, 9, 195, 155, 206, 167,
+//     245, 84, 3, 73, 22, 97, 15, 51, 70, 123, 193, 116, 5, 148, 121, 197,
 //     66, 127, 38, 138, 206, 221, 119, 104, 26, 216, 137, 219, 228, 145, 2, 183,
 //   ]));
 
 //   test('create nonce account', () async {
 //     final int rent = await connection.getMinimumBalanceForRentExemption(NonceAccount.length);
 //     final tx = SystemProgram.createNonceAccount(
-//       fromPubkey: wallet.pubkey, 
-//       noncePubkey: nonceWallet.pubkey, 
-//       authorizedPubkey: wallet.pubkey, 
+//       fromPubkey: wallet.pubkey,
+//       noncePubkey: nonceWallet.pubkey,
+//       authorizedPubkey: wallet.pubkey,
 //       lamports: rent.toBigInt(),
 //     );
 //     final TransactionSignature signature = await connection.sendAndConfirmTransaction(

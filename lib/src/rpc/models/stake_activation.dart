@@ -5,12 +5,10 @@ import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u64;
 import 'stake_activation_state.dart';
 
-
 /// Stake Activation
 /// ------------------------------------------------------------------------------------------------
 
 class StakeActivation extends Serializable {
-  
   /// Epoch activation information for a stake account.
   const StakeActivation({
     required this.state,
@@ -26,22 +24,22 @@ class StakeActivation extends Serializable {
 
   /// The stake inactive during the epoch.
   final u64 inactive;
-  
+
   /// {@macro solana_common.Serializable.fromJson}
   factory StakeActivation.fromJson(final Map<String, dynamic> json) => StakeActivation(
-    state: StakeActivationState.fromJson(json['state']),
-    active: json['active'],
-    inactive: json['inactive'],
-  );
+        state: StakeActivationState.fromJson(json['state']),
+        active: json['active'],
+        inactive: json['inactive'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static StakeActivation? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? StakeActivation.fromJson(json) : null;
+  static StakeActivation? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? StakeActivation.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'state': state.name,
-    'active': active,
-    'inactive': inactive,
-  };
+        'state': state.name,
+        'active': active,
+        'inactive': inactive,
+      };
 }

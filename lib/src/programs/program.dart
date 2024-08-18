@@ -9,12 +9,10 @@ import '../rpc/models/account_info.dart';
 import '../transactions/account_meta.dart';
 import '../transactions/transaction_instruction.dart';
 
-
 /// Program
 /// ------------------------------------------------------------------------------------------------
 
 abstract class Program {
-
   /// Solana program.
   const Program(this.pubkey);
 
@@ -24,11 +22,11 @@ abstract class Program {
   // /// {@template solana_web3.Program.findAddress}
   // /// Finds a valid program address for the given [seeds].
   // ///
-  // /// `Valid program addresses must fall off the ed25519 curve.` This function iterates a nonce 
+  // /// `Valid program addresses must fall off the ed25519 curve.` This function iterates a nonce
   // /// until it finds one that can be combined with the seeds to produce a valid program address.
-  // /// 
+  // ///
   // /// Throws an [AssertionError] if [seeds] contains an invalid seed.
-  // /// 
+  // ///
   // /// Throws a [PubkeyException] if a valid program address could not be found.
   // /// {@endtemplate}
   // ProgramAddress findAddress(final List<List<int>> seeds)
@@ -36,7 +34,7 @@ abstract class Program {
 
   /// {@template solana_web3.Program.checkDeployed}
   /// Check that the program has been deployed to the cluster and is an executable program.
-  /// 
+  ///
   /// Throws a [ProgramException] if [pubkey] does not refer to a valid program.
   /// {@endtemplate}
   Future<void> checkDeployed(final Connection connection) async {
@@ -49,9 +47,8 @@ abstract class Program {
   }
 
   /// Encodes the program [instruction].
-  Iterable<int> encodeInstruction<T extends Enum>(final T instruction)
-    => Buffer.fromUint8(instruction.index);
-  
+  Iterable<int> encodeInstruction<T extends Enum>(final T instruction) => Buffer.fromUint8(instruction.index);
+
   /// Creates a [TransactionInstruction] for the program [instruction].
   TransactionInstruction createTransactionIntruction(
     final Enum instruction, {
@@ -59,7 +56,7 @@ abstract class Program {
     final List<Iterable<int>> data = const [],
   }) {
     return TransactionInstruction(
-      keys: keys, 
+      keys: keys,
       programId: pubkey,
       data: Buffer.flatten([encodeInstruction(instruction), ...data]).asUint8List(),
     );

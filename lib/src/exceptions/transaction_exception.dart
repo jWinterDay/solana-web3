@@ -6,13 +6,11 @@ import 'package:solana_common/exceptions.dart';
 
 part 'transaction_exception.g.dart';
 
-
 /// Transaction Exception
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable(createToJson: false)
 class TransactionException extends SolanaException {
-
   /// Creates an exception for an invalid transaction.
   const TransactionException(
     super.message, {
@@ -20,6 +18,5 @@ class TransactionException extends SolanaException {
   });
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory TransactionException.fromJson(final Map<String, dynamic> json) 
-    => _$TransactionExceptionFromJson(json);
+  factory TransactionException.fromJson(final Map<String, dynamic> json) => _$TransactionExceptionFromJson(json);
 }

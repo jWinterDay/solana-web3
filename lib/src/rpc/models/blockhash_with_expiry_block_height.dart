@@ -5,12 +5,10 @@ import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u64;
 import '../../types.dart' show Blockhash;
 
-
 /// Blockhash With Expiry Block Height
 /// ------------------------------------------------------------------------------------------------
 
 class BlockhashWithExpiryBlockHeight extends Serializable {
-  
   /// A confirmed transaction block.
   const BlockhashWithExpiryBlockHeight({
     required this.blockhash,
@@ -24,19 +22,18 @@ class BlockhashWithExpiryBlockHeight extends Serializable {
   final u64 lastValidBlockHeight;
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory BlockhashWithExpiryBlockHeight.fromJson(final Map<String, dynamic> json) 
-    => BlockhashWithExpiryBlockHeight(
+  factory BlockhashWithExpiryBlockHeight.fromJson(final Map<String, dynamic> json) => BlockhashWithExpiryBlockHeight(
         blockhash: json['blockhash'],
         lastValidBlockHeight: json['lastValidBlockHeight'],
       );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static BlockhashWithExpiryBlockHeight? tryFromJson(final Map<String, dynamic>? json) 
-    => json != null ? BlockhashWithExpiryBlockHeight.fromJson(json) : null;
+  static BlockhashWithExpiryBlockHeight? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? BlockhashWithExpiryBlockHeight.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'blockhash': blockhash,
-    'lastValidBlockHeight': lastValidBlockHeight,
-  };
+        'blockhash': blockhash,
+        'lastValidBlockHeight': lastValidBlockHeight,
+      };
 }

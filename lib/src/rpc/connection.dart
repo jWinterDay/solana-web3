@@ -16,42 +16,39 @@ import '../exceptions/transaction_nonce_invalid_exception.dart';
 import 'http_connection.dart';
 import 'websocket_connection.dart';
 
-
 /// Connection
 /// ------------------------------------------------------------------------------------------------
 
 /// {@template solana_web3.Connection}
-/// 
-/// Creates a connection to invoke JSON RPC methods. HTTP method calls are sent to the [httpCluster] 
+///
+/// Creates a connection to invoke JSON RPC methods. HTTP method calls are sent to the [httpCluster]
 /// and Websocket method calls are sent to the [websocketCluster].
-/// 
-/// The [commitment] level will be set as the default value for all methods that accept a 
+///
+/// The [commitment] level will be set as the default value for all methods that accept a
 /// commitment parameter. Use a method call's `config` parameter to override the default value.
-/// 
+///
 /// ```
 /// final connection = Connection(Cluster.mainnet);
-/// 
+///
 /// final accountInfo = await connection.getAccountInfo(
-///   Pubkey.fromBase58('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'), 
+///   Pubkey.fromBase58('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'),
 ///   config: GetAccountInfoConfig(
 ///     commitment: Commitment.finalized, // override default.
 ///   ),
 /// );
-/// 
+///
 /// print('Account Info ${accountInfo?.toJson()}');
 /// ```
 /// {@endtemplate}
-/// 
+///
 // TODO: Auto connect / resubscribe when the device's connection status changes.
 class Connection with HttpConnection, WebsocketConnection {
-
   /// Creates a connection to invoke JSON RPC methods.
   Connection(
     this.httpCluster, {
     final Cluster? websocketCluster,
     this.commitment = Commitment.confirmed,
-  }): websocketCluster = websocketCluster ?? httpCluster.toWebsocket() 
-  {
+  }) : websocketCluster = websocketCluster ?? httpCluster.toWebsocket() {
     httpClient = JsonRpcHttpClient(httpCluster.uri);
     websocketClient = JsonRpcWebsocketClient.withStringDecoder(
       this.websocketCluster.uri,
@@ -70,7 +67,7 @@ class Connection with HttpConnection, WebsocketConnection {
 
   @override
   late final JsonRpcHttpClient httpClient;
-  
+
   @override
   late final JsonRpcWebsocketClient websocketClient;
 
@@ -91,23 +88,21 @@ class Connection with HttpConnection, WebsocketConnection {
     final Pubkey pubkey, {
     final GetAddressLookupTableConfig? config,
   }) async {
-    final AccountInfo? accountInfo = await getAccountInfo(
-      pubkey, 
-      config: GetAccountInfoConfig(
-        commitment: config?.commitment,
-        encoding: AccountEncoding.base64,
-        minContextSlot: config?.minContextSlot,
-      )
-    );
+    final AccountInfo? accountInfo = await getAccountInfo(pubkey,
+        config: GetAccountInfoConfig(
+          commitment: config?.commitment,
+          encoding: AccountEncoding.base64,
+          minContextSlot: config?.minContextSlot,
+        ));
     final state = AddressLookupTableState.tryFromBorshBase64(accountInfo?.binaryData);
     return state != null ? AddressLookupTableAccount(key: pubkey, state: state) : null;
   }
 
   /// Requests an airdrop of [lamports] to [pubkey] and wait for transaction confirmation.
-  /// 
+  ///
   /// Returns the transaction signature as a base-58 encoded string.
   Future<TransactionSignature> requestAndConfirmAirdrop(
-    final Pubkey pubkey, 
+    final Pubkey pubkey,
     final u64 lamports, {
     final CommitmentConfig? config,
   }) async {
@@ -122,11 +117,11 @@ class Connection with HttpConnection, WebsocketConnection {
     final SendAndConfirmTransactionConfig? config,
   }) async {
     final String signature = await sendTransaction(
-      transaction, 
+      transaction,
       config: config?.toSendTransactionConfig(),
     );
     await confirmTransaction(
-      signature, 
+      signature,
       config: config?.toConfirmTransactionConfig(),
     );
     return signature;
@@ -145,7 +140,7 @@ class Connection with HttpConnection, WebsocketConnection {
 
   /// Returns an error when [BlockhashWithExpiryBlockHeight.lastValidBlockHeight] has been exceeded.
   Future<SignatureNotification> _confirmTransactionBlockHeightExceeded(
-    final BlockhashWithExpiryBlockHeight blockhash, 
+    final BlockhashWithExpiryBlockHeight blockhash,
     final Commitment? commitment,
   ) async {
     final config = GetBlockHeightConfig(commitment: commitment);
@@ -177,14 +172,12 @@ class Connection with HttpConnection, WebsocketConnection {
 
   /// Returns an error when the [nonce] information has changed.
   Future<SignatureNotification> _confirmTransactionNonceInvalid(
-    final NonceWithMinContextSlot nonce, 
-    final Commitment? commitment, { 
-    final int maxAttempts = 10
-  }) async {
-    for(int i = 0; i < maxAttempts; ++i) {
+      final NonceWithMinContextSlot nonce, final Commitment? commitment,
+      {final int maxAttempts = 10}) async {
+    for (int i = 0; i < maxAttempts; ++i) {
       try {
         final nonceResponse = await getNonceAccountRaw(
-          nonce.nonceAccount, 
+          nonce.nonceAccount,
           config: GetNonceAccountConfig(
             commitment: commitment,
             minContextSlot: nonce.minContextSlot,
@@ -207,17 +200,16 @@ class Connection with HttpConnection, WebsocketConnection {
     return Future.error(TimeoutException('Transaction signature nonce timed out.'));
   }
 
-  /// Confirms a transaction by subscribing to receive a [signature] notification when the 
+  /// Confirms a transaction by subscribing to receive a [signature] notification when the
   /// transaction has been confirmed.
   Future<SignatureNotification> confirmTransaction(
-    final TransactionSignature signature, { 
-    final ConfirmTransactionConfig? config, 
-    final BlockhashWithExpiryBlockHeight? blockhash, 
+    final TransactionSignature signature, {
+    final ConfirmTransactionConfig? config,
+    final BlockhashWithExpiryBlockHeight? blockhash,
     final NonceWithMinContextSlot? nonce,
   }) async {
-    
     assert(
-      blockhash == null || nonce == null, 
+      blockhash == null || nonce == null,
       'Confirm transaction by [blockhash] or [nonce], but not both.',
     );
 
@@ -227,7 +219,7 @@ class Connection with HttpConnection, WebsocketConnection {
     } catch (error) {
       throw TransactionException('Failed to decode base58 signature $signature.');
     }
-    
+
     final SafeCompleter<SignatureNotification> completer = SafeCompleter();
     await signatureSubscribe(
       signature,
@@ -255,27 +247,25 @@ class Connection with HttpConnection, WebsocketConnection {
     final notificationErr = notification.err;
     if (notificationErr is TransactionNonceInvalidException) {
       return confirmSignatureStatus(
-        signature, 
-        commitment: commitment, 
+        signature,
+        commitment: commitment,
         minContext: notificationErr.slot,
       );
     }
 
     // Return the result.
-    return notificationErr != null 
-      ? Future.error(notificationErr) 
-      : Future.value(notification);
+    return notificationErr != null ? Future.error(notificationErr) : Future.value(notification);
   }
 
   // /// Waits for the [subscription]'s transaction [signature] notification.
   // Future<SignatureNotification> confirmSignatureSubscription(
   //   final TransactionSignature signature,
-  //   final WebsocketSubscription<SignatureNotification> subscription, { 
-  //   final BlockhashWithExpiryBlockHeight? blockhash, 
+  //   final WebsocketSubscription<SignatureNotification> subscription, {
+  //   final BlockhashWithExpiryBlockHeight? blockhash,
   //   final NonceWithMinContextSlot? nonce,
   // }) async {
   //   assert(
-  //     blockhash == null || nonce == null, 
+  //     blockhash == null || nonce == null,
   //     'Confirm transaction by [blockhash] or [nonce]',
   //   );
 
@@ -297,26 +287,26 @@ class Connection with HttpConnection, WebsocketConnection {
   //   final notificationErr = notification.err;
   //   if (notificationErr is TransactionNonceInvalidException) {
   //     return confirmSignatureStatus(
-  //       signature, 
-  //       commitment: commitment, 
+  //       signature,
+  //       commitment: commitment,
   //       minContext: notificationErr.slot,
   //     );
   //   }
 
   //   // Return the result.
-  //   return notificationErr != null 
-  //     ? Future.error(notificationErr) 
+  //   return notificationErr != null
+  //     ? Future.error(notificationErr)
   //     : Future.value(notification);
   // }
 
-  /// Confirms a transaction by fetching the status of [signature] and comparing its 
-  /// `confirmationStatus` to [commitment]. 
-  /// 
-  /// The [signature] is considered confirmed if it has a `confirmationStatus` level >= to 
+  /// Confirms a transaction by fetching the status of [signature] and comparing its
+  /// `confirmationStatus` to [commitment].
+  ///
+  /// The [signature] is considered confirmed if it has a `confirmationStatus` level >= to
   /// [commitment] and the slot in which it was processed is >= [minContext].
   Future<SignatureNotification> confirmSignatureStatus(
-    final TransactionSignature signature, { 
-    final GetSignatureStatusesConfig? config, 
+    final TransactionSignature signature, {
+    final GetSignatureStatusesConfig? config,
     final Commitment? commitment,
     final int? minContext,
   }) async {
@@ -342,17 +332,17 @@ class Connection with HttpConnection, WebsocketConnection {
     final Commitment commitmentLevel = commitment ?? this.commitment ?? Commitment.finalized;
     return SignatureNotification(
       err: commitmentLevel.compareTo(status.confirmationStatus) > 0
-        ? const TransactionException('Transaction signature status has not been confirmed.')
-        : null,
+          ? const TransactionException('Transaction signature status has not been confirmed.')
+          : null,
     );
   }
 
   /// Returns all token `Metadata` accounts in [collectionMint].
-  /// 
-  /// The metadata account structure can be found 
+  ///
+  /// The metadata account structure can be found
   /// [here](https://docs.metaplex.com/programs/token-metadata/accounts#metadata).
-  /// 
-  /// The [numberOfCreators] must include the candy machine creator (if any). For example, if 
+  ///
+  /// The [numberOfCreators] must include the candy machine creator (if any). For example, if
   /// your collection has 2 creators and you've used candy machine, [numberOfCreators] will be 3.
   Future<List<ProgramAccount>> getMetaplexCollection(
     final Pubkey collectionMint, {
@@ -361,11 +351,10 @@ class Connection with HttpConnection, WebsocketConnection {
     final DataSlice? dataSlice,
     final int? minContextSlot,
   }) async {
-
     const int maxCreators = 5;
     assert(numberOfCreators >= 0 && numberOfCreators <= maxCreators);
 
-    // See https://docs.metaplex.com/programs/token-metadata/accounts#metadata fields for data sizes 
+    // See https://docs.metaplex.com/programs/token-metadata/accounts#metadata fields for data sizes
     // and offsets.
     const int keySize = 1;
     const int updateAuthoritySize = 32;
@@ -392,36 +381,46 @@ class Connection with HttpConnection, WebsocketConnection {
     const int encodedLengthSize = 4;
     const int optionFlagSize = 1;
 
-    const int creatorsOffset = 
-      keySize +
-      updateAuthoritySize +
-      mintSize + 
-      encodedLengthSize + nameSize + 
-      encodedLengthSize + symbolSize + 
-      encodedLengthSize + uriSize + 
-      sellerFeeBasisPointsSize +
-      optionFlagSize + encodedLengthSize; // Creators array option flag (1) + encoded length (4).
-    
+    const int creatorsOffset = keySize +
+        updateAuthoritySize +
+        mintSize +
+        encodedLengthSize +
+        nameSize +
+        encodedLengthSize +
+        symbolSize +
+        encodedLengthSize +
+        uriSize +
+        sellerFeeBasisPointsSize +
+        optionFlagSize +
+        encodedLengthSize; // Creators array option flag (1) + encoded length (4).
+
     const int creatorsSize = creatorsAddressSize + creatorsVerifiedSize + creatorsShareSize;
     final int currentCreatorsSize = numberOfCreators * creatorsSize;
     const int maxCreatorsSize = maxCreators * creatorsSize;
 
-    final int collectionOffset = 
-      creatorsOffset +
-      currentCreatorsSize + 
-      primarySaleHappenedSize +
-      isMutableSize + 
-      optionFlagSize + editionNonceSize +
-      optionFlagSize + tokenStandardSize + 
-      optionFlagSize; // Collection field's option flag (1).
+    final int collectionOffset = creatorsOffset +
+        currentCreatorsSize +
+        primarySaleHappenedSize +
+        isMutableSize +
+        optionFlagSize +
+        editionNonceSize +
+        optionFlagSize +
+        tokenStandardSize +
+        optionFlagSize; // Collection field's option flag (1).
 
-    final int maxDataSize = 
-      collectionOffset + 
-      collectionVerifiedSize + collectionKeySize + 
-      optionFlagSize + usesUseMethodSize + usesRemainingSize + usesTotalSize + 
-      optionFlagSize + collectionDetailsSize + 
-      optionFlagSize + programmableConfigSize
-      + 80 + (maxCreatorsSize - currentCreatorsSize); // padding (80) + offset adjustment.
+    final int maxDataSize = collectionOffset +
+        collectionVerifiedSize +
+        collectionKeySize +
+        optionFlagSize +
+        usesUseMethodSize +
+        usesRemainingSize +
+        usesTotalSize +
+        optionFlagSize +
+        collectionDetailsSize +
+        optionFlagSize +
+        programmableConfigSize +
+        80 +
+        (maxCreatorsSize - currentCreatorsSize); // padding (80) + offset adjustment.
 
     return getProgramAccounts(
       MetaplexTokenMetadataProgram.programId,

@@ -5,12 +5,10 @@ import 'package:solana_common/extensions.dart';
 import 'package:solana_common/models.dart';
 import 'vote_account.dart';
 
-
 /// Vote Account Status
 /// ------------------------------------------------------------------------------------------------
 
 class VoteAccountStatus extends Serializable {
-  
   /// Current and delinquent vote accounts.
   const VoteAccountStatus({
     required this.current,
@@ -25,9 +23,9 @@ class VoteAccountStatus extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory VoteAccountStatus.fromJson(final Map<String, dynamic> json) => VoteAccountStatus(
-    current: IterableSerializable.fromJson(json['current'], VoteAccount.fromJson),
-    delinquent: IterableSerializable.fromJson(json['delinquent'], VoteAccount.fromJson),
-  );
+        current: IterableSerializable.fromJson(json['current'], VoteAccount.fromJson),
+        delinquent: IterableSerializable.fromJson(json['delinquent'], VoteAccount.fromJson),
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static VoteAccountStatus? tryFromJson(final Map<String, dynamic>? json) {
@@ -36,7 +34,7 @@ class VoteAccountStatus extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'current': current.toJson(),
-    'delinquent': delinquent.toJson(),
-  };
+        'current': current.toJson(),
+        'delinquent': delinquent.toJson(),
+      };
 }

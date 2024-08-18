@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show u16, u64;
 
-
 /// Performance Sample
 /// ------------------------------------------------------------------------------------------------
 
 class PerformanceSample extends Serializable {
-  
   /// Performance Sample.
   const PerformanceSample({
     required this.slot,
@@ -26,28 +24,27 @@ class PerformanceSample extends Serializable {
 
   /// Number of slots in sample.
   final u64 numSlots;
-  
+
   /// Number of seconds in a sample window.
   final u16 samplePeriodSecs;
-  
 
   /// {@macro solana_common.Serializable.fromJson}
   factory PerformanceSample.fromJson(final Map<String, dynamic> json) => PerformanceSample(
-    slot: json['slot'],
-    numTransactions: json['numTransactions'],
-    numSlots: json['numSlots'],
-    samplePeriodSecs: json['samplePeriodSecs'],
-  );
+        slot: json['slot'],
+        numTransactions: json['numTransactions'],
+        numSlots: json['numSlots'],
+        samplePeriodSecs: json['samplePeriodSecs'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static PerformanceSample? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? PerformanceSample.fromJson(json) : null;
+  static PerformanceSample? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? PerformanceSample.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'slot': slot,
-    'numTransactions': numTransactions,
-    'numSlots': numSlots,
-    'samplePeriodSecs': samplePeriodSecs,
-  };
+        'slot': slot,
+        'numTransactions': numTransactions,
+        'numSlots': numSlots,
+        'samplePeriodSecs': samplePeriodSecs,
+      };
 }

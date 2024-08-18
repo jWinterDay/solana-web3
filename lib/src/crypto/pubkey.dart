@@ -16,25 +16,23 @@ import '../rpc/models/program_address.dart';
 import 'nacl.dart' as nacl show pubkeyLength, maxSeedLength;
 import 'nacl_low_level.dart' as nacl_low_level;
 
-
 /// Public Key
 /// ------------------------------------------------------------------------------------------------
 
 class Pubkey extends Serializable {
-
   /// Creates a [Pubkey] from an `ed25519` public key [value].
   const Pubkey(
     final BigInt value,
-  ):  _value = value;
+  ) : _value = value;
 
   /// The public key's `ed25519` value.
   final BigInt _value;
-  
+
   /// Creates a default [Pubkey] (0 => '11111111111111111111111111111111').
   factory Pubkey.zero() {
     return Pubkey(BigInt.zero);
   }
-  
+
   /// Creates a [Pubkey] from a `base-58` encoded [pubkey].
   factory Pubkey.fromString(final String pubkey) = Pubkey.fromBase58;
 
@@ -45,9 +43,9 @@ class Pubkey extends Serializable {
   factory Pubkey.fromBase58(final String pubkey) {
     return Pubkey.fromUint8List(base58.decode(pubkey));
   }
-  
+
   /// Creates a [Pubkey] from a `base-58` encoded [pubkey].
-  /// 
+  ///
   /// Returns `null` if [pubkey] is omitted.
   static Pubkey? tryFromBase58(final String? pubkey) {
     return pubkey != null ? Pubkey.fromBase58(pubkey) : null;
@@ -59,7 +57,7 @@ class Pubkey extends Serializable {
   }
 
   /// Creates a [Pubkey] from a `base-64` encoded [pubkey].
-  /// 
+  ///
   /// Returns `null` if [pubkey] is omitted.
   static Pubkey? tryFromBase64(final String? pubkey) {
     return pubkey != null ? Pubkey.fromBase64(pubkey) : null;
@@ -72,7 +70,7 @@ class Pubkey extends Serializable {
   }
 
   /// Creates a [Pubkey] from a byte array [pubkey].
-  /// 
+  ///
   /// Returns `null` if [pubkey] is omitted.
   static Pubkey? tryFromUint8List(final Iterable<int>? pubkey) {
     return pubkey != null ? Pubkey.fromUint8List(pubkey) : null;
@@ -87,8 +85,8 @@ class Pubkey extends Serializable {
   }
 
   /// Compares this [Pubkey] to [other].
-  /// 
-  /// Returns a negative value if `this` is ordered before `other`, a positive value if `this` is 
+  ///
+  /// Returns a negative value if `this` is ordered before `other`, a positive value if `this` is
   /// ordered after `other`, or zero if `this` and `other` are equivalent. Ordering is based on the
   /// [BigInt] value of the public keys.
   int compareTo(final Pubkey other) {
@@ -133,8 +131,8 @@ class Pubkey extends Serializable {
   }
 
   /// Derives a [Pubkey] from another [pubkey], [seed], and [programId].
-  /// 
-  /// The program Id will also serve as the owner of the public key, giving it permission to write 
+  ///
+  /// The program Id will also serve as the owner of the public key, giving it permission to write
   /// data to the account.
   static Pubkey createWithSeed(
     final Pubkey pubkey,
@@ -147,31 +145,30 @@ class Pubkey extends Serializable {
   }
 
   /// Derives a program address from the [seeds] and [programId].
-  /// 
+  ///
   /// Throws an [AssertionError] if [seeds] contains an invalid seed.
-  /// 
+  ///
   /// Throws an [ED25519Exception] if the generated [Pubkey] falls on the `ed25519` curve.
   static Pubkey createProgramAddress(
     final List<List<int>> seeds,
     final Pubkey programId,
   ) {
     final List<int> buffer = [];
-    
+
     for (final List<int> seed in seeds) {
       check(seed.length <= nacl.maxSeedLength, 'Invalid seed length.');
       buffer.addAll(seed);
     }
 
-    buffer..addAll(programId.toBytes())
-          ..addAll(utf8.encode('ProgramDerivedAddress'));
+    buffer
+      ..addAll(programId.toBytes())
+      ..addAll(utf8.encode('ProgramDerivedAddress'));
 
     final digestBytes = Uint8List.fromList(sha256.convert(buffer).bytes);
 
     if (isOnCurve(digestBytes)) {
-      throw ED25519Exception(
-        'Invalid seeds $seeds\n'
-        'The public key address must fall off the `ed25519` curve.'
-      );
+      throw ED25519Exception('Invalid seeds $seeds\n'
+          'The public key address must fall off the `ed25519` curve.');
     }
 
     return Pubkey.fromUint8List(digestBytes);
@@ -179,11 +176,11 @@ class Pubkey extends Serializable {
 
   /// Finds a valid program address for the given [seeds] and [programId].
   ///
-  /// `Valid program addresses must fall off the ed25519 curve.` This function iterates a nonce 
+  /// `Valid program addresses must fall off the ed25519 curve.` This function iterates a nonce
   /// until it finds one that can be combined with the seeds to produce a valid program address.
-  /// 
+  ///
   /// Throws an [AssertionError] if [seeds] contains an invalid seed.
-  /// 
+  ///
   /// Throws a [PubkeyException] if a valid program address could not be found.
   static ProgramAddress findProgramAddress(
     final List<List<int>> seeds,
@@ -191,13 +188,15 @@ class Pubkey extends Serializable {
   ) {
     for (int nonce = 255; nonce > 0; --nonce) {
       try {
-        final List<List<int>> seedsWithNonce = seeds + [[nonce]];
+        final List<List<int>> seedsWithNonce = seeds +
+            [
+              [nonce]
+            ];
         final Pubkey address = createProgramAddress(seedsWithNonce, programId);
         return ProgramAddress(address, nonce);
       } on AssertionError {
         rethrow;
-      } catch (_) {
-      }
+      } catch (_) {}
     }
 
     throw const PubkeyException('Unable to find a viable program address nonce.');

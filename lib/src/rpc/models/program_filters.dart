@@ -5,13 +5,12 @@
 // import 'package:solana_common/types.dart' show u64;
 // import 'package:solana_jsonrpc/models.dart' show MemCmp;
 
-
 // /// Program Filters
 // /// ------------------------------------------------------------------------------------------------
 
 // class ProgramFilters extends Serializable {
 
-//   /// Filter results using a filter objects. The account must meet all filter criteria to be 
+//   /// Filter results using a filter objects. The account must meet all filter criteria to be
 //   /// included in results.
 //   const ProgramFilters({
 //     required this.memcmp,

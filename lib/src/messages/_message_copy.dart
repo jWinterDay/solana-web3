@@ -17,13 +17,12 @@
 
 // part 'message.g.dart';
 
-
 // /// Message
 // /// ------------------------------------------------------------------------------------------------
 
 // @JsonSerializable(explicitToJson: true)
 // class Message extends Serializable {
-  
+
 //   /// Creates a the list of [instructions] to be processed atomically by a transaction.
 //   Message({
 //     required this.version,
@@ -33,7 +32,7 @@
 //     required this.instructions,
 //     final List<MessageAddressTableLookup>? addressTableLookups,
 //   }): addressTableLookups = const [] {
-//     for (final MessageInstruction instruction in instructions) { 
+//     for (final MessageInstruction instruction in instructions) {
 //       final int index = instruction.programIdIndex;
 //       _indexToProgramIds[index] = accountKeys[index];
 //     }
@@ -42,16 +41,16 @@
 //   /// The message version (`null` == legacy).
 //   final int? version;
 
-//   /// List of base-58 encoded public keys used by the transaction, including the instructions and 
-//   /// signatures. The first [MessageHeader.numRequiredSignatures] public keys must sign the 
+//   /// List of base-58 encoded public keys used by the transaction, including the instructions and
+//   /// signatures. The first [MessageHeader.numRequiredSignatures] public keys must sign the
 //   /// transaction.
-//   /// 
+//   ///
 //   /// ### Example:
-//   /// 
+//   ///
 //   ///   If [accountKeys] = `['pk1', 'pk0', 'pk4', 'pk2', 'pk5']`,
-//   /// 
+//   ///
 //   ///   and [MessageHeader.numRequiredSignatures] = `2`,
-//   /// 
+//   ///
 //   ///   then [Transaction.signatures] must be = `['message signed by pk1', 'message signed by pk0']`
 //   ///
 //   final List<Pubkey> accountKeys;
@@ -59,15 +58,15 @@
 //   /// The account types and signatures required by the transaction.
 //   final MessageHeader header;
 
-//    /// A base-58 encoded hash of a recent block in the ledger used to prevent transaction 
+//    /// A base-58 encoded hash of a recent block in the ledger used to prevent transaction
 //    /// duplication and to give transactions lifetimes.
 //   final String recentBlockhash;
 
-//   /// A list of program instructions that will be executed in sequence and committed in one atomic 
+//   /// A list of program instructions that will be executed in sequence and committed in one atomic
 //   /// transaction if all succeed.
 //   final Iterable<MessageInstruction> instructions;
 
-//   /// A list of address table lookups used by a transaction to dynamically load addresses from 
+//   /// A list of address table lookups used by a transaction to dynamically load addresses from
 //   /// on-chain address lookup tables.
 //   final List<MessageAddressTableLookup> addressTableLookups;
 
@@ -81,10 +80,10 @@
 //     required final String recentBlockhash,
 //     required final Iterable<MessageInstruction> instructions,
 //   }) => Message(
-//     version: null, 
-//     accountKeys: accountKeys, 
-//     header: header, 
-//     recentBlockhash: recentBlockhash, 
+//     version: null,
+//     accountKeys: accountKeys,
+//     header: header,
+//     recentBlockhash: recentBlockhash,
 //     instructions: instructions,
 //   );
 
@@ -96,10 +95,10 @@
 //     required final Iterable<MessageInstruction> instructions,
 //   final List<MessageAddressTableLookup>? addressTableLookups,
 //   }) => Message(
-//     version: 0, 
-//     accountKeys: accountKeys, 
-//     header: header, 
-//     recentBlockhash: recentBlockhash, 
+//     version: 0,
+//     accountKeys: accountKeys,
+//     header: header,
+//     recentBlockhash: recentBlockhash,
 //     instructions: instructions,
 //     addressTableLookups: addressTableLookups,
 //   );
@@ -125,8 +124,8 @@
 //       }
 //       return false;
 //     } else {
-//       return index < header.numRequiredSignatures - header.numReadonlySignedAccounts 
-//         || (index >= header.numRequiredSignatures 
+//       return index < header.numRequiredSignatures - header.numReadonlySignedAccounts
+//         || (index >= header.numRequiredSignatures
 //           && index < accountKeys.length - header.numReadonlyUnsignedAccounts);
 //     }
 //   }
@@ -186,13 +185,13 @@
 
 //     // Write the message instructions.
 //     for (final MessageInstruction instruction in instructions) {
-      
+
 //       // Program ID index.
 //       final int programIdIndex = instruction.programIdIndex;
 //       instructionsBuffer.setUint8(programIdIndex);
 
 //       // Compact array of account address indexes.
-//       final List<int> keyIndicesCount = shortvec.encodeLength(instruction.accounts.length); 
+//       final List<int> keyIndicesCount = shortvec.encodeLength(instruction.accounts.length);
 //       instructionsBuffer.setBuffer(keyIndicesCount);
 //       final Iterable<int> keyIndices = instruction.accounts;
 //       instructionsBuffer.setBuffer(keyIndices);
@@ -216,11 +215,11 @@
 
 //         // Compact array of the writable indexes length.
 //         final List<int> writableIndexes = addressTableLookup.writableIndexes;
-//         final List<int> writableIndexesCount = shortvec.encodeLength(writableIndexes.length); 
+//         final List<int> writableIndexesCount = shortvec.encodeLength(writableIndexes.length);
 
 //         // Compact array of the readonly indexes length.
 //         final List<int> readonlyIndexes = addressTableLookup.readonlyIndexes;
-//         final List<int> readonlyIndexesCount = shortvec.encodeLength(readonlyIndexes.length); 
+//         final List<int> readonlyIndexesCount = shortvec.encodeLength(readonlyIndexes.length);
 
 //         addressTableLookupsBuffer.setBuffer(addressTableLookup.accountKey.toBytes());
 //         addressTableLookupsBuffer.setBuffer(writableIndexesCount);
@@ -231,17 +230,17 @@
 //     }
 
 //     /// Resize and merge the buffers.
-//     return signaturesBuffer.toBuffer(slice: true) 
+//     return signaturesBuffer.toBuffer(slice: true)
 //       + instructionsBuffer.toBuffer(slice: true)
 //       + addressTableLookupsBuffer.toBuffer(slice: true);
 //   }
 
 //   /// Decodes a byte-array into a [Message] instance.
-//   factory Message.fromList(final List<int> byteArray) 
+//   factory Message.fromList(final List<int> byteArray)
 //     => Message.fromBuffer(Buffer.fromList(byteArray));
 
 //   /// Decodes a `base-64` encoded string into a [Message] instance.
-//   factory Message.fromBase64(final String encoded) 
+//   factory Message.fromBase64(final String encoded)
 //     => Message.fromBuffer(Buffer.fromString(encoded, BufferEncoding.base64));
 
 //   /// Decode a buffer into a [Message] instance.
@@ -255,7 +254,7 @@
 //     final int prefix = reader[0];
 //     final int maskedPrefix = prefix & versionPrefixMask;
 //     final int? version = maskedPrefix != prefix ? (reader.getUint8() & versionPrefixMask) : null;
-    
+
 //     /// Read the message header.
 //     final int numRequiredSignatures = reader.getUint8();
 //     final int numReadonlySignedAccounts = reader.getUint8();
@@ -284,8 +283,8 @@
 //       final String data = base58.encode(dataSlice.asUint8List());
 //       instructions.add(
 //         MessageInstruction(
-//           programIdIndex: programIdIndex, 
-//           accounts: accounts, 
+//           programIdIndex: programIdIndex,
+//           accounts: accounts,
 //           data: data,
 //         ),
 //       );
@@ -316,11 +315,11 @@
 //       version: version,
 //       accountKeys: accountKeys,
 //       header: MessageHeader(
-//         numRequiredSignatures: numRequiredSignatures, 
+//         numRequiredSignatures: numRequiredSignatures,
 //         numReadonlySignedAccounts: numReadonlySignedAccounts,
 //         numReadonlyUnsignedAccounts: numReadonlyUnsignedAccounts,
-//       ), 
-//       recentBlockhash: base58.encode(recentBlockhash.asUint8List()), 
+//       ),
+//       recentBlockhash: base58.encode(recentBlockhash.asUint8List()),
 //       instructions: instructions,
 //       addressTableLookups: addressTableLookups,
 //     );
@@ -329,6 +328,6 @@
 //   /// Serializes this message into an encoded string.
 //   @override
 //   String toString([
-//     final BufferEncoding encoding = BufferEncoding.base64, 
+//     final BufferEncoding encoding = BufferEncoding.base64,
 //   ]) => serialize().getString(encoding);
 // }

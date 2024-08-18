@@ -6,13 +6,11 @@ import 'package:solana_common/exceptions.dart';
 
 part 'keypair_exception.g.dart';
 
-
 /// Keypair Exception
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable(createToJson: false)
 class KeypairException extends SolanaException {
-
   /// Creates an exception for an invalid keypair.
   const KeypairException(
     super.message, {
@@ -20,7 +18,5 @@ class KeypairException extends SolanaException {
   });
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory KeypairException.fromJson(final Map<String, dynamic> json) 
-    => _$KeypairExceptionFromJson(json);
-
+  factory KeypairException.fromJson(final Map<String, dynamic> json) => _$KeypairExceptionFromJson(json);
 }

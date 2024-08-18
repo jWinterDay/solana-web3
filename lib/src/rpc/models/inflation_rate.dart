@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show f64, u64;
 
-
 /// Inflation Rate
 /// ------------------------------------------------------------------------------------------------
 
 class InflationRate extends Serializable {
-  
   /// Inflation Rate.
   const InflationRate({
     required this.total,
@@ -26,27 +24,27 @@ class InflationRate extends Serializable {
 
   /// The inflation allocated to the foundation.
   final f64 foundation;
-  
+
   /// The epoch for which these values are valid.
   final u64 epoch;
-  
+
   /// {@macro solana_common.Serializable.fromJson}
   factory InflationRate.fromJson(final Map<String, dynamic> json) => InflationRate(
-    total: json['total'],
-    validator: json['validator'],
-    foundation: json['foundation'],
-    epoch: json['epoch'],
-  );
+        total: json['total'],
+        validator: json['validator'],
+        foundation: json['foundation'],
+        epoch: json['epoch'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static InflationRate? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? InflationRate.fromJson(json) : null;
+  static InflationRate? tryFromJson(final Map<String, dynamic>? json) =>
+      json != null ? InflationRate.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'total': total,
-    'validator': validator,
-    'foundation': foundation,
-    'epoch': epoch,
-  };
+        'total': total,
+        'validator': validator,
+        'foundation': foundation,
+        'epoch': epoch,
+      };
 }

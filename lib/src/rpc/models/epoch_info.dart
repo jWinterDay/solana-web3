@@ -8,12 +8,10 @@ import 'package:solana_borsh/models.dart';
 import 'package:solana_borsh/types.dart';
 import 'package:solana_common/types.dart' show u64;
 
-
 /// Epoch Info
 /// ------------------------------------------------------------------------------------------------
 
 class EpochInfo extends BorshObject {
-  
   /// Information about an epoch.
   const EpochInfo({
     required this.absoluteSlot,
@@ -35,10 +33,10 @@ class EpochInfo extends BorshObject {
 
   /// The slot relative to the start of [epoch].
   final u64 slotIndex;
-  
+
   /// The number of slots in [epoch].
   final u64 slotsInEpoch;
-  
+
   /// The total number of transactions processed without error since genesis up to [epoch].
   final u64? transactionCount;
 
@@ -61,38 +59,35 @@ class EpochInfo extends BorshObject {
   }
 
   /// {@macro solana_borsh.BorshObject.tryFromBorsh}
-  static EpochInfo? tryFromBorsh(final Iterable<int>? buffer)
-    => buffer != null ? EpochInfo.fromBorsh(buffer) : null;
+  static EpochInfo? tryFromBorsh(final Iterable<int>? buffer) => buffer != null ? EpochInfo.fromBorsh(buffer) : null;
 
   /// {@macro solana_borsh.BorshObject.fromBorshBase64}
-  factory EpochInfo.fromBorshBase64(final String encoded) 
-    => EpochInfo.fromBorsh(base64.decode(encoded));
+  factory EpochInfo.fromBorshBase64(final String encoded) => EpochInfo.fromBorsh(base64.decode(encoded));
 
   /// {@macro solana_borsh.BorshObject.tryFromBorshBase64}
-  static EpochInfo? tryFromBorshBase64(final String? encoded)
-    => encoded != null ? EpochInfo.fromBorshBase64(encoded) : null;
+  static EpochInfo? tryFromBorshBase64(final String? encoded) =>
+      encoded != null ? EpochInfo.fromBorshBase64(encoded) : null;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory EpochInfo.fromJson(final Map<String, dynamic> json) => EpochInfo(
-    absoluteSlot: json['absoluteSlot'],
-    blockHeight: json['blockHeight'],
-    epoch: json['epoch'],
-    slotIndex: json['slotIndex'],
-    slotsInEpoch: json['slotsInEpoch'],
-    transactionCount: json['transactionCount'],
-  );
+        absoluteSlot: json['absoluteSlot'],
+        blockHeight: json['blockHeight'],
+        epoch: json['epoch'],
+        slotIndex: json['slotIndex'],
+        slotsInEpoch: json['slotsInEpoch'],
+        transactionCount: json['transactionCount'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
-  static EpochInfo? tryFromJson(final Map<String, dynamic>? json)
-    => json != null ? EpochInfo.fromJson(json) : null;
+  static EpochInfo? tryFromJson(final Map<String, dynamic>? json) => json != null ? EpochInfo.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-    'absoluteSlot': absoluteSlot,
-    'blockHeight': blockHeight,
-    'epoch': epoch,
-    'slotIndex': slotIndex,
-    'slotsInEpoch': slotsInEpoch,
-    'transactionCount': transactionCount,
-  };
+        'absoluteSlot': absoluteSlot,
+        'blockHeight': blockHeight,
+        'epoch': epoch,
+        'slotIndex': slotIndex,
+        'slotsInEpoch': slotsInEpoch,
+        'transactionCount': transactionCount,
+      };
 }

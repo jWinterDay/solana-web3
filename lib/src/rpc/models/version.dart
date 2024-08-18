@@ -3,12 +3,10 @@
 
 import 'package:solana_common/models.dart';
 
-
 /// Version
 /// ------------------------------------------------------------------------------------------------
 
 class Version extends Serializable {
-  
   /// The solana version running on a node.
   const Version({
     required this.solanaCore,
@@ -23,9 +21,9 @@ class Version extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Version.fromJson(final Map<String, dynamic> json) => Version(
-    solanaCore: json['solana-core'],
-    featureSet: json['feature-set'],
-  );
+        solanaCore: json['solana-core'],
+        featureSet: json['feature-set'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Version? tryFromJson(final Map<String, dynamic>? json) {
@@ -34,7 +32,7 @@ class Version extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'solana-core': solanaCore,
-    'feature-set': featureSet,
-  };
+        'solana-core': solanaCore,
+        'feature-set': featureSet,
+      };
 }

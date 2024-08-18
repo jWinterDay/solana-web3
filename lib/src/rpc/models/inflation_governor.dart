@@ -4,12 +4,10 @@
 import 'package:solana_common/models.dart';
 import 'package:solana_common/types.dart' show f64;
 
-
 /// Inflation Governor
 /// ------------------------------------------------------------------------------------------------
 
 class InflationGovernor extends Serializable {
-  
   /// Inflation governor.
   const InflationGovernor({
     required this.initial,
@@ -25,24 +23,24 @@ class InflationGovernor extends Serializable {
   /// The terminal inflation percentage.
   final f64 terminal;
 
-  /// The rate per year at which inflation is lowered. Rate reduction is derived using the target 
+  /// The rate per year at which inflation is lowered. Rate reduction is derived using the target
   /// slot time in the genesis config.
   final f64 taper;
-  
+
   /// The percentage of total inflation allocated to the foundation.
   final f64 foundation;
-  
+
   /// The duration of foundation pool inflation in years.
   final f64? foundationTerm;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory InflationGovernor.fromJson(final Map<String, dynamic> json) => InflationGovernor(
-    initial: json['initial'],
-    terminal: json['terminal'],
-    taper: json['taper'],
-    foundation: json['foundation'],
-    foundationTerm: json['foundationTerm'],
-  );
+        initial: json['initial'],
+        terminal: json['terminal'],
+        taper: json['taper'],
+        foundation: json['foundation'],
+        foundationTerm: json['foundationTerm'],
+      );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static InflationGovernor? tryFromJson(final Map<String, dynamic>? json) {
@@ -51,10 +49,10 @@ class InflationGovernor extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-    'initial': initial,
-    'terminal': terminal,
-    'taper': taper,
-    'foundation': foundation,
-    'foundationTerm': foundationTerm,
-  };
+        'initial': initial,
+        'terminal': terminal,
+        'taper': taper,
+        'foundation': foundation,
+        'foundationTerm': foundationTerm,
+      };
 }

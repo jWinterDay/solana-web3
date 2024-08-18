@@ -6,12 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:solana_buffer/buffer.dart';
 import './utils.dart';
 
-
 /// Buffer Tests
 /// ------------------------------------------------------------------------------------------------
 
 void main() {
-
   /// Initialisation
   test('create a zero initialised buffer', () {
     const int length = 16;
@@ -20,7 +18,7 @@ void main() {
     assert(buffer.every((final int item) => item == 0));
   });
   test('create a buffer from a list', () {
-    const List<int> items = [1,2,3,4,5,6,7,8];
+    const List<int> items = [1, 2, 3, 4, 5, 6, 7, 8];
     final Buffer buffer = Buffer.fromList(items);
     assert(listEquals(buffer.toList(), items));
   });
@@ -156,9 +154,11 @@ void main() {
   test('get 64-bit int', () {
     assert(int64ValueLE == int64Buffer.getInt64(0));
     assert(int64ValueBE == int64Buffer.getInt64(0, Endian.big));
+
     /// [maxInt64]
     assert(maxInt64 == maxInt64Buffer.getInt64(0));
     assert(maxInt64 == maxInt64Buffer.getInt(0, maxInt64Buffer.length));
+
     /// [minInt64]
     assert(minInt64 == minInt64Buffer.getInt64(0));
     assert(minInt64 == minInt64Buffer.getInt(0, maxInt64Buffer.length));
@@ -169,13 +169,15 @@ void main() {
     assert(listEquals(buffer.toList(), int64Buffer.toList()));
     buffer.setInt64(int64ValueBE, 0, Endian.big);
     assert(listEquals(buffer.toList(), int64Buffer.toList()));
+
     /// [maxInt64]
-    buffer.setInt64(maxInt64, 0); 
+    buffer.setInt64(maxInt64, 0);
     assert(listEquals(buffer.toList(), maxInt64Buffer.toList()));
     buffer.setInt(maxInt64, 0, minInt64Buffer.length);
     assert(listEquals(buffer.toList(), maxInt64Buffer.toList()));
+
     /// [minInt64]
-    buffer.setInt64(minInt64, 0); 
+    buffer.setInt64(minInt64, 0);
     assert(listEquals(buffer.toList(), minInt64Buffer.toList()));
     buffer.setInt(minInt64, 0, minInt64Buffer.length);
     assert(listEquals(buffer.toList(), minInt64Buffer.toList()));

@@ -7,12 +7,10 @@ import '../../encodings/transaction_encoding.dart';
 import 'confirm_transaction_config.dart';
 import 'send_transaction_config.dart';
 
-
 /// Send And Confirm Transaction Config
 /// ------------------------------------------------------------------------------------------------
 
 class SendAndConfirmTransactionConfig extends CommitmentConfig {
-
   /// JSON RPC configurations for `sendAndConfirmTransaction` methods.
   const SendAndConfirmTransactionConfig({
     this.skipPreflight = false,
@@ -21,7 +19,7 @@ class SendAndConfirmTransactionConfig extends CommitmentConfig {
     this.encoding = TransactionEncoding.base64,
     this.maxRetries,
     this.minContextSlot,
-  }): assert(encoding == TransactionEncoding.base64);
+  }) : assert(encoding == TransactionEncoding.base64);
 
   /// If true, skip the preflight transaction checks (default: `false`).
   final bool skipPreflight;
@@ -32,8 +30,8 @@ class SendAndConfirmTransactionConfig extends CommitmentConfig {
   /// The transaction data encoding (must be 'base64').
   final TransactionEncoding encoding;
 
-  /// The maximum number of times for the RPC node to retry sending the transaction to the leader. 
-  /// If this parameter not provided, the RPC node will retry the transaction until it is finalised 
+  /// The maximum number of times for the RPC node to retry sending the transaction to the leader.
+  /// If this parameter not provided, the RPC node will retry the transaction until it is finalised
   /// or until the blockhash expires.
   final usize? maxRetries;
 
@@ -58,11 +56,11 @@ class SendAndConfirmTransactionConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-    'skipPreflight': skipPreflight,
-    'commitment': commitment?.name,
-    'preflightCommitment': preflightCommitment?.name,
-    'encoding': encoding.name,
-    'maxRetries': maxRetries,
-    'minContextSlot': minContextSlot,
-  };
+        'skipPreflight': skipPreflight,
+        'commitment': commitment?.name,
+        'preflightCommitment': preflightCommitment?.name,
+        'encoding': encoding.name,
+        'maxRetries': maxRetries,
+        'minContextSlot': minContextSlot,
+      };
 }

@@ -2,7 +2,6 @@
 /// ------------------------------------------------------------------------------------------------
 
 enum AccountEncoding {
-  
   base58('base58'),
   base64('base64'),
   base64Zstd('base64+zstd'),
@@ -20,9 +19,7 @@ enum AccountEncoding {
 
   /// If true, the value is valid for encoding binary data (`base58`, `base64` or `base64Zstd`).
   bool get isBinary {
-    return this == AccountEncoding.base58
-        || this == AccountEncoding.base64
-        || this == AccountEncoding.base64Zstd;
+    return this == AccountEncoding.base58 || this == AccountEncoding.base64 || this == AccountEncoding.base64Zstd;
   }
 
   /// If true, the value is valid for encoding JSON data (`json` or `jsonParsed`).
@@ -31,9 +28,9 @@ enum AccountEncoding {
   }
 
   /// Returns the enum variant where [AccountEncoding.name] is equal to [name].
-  /// 
+  ///
   /// Throws a [StateError] if [name] cannot be matched to an existing variant.
-  /// 
+  ///
   /// ```
   /// AccountEncoding.fromJson('base58');
   /// ```
@@ -42,9 +39,9 @@ enum AccountEncoding {
   }
 
   /// Returns the enum variant where [AccountEncoding.name] is equal to [name].
-  /// 
+  ///
   /// Returns `null` if [name] cannot be matched to an existing variant.
-  /// 
+  ///
   /// ```
   /// AccountEncoding.tryFromJson('base58');
   /// ```

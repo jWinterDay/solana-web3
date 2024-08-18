@@ -1,29 +1,21 @@
 /// Imports
 /// ------------------------------------------------------------------------------------------------
 
+// ignore_for_file: unused_local_variable, avoid_print
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:solana_common/extensions.dart';
-import 'package:solana_jsonrpc/jsonrpc.dart';
 import 'package:solana_web3/solana_web3.dart';
-import 'package:solana_web3/src/crypto/keypair.dart';
-import 'package:solana_web3/src/crypto/pubkey.dart';
-import 'package:solana_web3/src/encodings/lamports.dart';
 import 'package:solana_web3/src/programs/address_lookup_table/program.dart';
 import 'package:solana_web3/src/programs/address_lookup_table/state.dart';
 import 'package:solana_web3/src/programs/system/program.dart';
-import 'package:solana_web3/src/rpc/connection.dart';
-import 'package:solana_web3/src/transactions/transaction.dart';
-import 'package:solana_web3/src/transactions/transaction_instruction.dart';
 
 import 'utils.dart';
-
 
 /// Transaction Tests
 /// ------------------------------------------------------------------------------------------------
 
 void main() {
-  
   WidgetsFlutterBinding.ensureInitialized();
 
   /// Cluster connections.
@@ -38,13 +30,10 @@ void main() {
     final int balance = await connection.getBalance(sender.pubkey);
     print('SENDER BALANCE $balance ${sender.pubkey.toBase58()}');
     if (balance < lamportsPerSol) {
-      await connection.requestAndConfirmAirdrop(
-        sender.pubkey, 
-        lamportsPerSol * 2,
-        config: const CommitmentConfig(
-          commitment: Commitment.finalized,
-        )
-      );
+      await connection.requestAndConfirmAirdrop(sender.pubkey, lamportsPerSol * 2,
+          config: const CommitmentConfig(
+            commitment: Commitment.finalized,
+          ));
     }
 
     final int balancex = await connection.getBalance(sender.pubkey);
@@ -55,7 +44,7 @@ void main() {
     await _fundSender();
     return SystemProgram.transfer(
       fromPubkey: sender.pubkey,
-      toPubkey: receiver.pubkey, 
+      toPubkey: receiver.pubkey,
       lamports: solToLamports(transferAmount),
     );
   }
@@ -102,19 +91,19 @@ void main() {
       recentBlockhash: blockhash.blockhash,
       instructions: [
         AddressLookupTableProgram.create(
-          address: lookup, 
-          authority: sender.pubkey, 
-          payer: sender.pubkey, 
+          address: lookup,
+          authority: sender.pubkey,
+          payer: sender.pubkey,
           recentSlot: slot.toBigInt(),
         ),
         AddressLookupTableProgram.extend(
-          address: lookup.pubkey, 
-          authority: sender.pubkey, 
+          address: lookup.pubkey,
+          authority: sender.pubkey,
           payer: sender.pubkey,
           addresses: [
             Keypair.generateSync().pubkey,
             Keypair.generateSync().pubkey,
-          ], 
+          ],
         ),
       ],
     );
@@ -158,8 +147,8 @@ void main() {
 
   test('deserialize', () async {
     const encoded = '6GhS2ZJhrEfHXU1X5xsiY2jkTMVjEMw1NwZmrgvySH7QhRKGseCSuNJd8sPfrQxbUV4JEMUU2c9nEV'
-      'hVK45kTYmA4HXLt8qk4qGQwv7aocVepYR8ewj1Wj1k4NpZrGZTdRRXARxf1Cp6BgtjZvSymnfij1h91kgRfKEwutHGzn'
-      'z7F7DTQKGRGtT3oFfqawecVKJesy2x98ZPu1ts';
+        'hVK45kTYmA4HXLt8qk4qGQwv7aocVepYR8ewj1Wj1k4NpZrGZTdRRXARxf1Cp6BgtjZvSymnfij1h91kgRfKEwutHGzn'
+        'z7F7DTQKGRGtT3oFfqawecVKJesy2x98ZPu1ts';
     Message.fromBase58(encoded);
   });
 }

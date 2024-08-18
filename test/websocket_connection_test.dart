@@ -1,35 +1,30 @@
 /// Imports
 /// ------------------------------------------------------------------------------------------------
 
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:solana_common/async.dart';
 import 'package:solana_web3/solana_web3.dart';
 import 'utils.dart' as utils;
 
-
 /// Subscription Tests
 /// ------------------------------------------------------------------------------------------------
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
-    
-  final connection = Connection(
-    Cluster.localhost,
-    websocketCluster: Cluster.localhost.toWebsocket(8900)
-  );
 
-  const String signature = '2EBVM6cB8vAAD93Ktr6Vd8p67XPbQzCJX47MpReuiCXJAtcjaxpvWpcg9Ege1Nr5Tk3a2GFrByT7WPBjdsTycY9b';
+  final connection = Connection(Cluster.localhost, websocketCluster: Cluster.localhost.toWebsocket(8900));
 
-  dynamic Function() asyncBody(dynamic Function(SafeCompleter<void> completer) body) 
-    => () async {
-      final SafeCompleter testCompleter = SafeCompleter.sync();
-      body(testCompleter);
-      await testCompleter.future;
-    }; 
+  // const String signature = '2EBVM6cB8vAAD93Ktr6Vd8p67XPbQzCJX47MpReuiCXJAtcjaxpvWpcg9Ege1Nr5Tk3a2GFrByT7WPBjdsTycY9b';
+
+  dynamic Function() asyncBody(dynamic Function(SafeCompleter<void> completer) body) => () async {
+        final SafeCompleter testCompleter = SafeCompleter.sync();
+        body(testCompleter);
+        await testCompleter.future;
+      };
 
   test('single subscription', asyncBody((completer) async {
     final Pubkey pubkey = utils.wallet.pubkey;
@@ -53,27 +48,23 @@ void main() {
       final WebsocketSubscription<AccountInfo> subscription = subscriptions[i];
       final bool result = await connection.accountUnsubscribe(subscription);
       expect(result, true);
-      expect(connection.debugNotifiers.length, (i+1) < count ? 1 : 0);
+      expect(connection.debugNotifiers.length, (i + 1) < count ? 1 : 0);
     }
     completer.complete();
   }));
 
   test('timeout subscription', asyncBody((completer) async {
     const bool cancelOnError = true;
-    await connection.signatureSubscribe(
-      '2EBVM6cB8vAAD93Ktr6Vd8p67XPbQzCJX47MpReuiCXJAtcjaxpvWpcg9Ege1Nr5Tk3a2GFrByT7WPBjdsTycY9b',
-      onData: (notification) {
-        completer.completeError('Notification received.');
-      },
-      onError: (error, [stack]) async {
-        expect(error is TimeoutException, true);
-        await Future.delayed(const Duration(seconds: 2)); // Wait for unsubscribe.
-        expect(connection.debugNotifiers.isEmpty, cancelOnError);
-        completer.complete();
-      },
-      timeLimit: const Duration(seconds: 2),
-      cancelOnError: cancelOnError
-    );
+    await connection
+        .signatureSubscribe('2EBVM6cB8vAAD93Ktr6Vd8p67XPbQzCJX47MpReuiCXJAtcjaxpvWpcg9Ege1Nr5Tk3a2GFrByT7WPBjdsTycY9b',
+            onData: (notification) {
+      completer.completeError('Notification received.');
+    }, onError: (error, [stack]) async {
+      expect(error is TimeoutException, true);
+      await Future.delayed(const Duration(seconds: 2)); // Wait for unsubscribe.
+      expect(connection.debugNotifiers.isEmpty, cancelOnError);
+      completer.complete();
+    }, timeLimit: const Duration(seconds: 2), cancelOnError: cancelOnError);
   }));
 
   test('multiple timeout subscriptions', asyncBody((completer) async {
@@ -107,18 +98,14 @@ void main() {
     final Keypair keypair = Keypair.generateSync();
     final Pubkey pubkey = keypair.pubkey;
     late final WebsocketSubscription<AccountInfo> subscription;
-    subscription = await connection.accountSubscribe(
-      pubkey,
-      onData: (data) async {
-        expect(data.lamports, amount);
-        await connection.accountUnsubscribe(subscription);
-        expect(connection.debugNotifiers.isEmpty, true);
-        completer.complete();
-      },
-      onError: (error, [stack]) {
-        completer.completeError(error);
-      }
-    );
+    subscription = await connection.accountSubscribe(pubkey, onData: (data) async {
+      expect(data.lamports, amount);
+      await connection.accountUnsubscribe(subscription);
+      expect(connection.debugNotifiers.isEmpty, true);
+      completer.complete();
+    }, onError: (error, [stack]) {
+      completer.completeError(error);
+    });
     connection.requestAirdrop(pubkey, amount);
   }));
 
@@ -126,19 +113,14 @@ void main() {
     final Pubkey pubkey = utils.wallet.pubkey;
     final signature = await connection.requestAirdrop(pubkey, lamportsPerSol);
     late final WebsocketSubscription<SignatureNotification> subscription;
-    subscription = await connection.signatureSubscribe(
-      signature,
-      onData: (data) async {
-        expect(data.err, null);
-      },
-      onError: (error, [stack]) {
-        completer.completeError(error);
-      },
-      onDone: () {
-        expect(connection.debugNotifiers.isEmpty, true);
-        completer.complete();
-      }
-    );
+    subscription = await connection.signatureSubscribe(signature, onData: (data) async {
+      expect(data.err, null);
+    }, onError: (error, [stack]) {
+      completer.completeError(error);
+    }, onDone: () {
+      expect(connection.debugNotifiers.isEmpty, true);
+      completer.complete();
+    });
   }));
 
   test('invalid subscription id', asyncBody((completer) async {

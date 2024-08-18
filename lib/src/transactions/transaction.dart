@@ -20,18 +20,16 @@ import 'transaction_instruction.dart';
 
 part 'transaction.g.dart';
 
-
 /// Transaction
 /// ------------------------------------------------------------------------------------------------
 
 @JsonSerializable(explicitToJson: true)
 class Transaction extends Serializable with TransactionSerializableMixin {
-
   /// Transaction.
   Transaction({
     final List<Uint8List>? signatures,
     required this.message,
-  }): signatures = signatures ?? [] {
+  }) : signatures = signatures ?? [] {
     if (this.signatures.isEmpty) {
       for (int _i = 0; _i < message.header.numRequiredSignatures; ++_i) {
         this.signatures.add(Uint8List(nacl.signatureLength));
@@ -50,7 +48,7 @@ class Transaction extends Serializable with TransactionSerializableMixin {
 
   /// One or more signatures for the transaction. Typically created by invoking the [sign] method.
   final Message message;
-  
+
   /// The first Transaction signature (fee payer).
   Uint8List? get signature => signatures.isNotEmpty ? signatures.first : null;
 
@@ -66,14 +64,15 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     required final Pubkey payer,
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
-  }) => Transaction(
-    signatures: signatures,
-    message: Message.legacy(
-      payer: payer, 
-      instructions: instructions, 
-      recentBlockhash: recentBlockhash,
-    ),
-  );
+  }) =>
+      Transaction(
+        signatures: signatures,
+        message: Message.legacy(
+          payer: payer,
+          instructions: instructions,
+          recentBlockhash: recentBlockhash,
+        ),
+      );
 
   /// Creates a `v0` transaction.
   factory Transaction.v0({
@@ -82,26 +81,25 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
     final List<AddressLookupTableAccount>? addressLookupTableAccounts,
-  }) => Transaction(
-    signatures: signatures,
-    message: Message.v0(
-      payer: payer, 
-      instructions: instructions, 
-      recentBlockhash: recentBlockhash,
-      addressLookupTableAccounts: addressLookupTableAccounts,
-    ),
-  );
+  }) =>
+      Transaction(
+        signatures: signatures,
+        message: Message.v0(
+          payer: payer,
+          instructions: instructions,
+          recentBlockhash: recentBlockhash,
+          addressLookupTableAccounts: addressLookupTableAccounts,
+        ),
+      );
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory Transaction.fromJson(final Map<String, dynamic> json) 
-    => _$TransactionFromJson(json);
-  
+  factory Transaction.fromJson(final Map<String, dynamic> json) => _$TransactionFromJson(json);
+
   @override
   Map<String, dynamic> toJson() => _$TransactionToJson(this);
 
   @override
   Buffer serialize([final TransactionSerializableConfig? config]) {
-
     // Create a writable buffer large enough to store the transaction data.
     final BufferWriter serializedTransaction = BufferWriter(2048);
 
@@ -111,7 +109,7 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     // Write the [signatures] encoded length.
     final List<int> signaturesEncodedLength = shortvec.encodeLength(signatures.length);
     serializedTransaction.setBuffer(signaturesEncodedLength);
-    
+
     /// Write the [signatures].
     for (final Uint8List signature in signatures) {
       serializedTransaction.setBuffer(signature);
@@ -128,12 +126,10 @@ class Transaction extends Serializable with TransactionSerializableMixin {
   Buffer serializeMessage() => message.serialize();
 
   /// Decodes a `base-58` [encoded] transaction into a [Transaction] object.
-  factory Transaction.fromBase58(final String encoded)
-    => Transaction.deserialize(base58.decode(encoded));
+  factory Transaction.fromBase58(final String encoded) => Transaction.deserialize(base58.decode(encoded));
 
   /// Decodes a `base-64` [encoded] transaction into a [Transaction] object.
-  factory Transaction.fromBase64(final String encoded)
-    => Transaction.deserialize(base64.decode(encoded));
+  factory Transaction.fromBase64(final String encoded) => Transaction.deserialize(base64.decode(encoded));
 
   /// Decodes a serialized transaction into a [Transaction] object.
   factory Transaction.deserialize(
@@ -156,8 +152,8 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     return Transaction(signatures: signatures, message: message);
   }
 
-  /// Signs this [Transaction] with the specified signers. Multiple signatures may be applied to a 
-  /// [Transaction]. The first signature is considered "primary" and is used to identify and confirm 
+  /// Signs this [Transaction] with the specified signers. Multiple signatures may be applied to a
+  /// [Transaction]. The first signature is considered "primary" and is used to identify and confirm
   /// transactions.
   void sign(final List<Signer> signers) {
     final Uint8List serializedMessage = message.serialize().asUint8List();
@@ -170,7 +166,7 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     }
   }
 
-  /// Add an externally created [signature] to a transaction. The [pubkey] must correspond to the 
+  /// Add an externally created [signature] to a transaction. The [pubkey] must correspond to the
   /// fee payer or a signer account in the transaction instructions ([Message.accountKeys]).
   void addSignature(final Pubkey pubkey, final Uint8List signature) {
     check(signature.length == nacl.signatureLength, 'Invalid signature length ${signature.length}');
